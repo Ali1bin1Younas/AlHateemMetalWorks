@@ -88,6 +88,7 @@
 <script src="<?php echo base_url(); ?>assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/bootstrap-select/bootstrap-select.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/knockout-3.4.2.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/custum/vouchers_view.js"></script>
 <!-- Page-Level Scripts -->
   <script>
@@ -116,6 +117,7 @@
           ]
       });
     });
+
   </script>
 </body>
 </html>

@@ -12,6 +12,8 @@
 
     <!-- Mainly scripts -->
     <script src="<?php echo base_url(); ?>assets/js/jquery-2.1.1.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery-ui-1.10.4.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery-ui.custom.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>

@@ -13,6 +13,7 @@ class Vouchers extends CI_Controller{
 			redirect(base_url().'login');
 		} 
 	}
+
 	function index(){
 		$data['pageHeading'] = $this->router->fetch_class();
 		$data['row_data'] = $this->Vouchers_model->get_records();
@@ -109,6 +110,12 @@ class Vouchers extends CI_Controller{
 			echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $res));
 		else
 			echo json_encode(array('status' => '201', 'msg' => 'Unable to update Product detail!.', 'result' => $res));
+	}
+
+	///////////////
+	public function ko(){
+		$data['row_data'] = $this->Vouchers_model->get_records();
+		$this->load->view("vouchers/koFunctions",$data);
 	}
 }
 ?>

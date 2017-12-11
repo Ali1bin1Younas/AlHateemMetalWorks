@@ -9,6 +9,8 @@
 
     <title> Al-Hateem Metal</title>
 
+    <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>assets/font-awesome/css/font-awesome.css" rel="stylesheet">
 
