@@ -3,6 +3,67 @@ var controllerNameV = 'vouchers';
 //////////////////////////////////////////////////
 ///////////     View Record     //////////////
 ////////////////////////////////////////////////
+var viewModelInit = true;
+function ReservationsViewModel() {
+    var self = this;
+
+    self.Lines = ko.observableArray();
+
+    self.issueDate = ko.observable();
+    self.deliveryDate = ko.observable();
+    self.VoucherDescription = ko.observable();
+    self.referenceNo = ko.observable();
+
+    function transactionLinesModel(){
+        var self = this;
+        self.discount = ko.observable();
+        self.discountType = ko.observable();
+        self.discountAmount = ko.observable();
+        self.qty = ko.observable();
+        self.amount = ko.observable();
+        self.description = ko.observable();
+    }
+
+    self.description = ko.observable();
+    self.discount = ko.observable(); 
+    self.discountType = ko.observable();
+    self.qty = ko.observable();
+    self.amount = ko.observable();
+    self.discountAmount = ko.observable();
+
+    self.discount.subscribe(function(data) {
+        if (viewModelInit) return; 
+        for (var i = 0; i < self.Lines().length; i++) { 
+            self.Lines()[i].discount(null); 
+            self.Lines()[i].discountAmount(null); 
+        }; 
+    });
+    self.discountType.subscribe(function(data) { 
+        if (viewModelInit) return; 
+        for (var i = 0; i < self.Lines().length; i++) { 
+            self.Lines()[i].discount(null); 
+            self.Lines()[i].discountAmount(null); 
+        }; 
+    });
+
+    self.RemoveLines = function(line) { self.Lines.remove(line); };
+    self.AddLines = function() {self.Lines.push(new transactionLinesModel());};
+    self.Add5Lines = function() { 
+        for (var i = 0; i < 5; i++) 
+            self.Lines.push(new transactionLinesModel()); 
+    }; 
+    self.Add10Lines = function() { 
+        for (var i = 0; i < 10; i++) 
+            self.Lines.push(new transactionLinesModel()); 
+    }; 
+    self.Add20Lines = function() { 
+        for (var i = 0; i < 20; i++) 
+        self.Lines.push(new transactionLinesModel()); 
+    }; 
+    
+    self.createVoucher = function(){alert(self.Lines().length);};
+  }
+
 function get_view(){
     $.ajax({
         url: controllerNameV+'/get_view_create',
@@ -34,6 +95,26 @@ function onSuccess_get_view(res){
                 format: "dd/mm/yyyy"
             });
             $('.selectpicker').selectpicker('refresh');
+
+            try{
+                // Overall viewmodel for this screen, along with initial state
+                viewModelInit = true;
+                var viewModel = new ReservationsViewModel();
+                viewModel.issueDate("2017-12-12");
+                viewModel.referenceNo("");
+                viewModel.VoucherDescription();
+                viewModel.discount(false);
+                viewModel.discountType("Percentage");
+
+                viewModel.AddLines();
+                viewModel.Lines()[0].description();
+                viewModel.Lines()[0].amount("0");
+                
+                ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
+            }catch(e){alert(e.message);}
+        },
+        onClose: function(){
+            ko.cleanNode(document.getElementById("createVoucherView"));
         },
         preConfirm: function () {
         }

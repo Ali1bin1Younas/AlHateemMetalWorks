@@ -7,6 +7,7 @@
 
  <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
+<button data-bind="click: Chk">Chk</button>
 
     <h2>Your seat reservations (<span data-bind="text: seats().length"></span>)</h2>
     <button data-bind="click: addSeat, enable: seats().length < 5">Reserve another seat</button>
@@ -89,10 +90,11 @@
         });
     }
 
-// Overall viewmodel for this screen, along with initial state
-function ReservationsViewModel(question, pointsBudget, answers) {
+    // Overall viewmodel for this screen, along with initial state
+    function ReservationsViewModel(question, pointsBudget, answers) {
     var self = this;
 
+    self.Chk = function(){alert('A');}
     // Non-editable catalog data - would come from the server
     self.availableMeals = [
         { mealName: "Standard (sandwich)", price: 0 },
@@ -131,10 +133,35 @@ function ReservationsViewModel(question, pointsBudget, answers) {
     };
     self.goToFolder('Inbox');
     ///////////////////////////////////////////////////////////////////////
+    ko.bindingHandlers.starRating = {
+        init: function(element, valueAccessor) {
+            for (var i = 0; i < 5; i++){
+                var divEl = $("<div>");
+                var spnEl = $("<span>").appendTo(divEl).addClass("btn btn-primary");
+                $(spnEl).appendTo(element);
+            }
+            
+            $("span", element).each(function(index) {
+            $(this).hover(
+                function() { $(this).prevAll().add(this).addClass("btn-warning").removeClass("btn-primary") },
+                function() { $(this).prevAll().add(this).removeClass("btn-warning").addClass("btn-primary") }                
+                ).click(function() {
+                    var observable = valueAccessor();  // Get the associated observable
+                    observable(index+1);               // Write the new rating to it
+            });
+            });
+        },
+        update: function(element, valueAccessor) {
+            // Give the first x stars the "chosen" class, where x <= rating
+            var observable = valueAccessor();
+            $("span", element).each(function(index) {
+                $(this).toggleClass("btn-danger", index < observable());
+            });
+        }
+        };
     ko.bindingHandlers.jqButton = {
         init: function(element) {
             $(element).button(); // Turns the element into a jQuery UI button
-            alert('A');
         },
         update: function(element, valueAccessor) {
             var currentValue = valueAccessor();
@@ -167,8 +194,8 @@ function ReservationsViewModel(question, pointsBudget, answers) {
         return total;        
     }, this);
 
-    function Answer(text) { this.answerText = text; this.points = ko.observable(2); }
-}
+        function Answer(text) { this.answerText = text; this.points = ko.observable(2); }
+    }
 
     ko.applyBindings(new ReservationsViewModel("Which factors affect your technology choices?", 10, [
     "Functionality, compatibility, pricing - all that boring stuff",
@@ -177,6 +204,6 @@ function ReservationsViewModel(question, pointsBudget, answers) {
     "Totally believable testimonials on project homepage"
     ]));
 
-  </script>
+</script>
 </body>
 </html>
