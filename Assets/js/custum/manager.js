@@ -1,3 +1,23 @@
+ko.bindingProvider.instance.preprocessNode = function(node) {
+    if ($(node).is('textarea') && $(node).hasClass('autosize')) {
+        setTimeout(function() {
+            $(node).autosize({ append: '\n', callback: function() { 
+                var clone = $(this).clone().css({ 'position': 'absolute', 'left': '-1000px' }).appendTo('body'); 
+                var height = clone.height(); clone.remove(); 
+                var tr = $(this).parent().parent(); 
+                tr.find('input[type=text].regular').css('height', (height+12)+'px'); 
+                tr.find('input[type=text].regular').css('padding-bottom', (height-12)+'px'); 
+                $.each(tr.find('input[type=text].regular'), function() { 
+                    /* Riddiculous but fixes rendering bug on IE */ 
+                    var value = $(this).val(); $(this).val(''); $(this).val(value); }); 
+                    tr.attr('data-select2height', height+10); 
+                    tr.find('.select2-choice').css('height', (height+12)+'px'); 
+                } 
+            });
+        }, 0);
+    }
+}
+/////////////////     View Model    //////////////
 function PurchaseOrderViewModel() { 
     var self = this; 
     self.Date = ko.observable(); 

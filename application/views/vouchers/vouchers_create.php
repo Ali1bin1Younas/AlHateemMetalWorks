@@ -1,4 +1,8 @@
 <style>
+  .swal-wider-voucher{
+    width:1000px !important;
+    max-height:700px !important;
+  }
   .add-voucher{
     font-size:12px;
   }
@@ -81,13 +85,24 @@
                           <th style="text-align: center"><label>Amount</label></th>
                         </tr>
                       </thead>
+                      <tbody>
+                        <tr>
+                          <td class="pull-left">
+                          </td><td></td><td></td><td></td>
+                          <td data-bind="visible: $root.discount()" style="display: none;"></td>
+                          <td>
+                            <div class="input-group" style="margin-bottom: 0px">
+                              <input class="form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; font-weight: bold" readonly="readonly" type="text" data-bind="value: function() { var total = 0; for (i = 0; i < $root.Lines().length; i++) { total += $root.Lines()[i].LineTotal(); } return Globalize.format(total, 'n'+total.getDecimals()); }()">
+                              <span class="input-group-addon input-sm" style="color: #999; text-shadow: 1px 1px 0px #fff">PKR</span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
                       <tbody class="ko_container ui-sortable" data-bind="sortable: { data: Lines, options: { handle: '.sortableHandle', cursor: 'move' } }">
                         <tr data-select2height="46">
                           <td style="vertical-align: top; min-width: 150px">
                             <div class="controls select-picker-item">
-                              <select class="selectpicker" id="ddlProducts" style="height:48px;" data-show-subtext="true" data-live-search="true">
-                                <option>abc</option>
-                              </select>
+                              <input data-bind="ddlProducts: Item" data-width="100%"  title="" />
                             </div>
                           </td>
                           <td style="vertical-align: top">
@@ -108,7 +123,7 @@
                           </td>
                           <td style="vertical-align: top">
                             <div class="input-group" style="margin-bottom: 0px">
-                              <input class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" readonly="readonly" data-binding="" type="text">
+                              <input class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" readonly="readonly" data-bind="value: FormattedLineTotal" type="text">
                               <span class="input-group-addon input-sm" style="vertical-align: top; line-height: 14px; color: #999; text-shadow: 1px 1px 0px #fff">PKR</span>
                               </div>
                             </td>
@@ -139,7 +154,7 @@
                           <td data-bind="visible: $root.discount()" style="display: none;"></td>
                           <td>
                             <div class="input-group" style="margin-bottom: 0px">
-                              <input class="form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; font-weight: bold" readonly="readonly" type="text">
+                              <input class="form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; font-weight: bold" readonly="readonly" type="text" data-bind="value: function() { var total = 0; for (i = 0; i < $root.Lines().length; i++) { total += $root.Lines()[i].LineTotal(); } return Globalize.format(total, 'n'+total.getDecimals()); }()">
                               <span class="input-group-addon input-sm" style="color: #999; text-shadow: 1px 1px 0px #fff">PKR</span>
                             </div>
                           </td>
@@ -148,8 +163,8 @@
                     </table>
                   </div>
                   <div class="form-group col-sm-12">
-                    <div class="checkbox">
-                      <label><input data-bind="checked: discount" type="checkbox">Discount</label>
+                    <div class="checkbox pull-left">
+                      <label class="pull-left"><input data-bind="checked: discount" type="checkbox">Discount</label>
                       <div class="form-group" data-bind="visible: $root.discount()" style="display: none;">
                         <select class="selectpicker" data-bind="value: discountType" id="ddlProducts" style="width: 200px;" data-show-subtext="true" data-live-search="true">
                           <option value="Percentage">Percentage</option>

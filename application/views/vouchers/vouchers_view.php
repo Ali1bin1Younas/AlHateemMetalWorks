@@ -4,6 +4,7 @@
 <link href="<?php echo base_url(); ?>Assets/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>Assets/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>Assets/css/plugins/bootstrap-select/bootstrap-select.css" rel="stylesheet">
+<link href="<?php echo base_url(); ?>Assets/css/plugins/select2/select2.min.css" rel="stylesheet">
 
  <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -88,37 +89,39 @@
 <script src="<?php echo base_url(); ?>assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/bootstrap-select/bootstrap-select.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/knockout-3.4.2.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/knockout-sortable.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/globalize.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/custum/vouchers_view.js"></script>
 <!-- Page-Level Scripts -->
-  <script>
-    $(document).ready(function(){
-      var table = $('.dataTables-grd');
-      table.DataTable({
-          "columnDefs": [
-              //{ "targets": [2,3,4], "visible": false, "searchable": false}
-          ],
-          "bAutoWidth": false,
-          pageLength: 10,
-          responsive: true,
-          dom: '<"html5buttons"B>lTfgitp',
-          buttons: [
-              {extend: 'copy'},
-              //{extend: 'csv'},
-              {extend: 'excel', title: 'List-pdf'},
-              {extend: 'pdf', title: 'List-pdf'},
-              {extend: 'print',
-                customize: function (win){
-                  $(win.document.body).addClass('white-bg');
-                  $(win.document.body).css('font-size', '10px');
-                  $(win.document.body).find('dataTables-grd').addClass('compact').css('font-size', 'inherit');
-              }
-              }
-          ]
-      });
+<script>
+  $(document).ready(function(){
+    var table = $('.dataTables-grd');
+    table.DataTable({
+        "columnDefs": [
+            //{ "targets": [2,3,4], "visible": false, "searchable": false}
+        ],
+        "bAutoWidth": false,
+        pageLength: 10,
+        responsive: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [
+            {extend: 'copy'},
+            //{extend: 'csv'},
+            {extend: 'excel', title: 'List-pdf'},
+            {extend: 'pdf', title: 'List-pdf'},
+            {extend: 'print',
+              customize: function (win){
+                $(win.document.body).addClass('white-bg');
+                $(win.document.body).css('font-size', '10px');
+                $(win.document.body).find('dataTables-grd').addClass('compact').css('font-size', 'inherit');
+            }
+            }
+        ]
     });
+  });
 
-  </script>
+</script>
 </body>
 </html>

@@ -28,6 +28,17 @@ class vouchers_model extends CI_Model{
         }
     }
 
+    public function getProducts($term){
+        try{
+            $nameClause = "";
+            if($term != ""){$nameClause = "and name LIKE '%".$term."%'";}
+            $qry = " SELECT id,name as text,descrip as description,costPrice as unitPrice, id as trackingCode from tbl_products where deleted = 0 and enable = 1 " . $nameClause;
+            return $this->db->query($qry)->result_array();
+        }catch(Exception $e){
+            return false;
+        }
+    }
+
     public function add_record_with_data($tbl, $data){
         $this->db->trans_start();
         $this->db->insert($tbl,$data);

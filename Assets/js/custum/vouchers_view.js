@@ -4,6 +4,81 @@ var controllerNameV = 'vouchers';
 ///////////     View Record     //////////////
 ////////////////////////////////////////////////
 var viewModelInit = true;
+Number.prototype.getDecimals = function() {
+    var num = parseFloat(this.toFixed(10));
+    var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    if (!match)
+        return 0;
+    return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
+}
+ko.bindingHandlers.ddlProducts = {
+    init: function(element, valueAccessor, allBindingsAccessor) {
+        var select2options = {};
+        if ($(element).is('select'))
+        {
+            select2options.width = $(element).attr('data-width');
+            select2options.allowClear = ($(element).attr('data-placeholder'));
+            select2options.formatNoMatches = function() { return "No matches found"; };
+            if (select2options.allowClear) select2options.placeholder = $(element).attr('data-placeholder');
+        }
+        if ($(element).is('input'))
+        {
+            try{
+                var select2options = {
+                allowClear: true,
+                placeholder: ' ',
+                formatNoMatches: function() { return "No matches found"; },
+                formatSearching: function() { return "Searching ..."; },
+                ajax:
+                {
+                    url: "Vouchers/getProducts",
+                    dataType: 'json',
+                    width: 'copy',
+                    data: function (term, page) { return { Term: term } },
+                    results: function(data, page) { return data; }
+                }};
+            select2options.width = $(element).attr('data-width');
+            }catch(e){alert(e.message);}
+        }
+        $(element).select2(select2options);
+        // var tr = $(element).select2('container').closest('tr');
+        // if (tr.attr('data-select2height'))
+        // {
+        //     $(element).select2('container').find('.select2-choice').height(tr.attr('data-select2height'));
+        // }
+
+        // ko.utils.registerEventHandler(element, 'change', function ()
+        // {
+        //     var observable = valueAccessor();
+        //     var data = $(element).select2('data');
+        //     if (data != null)
+        //     {
+        //         data = jQuery.extend(true, {}, data);
+        //         if ($(element).is('select'))
+        //         {
+        //             data.TaxCode = $(element).find('option:selected').attr('data-TaxCode');
+        //             data.Account = $(element).find('option:selected').attr('data-Account');
+        //             data.currency = $(element).find('option:selected').attr('data-currency');
+        //             data.type = $(element).find('option:selected').attr('data-type');
+        //         }
+        //         delete data.element;
+        //         delete data.disabled;
+        //         delete data.locked;
+        //     }
+        //     observable(data);
+        // });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+            $(element).select2('destroy');
+        });
+    }
+};
+ko.bindingHandlers.autosize = {
+    update: function (element, valueAccessor) {
+        ko.utils.unwrapObservable(valueAccessor());
+        $(element).trigger('autosize.resize');
+    }
+};
 function ReservationsViewModel() {
     var self = this;
 
@@ -16,12 +91,55 @@ function ReservationsViewModel() {
 
     function transactionLinesModel(){
         var self = this;
+        self.Item = ko.observable();
+        self.TrackingCode = ko.observable(); 
         self.discount = ko.observable();
         self.discountType = ko.observable();
         self.discountAmount = ko.observable();
         self.qty = ko.observable();
         self.amount = ko.observable();
         self.description = ko.observable();
+
+        self.Item.subscribe(function(data) { 
+            if (viewModelInit) return; 
+            if (data && data.Description && data.Description.length > 0) { 
+                self.Description(data.Description); 
+            } 
+
+            if (data && data.UnitPrice && data.UnitPrice.length > 0) { self.Amount(data.UnitPrice); } 
+            if (data && data.TrackingCode && data.TrackingCode.length > 0) { 
+                self.TrackingCode({ id: data.TrackingCode }); 
+            } 
+            if (self.qty() == null || self.qty().length == 0) { 
+                self.qty('1'); 
+            } 
+        });
+
+        self.AmountAsNumber = ko.computed(function() { 
+            var amount = Globalize.parseFloat((self.amount() || '').toString()); 
+            if (isNaN(amount)) { amount = 0; }; 
+            return amount; 
+        });
+        self.LineTotal = ko.computed(function() { 
+            var qty = Globalize.parseFloat((self.qty() || '').toString()); 
+            var amount = Globalize.parseFloat((self.amount() || '').toString()); 
+            var discount = Globalize.parseFloat((self.discount() || '').toString()); 
+            var discountAmount = Globalize.parseFloat((self.discountAmount() || '').toString());
+            if (isNaN(qty)) { qty = 1; }; 
+            if (isNaN(amount)) { amount = 0; }; 
+            var subtotal = qty*amount; 
+            if (!isNaN(discount) && discount != 0 && subtotal != 0) { 
+                subtotal = (subtotal/100)*(100-discount); 
+            }; 
+            if (!isNaN(discountAmount) && discountAmount != 0) { 
+                subtotal -= discountAmount; 
+            }; 
+            return subtotal; 
+        });
+        self.FormattedLineTotal = ko.computed(function() { 
+            var total = self.LineTotal(); 
+            return Globalize.format(total, 'n'+total.getDecimals());
+        });
     }
 
     self.description = ko.observable();
@@ -59,12 +177,13 @@ function ReservationsViewModel() {
     self.Add20Lines = function() { 
         for (var i = 0; i < 20; i++) 
         self.Lines.push(new transactionLinesModel()); 
-    }; 
+    };
     
-    self.createVoucher = function(){alert(self.Lines().length);};
+    self.createVoucher = function(){alert(ko.toJSON(this));};
   }
 
-function get_view(){
+
+  function get_view(){
     $.ajax({
         url: controllerNameV+'/get_view_create',
         method: 'GET',
@@ -77,14 +196,16 @@ function get_view(){
         }
     });
 }
+/////////////////////////////////////////////////////////////////
 function onSuccess_get_view(res){
+    var viewModel = new ReservationsViewModel();
     swal({
         title: controllerNameV,
         html: res,
         showCancelButton: false,
         showConfirmButton: false,
         focusConfirm: true,
-        customClass: 'swal-wider',
+        customClass: 'swal-wider-voucher',
         onOpen: function() {
             $(".date").datepicker({
                 todayBtn: "linked",
@@ -99,7 +220,6 @@ function onSuccess_get_view(res){
             try{
                 // Overall viewmodel for this screen, along with initial state
                 viewModelInit = true;
-                var viewModel = new ReservationsViewModel();
                 viewModel.issueDate("2017-12-12");
                 viewModel.referenceNo("");
                 viewModel.VoucherDescription();
@@ -117,6 +237,7 @@ function onSuccess_get_view(res){
             ko.cleanNode(document.getElementById("createVoucherView"));
         },
         preConfirm: function () {
+            resolve(viewModel);
         }
     })
     .catch(swal.noop);
