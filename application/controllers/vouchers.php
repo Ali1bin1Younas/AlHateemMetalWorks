@@ -104,19 +104,20 @@ class Vouchers extends CI_Controller{
 	/////////////////////////////////////////////
 	//////////////     Helping functions     ///
 	///////////////////////////////////////////
-	public function get_attributes(){
-		$res = $this->Vouchers_model->get_attributes();
-		if($res)
-			echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $res));
-		else
-			echo json_encode(array('status' => '201', 'msg' => 'Unable to update Product detail!.', 'result' => $res));
-	}
 	public function getProducts(){
-		$res = $this->Vouchers_model->getProducts($this->input->get("term"));
+		$res = $this->Vouchers_model->getProducts($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else
-			echo json_encode(array('status' => '201', 'msg' => 'Unable to update Product detail!.', 'result' => $res));
+			echo json_encode(array('results' => $res));
+	}
+
+	public function getSuppliers(){
+		$res = $this->Vouchers_model->getSuppliers($this->input->get("Term"));
+		if($res)
+			echo json_encode(array('results' => $res));
+		else
+			echo json_encode(array('results' => $res));
 	}
 	///////////////
 	public function ko(){

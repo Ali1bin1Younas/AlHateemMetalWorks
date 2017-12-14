@@ -10,9 +10,9 @@
     height: 48px;
 }
 </style>
-<link href="<?php echo base_url(); ?>Assets/css/plugins/bootstrap-select/bootstrap-select.css" rel="stylesheet">
 <!-- Content Wrapper. Contains page content -->
 <div class="fadeInRight animated">
+  <div class="row" style="margin-bottom:-10px;margin-top:-10px;"><h1>Voucher</h1></div>
   <hr class="hr-success" />
   <div class="content-wrapper" id="createVoucherView">
     <!-- Main content -->
@@ -47,7 +47,7 @@
                               <label>Reference</label>
                               <div class="input-group" style="margin-bottom: 0px">
                                 <span class="input-group-addon">#</span>
-                                <input id="txtReferenceNo" class="form-control input-sm" style="width: 80px; text-align: center" data-bind="textInput: referenceNo" placeholder="Automatic" type="text">
+                                <input id="txtReferenceNo" class="form-control input-sm" style="width: 80px; text-align: center" data-bind="textInput: referenceNo" placeholder="" type="text">
                               </div>
                             </div>
                           </td>
@@ -59,9 +59,7 @@
                     <div class="row-fluid pull-left text-left">
                       <label>Supplier</label>
                       <div class="controls">
-                        <select class="selectpicker" id="ddlUsers" data-show-subtext="true" data-live-search="true">
-                        <option>abc</option>
-                        </select>
+                        <input data-bind="ddlSelect2: supplier" data-autocomplete="getSuppliers" data-width="250px"  title="" />
                       </div>
                     </div>
                   </div>
@@ -102,7 +100,7 @@
                         <tr data-select2height="46">
                           <td style="vertical-align: top; min-width: 150px">
                             <div class="controls select-picker-item">
-                              <input data-bind="ddlProducts: Item" data-width="100%"  title="" />
+                              <input data-bind="ddlSelect2: Item" data-autocomplete="getProducts" data-width="100%"  title="" />
                             </div>
                           </td>
                           <td style="vertical-align: top">
@@ -175,7 +173,7 @@
                 </div>
               </div>
               <div class="panel-footer">
-                <img src="resources/ajax-loader.gif" id="ajaxIndicator" style="display: none; margin-right: 10px">
+                <img src="<?php echo base_url(); ?>Assets/img/ajax-loader.gif" id="ajaxIndicator" style="display: none; margin-right: 10px">
                 <div class="btn-group">
                   <input class="btn btn-primary" data-bind="click: createVoucher" style="font-weight: bold" value="Create" type="button">
                   <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">

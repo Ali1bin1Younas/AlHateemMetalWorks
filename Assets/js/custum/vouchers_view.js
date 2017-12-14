@@ -11,7 +11,7 @@ Number.prototype.getDecimals = function() {
         return 0;
     return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
 }
-ko.bindingHandlers.ddlProducts = {
+ko.bindingHandlers.ddlSelect2 = {
     init: function(element, valueAccessor, allBindingsAccessor) {
         var select2options = {};
         if ($(element).is('select'))
@@ -31,7 +31,7 @@ ko.bindingHandlers.ddlProducts = {
                 formatSearching: function() { return "Searching ..."; },
                 ajax:
                 {
-                    url: "Vouchers/getProducts",
+                    url: "Vouchers/"+ $(element).attr('data-autocomplete'),
                     dataType: 'json',
                     width: 'copy',
                     data: function (term, page) { return { Term: term } },
@@ -41,38 +41,81 @@ ko.bindingHandlers.ddlProducts = {
             }catch(e){alert(e.message);}
         }
         $(element).select2(select2options);
-        // var tr = $(element).select2('container').closest('tr');
-        // if (tr.attr('data-select2height'))
-        // {
-        //     $(element).select2('container').find('.select2-choice').height(tr.attr('data-select2height'));
-        // }
+        var tr = $(element).select2('container').closest('tr');
+        if (tr.attr('data-select2height'))
+        {
+            $(element).select2('container').find('.select2-choice').height(tr.attr('data-select2height'));
+        }
 
-        // ko.utils.registerEventHandler(element, 'change', function ()
-        // {
-        //     var observable = valueAccessor();
-        //     var data = $(element).select2('data');
-        //     if (data != null)
-        //     {
-        //         data = jQuery.extend(true, {}, data);
-        //         if ($(element).is('select'))
-        //         {
-        //             data.TaxCode = $(element).find('option:selected').attr('data-TaxCode');
-        //             data.Account = $(element).find('option:selected').attr('data-Account');
-        //             data.currency = $(element).find('option:selected').attr('data-currency');
-        //             data.type = $(element).find('option:selected').attr('data-type');
-        //         }
-        //         delete data.element;
-        //         delete data.disabled;
-        //         delete data.locked;
-        //     }
-        //     observable(data);
-        // });
+        ko.utils.registerEventHandler(element, 'change', function ()
+        {
+            var observable = valueAccessor();
+            var data = $(element).select2('data');
+            if (data != null)
+            {
+                data = jQuery.extend(true, {}, data);
+                delete data.element;
+                delete data.disabled;
+                delete data.locked;
+            }
+            observable(data);
+        });
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
             $(element).select2('destroy');
         });
     }
 };
+// ko.bindingHandlers.ddlSuppliers = {
+//     init: function(element, valueAccessor, allBindingsAccessor) {
+//         var select2options = {};
+//         if ($(element).is('select'))
+//         {
+//             select2options.width = $(element).attr('data-width');
+//             select2options.allowClear = ($(element).attr('data-placeholder'));
+//             select2options.formatNoMatches = function() { return "No matches found"; };
+//             if (select2options.allowClear) select2options.placeholder = $(element).attr('data-placeholder');
+//         }
+//         if ($(element).is('input'))
+//         {
+//             try{
+//                 var select2options = {
+//                 allowClear: true,
+//                 placeholder: ' ',
+//                 formatNoMatches: function() { return "No matches found"; },
+//                 formatSearching: function() { return "Searching ..."; },
+//                 ajax:
+//                 {
+//                     url: "Vouchers/"+ $(element).attr('data-autocomplete'),
+//                     dataType: 'json',
+//                     width: 'copy',
+//                     data: function (term, page) { return { Term: term } },
+//                     results: function(data, page) { return data; }
+//                 }};
+//             select2options.width = $(element).attr('data-width');
+//             }catch(e){alert(e.message);}
+//         }
+//         $(element).select2(select2options);
+
+//         ko.utils.registerEventHandler(element, 'change', function ()
+//         {
+//             var observable = valueAccessor();
+//             var data = $(element).select2('data');
+//             if (data != null)
+//             {
+//                 data = jQuery.extend(true, {}, data);
+//                 delete data.element;
+//                 delete data.disabled;
+//                 delete data.locked;
+//             }
+//             observable(data);
+//         });
+
+//         ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+//             $(element).select2('destroy');
+//         });
+//     }
+// };
 ko.bindingHandlers.autosize = {
     update: function (element, valueAccessor) {
         ko.utils.unwrapObservable(valueAccessor());
@@ -88,11 +131,12 @@ function ReservationsViewModel() {
     self.deliveryDate = ko.observable();
     self.VoucherDescription = ko.observable();
     self.referenceNo = ko.observable();
+    self.supplier = ko.observable();
 
     function transactionLinesModel(){
         var self = this;
         self.Item = ko.observable();
-        self.TrackingCode = ko.observable(); 
+        self.trackingCode = ko.observable(); 
         self.discount = ko.observable();
         self.discountType = ko.observable();
         self.discountAmount = ko.observable();
@@ -101,14 +145,12 @@ function ReservationsViewModel() {
         self.description = ko.observable();
 
         self.Item.subscribe(function(data) { 
-            if (viewModelInit) return; 
-            if (data && data.Description && data.Description.length > 0) { 
-                self.Description(data.Description); 
-            } 
-
-            if (data && data.UnitPrice && data.UnitPrice.length > 0) { self.Amount(data.UnitPrice); } 
-            if (data && data.TrackingCode && data.TrackingCode.length > 0) { 
-                self.TrackingCode({ id: data.TrackingCode }); 
+            if (data && data.description && data.description.length > 0) { 
+                self.description(data.description); } 
+            if (data && data.unitPrice && data.unitPrice.length > 0) { 
+                self.amount(data.unitPrice); } 
+            if (data && data.trackingCode && data.trackingCode.length > 0) { 
+                self.trackingCode({ id: data.trackingCode }); 
             } 
             if (self.qty() == null || self.qty().length == 0) { 
                 self.qty('1'); 
@@ -200,7 +242,7 @@ function ReservationsViewModel() {
 function onSuccess_get_view(res){
     var viewModel = new ReservationsViewModel();
     swal({
-        title: controllerNameV,
+        //title: controllerNameV,
         html: res,
         showCancelButton: false,
         showConfirmButton: false,
@@ -214,13 +256,12 @@ function onSuccess_get_view(res){
                 calendarWeeks: true,
                 autoclose: true,
                 format: "dd/mm/yyyy"
-            });
-            $('.selectpicker').selectpicker('refresh');
-
+            }).datepicker('setDate', new Date()).datepicker('update').val('');
+            //$('.selectpicker').selectpicker('refresh');
             try{
                 // Overall viewmodel for this screen, along with initial state
                 viewModelInit = true;
-                viewModel.issueDate("2017-12-12");
+                viewModel.issueDate(new Date());
                 viewModel.referenceNo("");
                 viewModel.VoucherDescription();
                 viewModel.discount(false);
