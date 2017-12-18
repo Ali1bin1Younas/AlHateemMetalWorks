@@ -1,14 +1,14 @@
-
-			<div class="footer">
-                <div class="pull-right">
-                    10GB of <strong>250GB</strong> Free.
-                </div>
-                <div>
-                    <strong>Copyright</strong> Adroit Light Solutions &copy; 2017
-                </div>
+        </div> <!-- div - page-contents -->
+        <div class="footer">
+            <div class="pull-right">
+                10GB of <strong>250GB</strong> Free.
             </div>
-		</div>
+            <div>
+                <strong>Copyright</strong> Adroit Light Solutions &copy; 2017
+            </div>
+        </div>
     </div>
+</div>
 
     <!-- Mainly scripts -->
     <script src="<?php echo base_url(); ?>assets/js/jquery-2.1.1.js"></script>

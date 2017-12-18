@@ -31,7 +31,7 @@ ko.bindingHandlers.ddlSelect2 = {
                 formatSearching: function() { return "Searching ..."; },
                 ajax:
                 {
-                    url: "Vouchers/"+ $(element).attr('data-autocomplete'),
+                    url: $(element).attr('data-autocomplete'),
                     dataType: 'json',
                     width: 'copy',
                     data: function (term, page) { return { Term: term } },
@@ -188,36 +188,32 @@ function ReservationsViewModel() {
         }
     });
 }
-/////////////////////////////////////////////////////////////////
-function onSuccess_get_view(res){
-    $('.page-contents').html(res);
-    var viewModel = new ReservationsViewModel();
+var viewModel = new ReservationsViewModel();
 
-    $(".date").datepicker({
-        todayBtn: "linked",
-        keyboardNavigation: false,
-        forceParse: false,
-        calendarWeeks: true,
-        autoclose: true,
-        format: "dd/mm/yyyy"
-    }).datepicker('setDate', new Date()).datepicker('update').val('');
-    $('.selectpicker').selectpicker('refresh');
-    try{
-        // Overall viewmodel for the popup screen, along with initial state
-        viewModelInit = true;
-        viewModel.issueDate(new Date());
-        viewModel.referenceNo("");
-        viewModel.VoucherDescription();
-        viewModel.discount(false);
-        viewModel.discountType("Percentage");
+$(".date").datepicker({
+    todayBtn: "linked",
+    keyboardNavigation: false,
+    forceParse: false,
+    calendarWeeks: true,
+    autoclose: true,
+    format: "dd/mm/yyyy"
+}).datepicker('setDate', new Date()).datepicker('update').val('');
+$('.selectpicker').selectpicker('refresh');
+try{
+    // Overall viewmodel for the popup screen, along with initial state
+    viewModelInit = true;
+    viewModel.issueDate(new Date());
+    viewModel.referenceNo("");
+    viewModel.VoucherDescription();
+    viewModel.discount(false);
+    viewModel.discountType("Percentage");
 
-        viewModel.AddLines();
-        viewModel.Lines()[0].description();
-        viewModel.Lines()[0].amount("0");
-        
-        ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
-    }catch(e){alert(e.message);ko.cleanNode(document.getElementById("createVoucherView"));}
-}
+    viewModel.AddLines();
+    viewModel.Lines()[0].description();
+    viewModel.Lines()[0].amount("0");
+    
+    ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
+}catch(e){alert(e.message);ko.cleanNode(document.getElementById("createVoucherView"));}
 //////////////////////////////////////////////////
 ///////////     Add New Record     //////////////
 ////////////////////////////////////////////////

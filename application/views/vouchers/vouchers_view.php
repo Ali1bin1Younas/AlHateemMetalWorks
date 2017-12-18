@@ -27,7 +27,7 @@
                 <div class="box-body">
                   <div class="row">
                   <div class="col-lg-12 text-right form-group">
-                  <a class="btn btn-primary pad" id="btnAdd" onclick="get_view();" href="javascript:void(0);"><i class="fa fa-plus" aria-hidden="true"></i>Create voucher</a>
+                  <a class="btn btn-primary pad"  href="Vouchers/voucherCreate"><i class="fa fa-plus" aria-hidden="true"></i>Create voucher</a>
                   </div>
                   </div>
                     <div class="table-responsive">

@@ -190,33 +190,49 @@ function ReservationsViewModel() {
 }
 /////////////////////////////////////////////////////////////////
 function onSuccess_get_view(res){
-    $('.page-contents').html(res);
+    $('.page-contents').html(res); return;
     var viewModel = new ReservationsViewModel();
+    swal({
+        //title: controllerNameV,
+        html: res,
+        showCancelButton: false,
+        showConfirmButton: false,
+        focusConfirm: true,
+        customClass: 'swal-wider-voucher',
+        onOpen: function() {
+            $(".date").datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true,
+                format: "dd/mm/yyyy"
+            }).datepicker('setDate', new Date()).datepicker('update').val('');
+            $('.selectpicker').selectpicker('refresh');
+            try{
+                // Overall viewmodel for the popup screen, along with initial state
+                viewModelInit = true;
+                viewModel.issueDate(new Date());
+                viewModel.referenceNo("");
+                viewModel.VoucherDescription();
+                viewModel.discount(false);
+                viewModel.discountType("Percentage");
 
-    $(".date").datepicker({
-        todayBtn: "linked",
-        keyboardNavigation: false,
-        forceParse: false,
-        calendarWeeks: true,
-        autoclose: true,
-        format: "dd/mm/yyyy"
-    }).datepicker('setDate', new Date()).datepicker('update').val('');
-    $('.selectpicker').selectpicker('refresh');
-    try{
-        // Overall viewmodel for the popup screen, along with initial state
-        viewModelInit = true;
-        viewModel.issueDate(new Date());
-        viewModel.referenceNo("");
-        viewModel.VoucherDescription();
-        viewModel.discount(false);
-        viewModel.discountType("Percentage");
-
-        viewModel.AddLines();
-        viewModel.Lines()[0].description();
-        viewModel.Lines()[0].amount("0");
-        
-        ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
-    }catch(e){alert(e.message);ko.cleanNode(document.getElementById("createVoucherView"));}
+                viewModel.AddLines();
+                viewModel.Lines()[0].description();
+                viewModel.Lines()[0].amount("0");
+                
+                ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
+            }catch(e){alert(e.message);}
+        },
+        onClose: function(){
+            ko.cleanNode(document.getElementById("createVoucherView"));
+        },
+        preConfirm: function () {
+            resolve(viewModel);
+        }
+    })
+    .catch(swal.noop);
 }
 //////////////////////////////////////////////////
 ///////////     Add New Record     //////////////

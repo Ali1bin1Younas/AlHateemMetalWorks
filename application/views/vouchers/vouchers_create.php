@@ -1,3 +1,9 @@
+<?php $this->load->view('common/header'); ?>
+<link href="<?php echo base_url(); ?>Assets/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<link href="<?php echo base_url(); ?>Assets/css/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet">
+<link href="<?php echo base_url(); ?>Assets/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<link href="<?php echo base_url(); ?>Assets/css/plugins/bootstrap-select/bootstrap-select.css" rel="stylesheet">
+<link href="<?php echo base_url(); ?>Assets/css/plugins/select2/select2.min.css" rel="stylesheet">
 <style>
   .swal-wider-voucher{
     width:1000px !important;
@@ -12,8 +18,12 @@
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="fadeInRight animated">
-  <div class="row" style="margin-bottom:-10px;margin-top:-10px;"><h1>Voucher</h1></div>
-  <hr class="hr-success" />
+  <section class="content-header">
+    <div class="col-md-3 col-sm-4" style="width:100px;"><a href="#"><img style="width:50px;" onclick="" src="<?php echo base_url(); ?>Assets/img/custom/if_arrow-left.png"/></a></div>
+    <h1>
+      <?php echo $pageHeading; ?>
+    </h1>
+  </section>
   <div class="content-wrapper" id="createVoucherView">
     <!-- Main content -->
     <section class="content add-voucher">
@@ -196,3 +206,17 @@
 </div>
  <!-- /.content-wrapper -->
 </div>
+<?php  $this->load->view('common/footer');  ?>
+
+<!--Page Scripts -->
+<script src="<?php echo base_url(); ?>assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/plugins/bootstrap-select/bootstrap-select.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/globalize.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/custum/vouchers_create.js"></script>
+<!-- Page-Level Scripts -->
+</body>
+</html>

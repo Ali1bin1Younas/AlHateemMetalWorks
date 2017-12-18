@@ -20,7 +20,11 @@ class Vouchers extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
-	        
+	function voucherCreate(){
+		$data['pageHeading'] = "Create Voucher";
+		$data["name"] = $this->session->userdata('name');
+		$this->load->view($this->router->fetch_class()."/"."vouchers_create",$data);
+	}    
 	public function add_record(){
 		$usrData = array();
 		foreach($this->input->get() as $key => $val){
@@ -93,11 +97,11 @@ class Vouchers extends CI_Controller{
 		else
 			echo json_encode(array('status' => '201', 'msg' => 'Unable to update user detail!.', 'result' => $res));
 	}
-	
 	/////////////////////////////////////////////
 	//////////////     Get Views Methods    ////
 	///////////////////////////////////////////
 	public function get_view_create(){
+		$data['pageHeading'] = "Create ". $this->router->fetch_class();
 		$data['row_data'] = $this->vouchers_model->get_records("tbl_".$this->router->fetch_class());
 		echo $this->load->view("vouchers/".$this->router->fetch_class()."_create", $data, true);
 	}
