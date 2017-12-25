@@ -14,7 +14,7 @@ class Login_model extends CI_Model
 	
 	public function check_pass($user_id,$password){ 
 		$this->db->select('*');
-		$this->db->where('ID',$user_id);		
+		$this->db->where('usrID',$user_id);		
 		$this->db->where('pass',md5($password));
 		$this->db->where('typID',0);			
 		$query=$this->db->get('tbl_users');

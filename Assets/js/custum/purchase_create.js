@@ -1,7 +1,7 @@
 var pageNameV = 'Create Voucher';
 var controllerNameV = 'vouchers';
 //////////////////////////////////////////////////
-///////////     View Record     //////////////
+/     setting up ViewModel using KnowkoutJS     /
 ////////////////////////////////////////////////
 var viewModelInit = true;
 Number.prototype.getDecimals = function() {
@@ -64,6 +64,17 @@ ko.bindingHandlers.ddlSelect2 = {
         ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
             $(element).select2('destroy');
         });
+    },update: function(element, valueAccessor) {
+        var data = ko.utils.unwrapObservable(valueAccessor());
+        if ($(element).is('input'))
+        {
+            $(element).select2('data', data);
+        }
+        if ($(element).is('select'))
+        {
+            if (data == null) $(element).select2('val', '');
+            else $(element).select2('val', data.id);
+        }
     }
 };
 ko.bindingHandlers.autosize = {
@@ -72,67 +83,65 @@ ko.bindingHandlers.autosize = {
         $(element).trigger('autosize.resize');
     }
 };
+function transactionLinesModel(){
+    var self = this;
+    self.Item = ko.observable();
+    self.trackingCode = ko.observable(); 
+    self.discount = ko.observable();
+    self.discountType = ko.observable();
+    self.discountAmount = ko.observable();
+    self.qty = ko.observable();
+    self.amount = ko.observable();
+    self.description = ko.observable();
+
+    self.Item.subscribe(function(data) { 
+        if (data && data.description && data.description.length > 0) { 
+            self.description(data.description); } 
+        if (data && data.unitPrice && data.unitPrice.length > 0) { 
+            self.amount(data.unitPrice); } 
+        if (data && data.trackingCode && data.trackingCode.length > 0) { 
+            self.trackingCode({ id: data.trackingCode }); 
+        } 
+        if (self.qty() == null || self.qty().length == 0) { 
+            self.qty('1'); 
+        } 
+    });
+    self.AmountAsNumber = ko.computed(function() { 
+        var amount = Globalize.parseFloat((self.amount() || '').toString()); 
+        if (isNaN(amount)) { amount = 0; }; 
+        return amount; 
+    });
+    self.LineTotal = ko.computed(function() { 
+        var qty = Globalize.parseFloat((self.qty() || '').toString()); 
+        var amount = Globalize.parseFloat((self.amount() || '').toString()); 
+        var discount = Globalize.parseFloat((self.discount() || '').toString()); 
+        var discountAmount = Globalize.parseFloat((self.discountAmount() || '').toString());
+        if (isNaN(qty)) { qty = 1; }; 
+        if (isNaN(amount)) { amount = 0; }; 
+        var subtotal = qty*amount; 
+        if (!isNaN(discount) && discount != 0 && subtotal != 0) { 
+            subtotal = (subtotal/100)*(100-discount); 
+        }; 
+        if (!isNaN(discountAmount) && discountAmount != 0) { 
+            subtotal -= discountAmount; 
+        }; 
+        return subtotal; 
+    });
+    self.FormattedLineTotal = ko.computed(function() { 
+        var total = self.LineTotal(); 
+        return Globalize.format(total, 'n'+total.getDecimals());
+    });
+}
 function ReservationsViewModel() {
     var self = this;
-
     self.Lines = ko.observableArray();
 
     self.issueDate = ko.observable();
     self.deliveryDate = ko.observable();
-    self.VoucherDescription = ko.observable();
     self.referenceNo = ko.observable();
+    self.purchaseNo = ko.observable();
+    self.VoucherDescription = ko.observable();
     self.supplier = ko.observable();
-
-    function transactionLinesModel(){
-        var self = this;
-        self.Item = ko.observable();
-        self.trackingCode = ko.observable(); 
-        self.discount = ko.observable();
-        self.discountType = ko.observable();
-        self.discountAmount = ko.observable();
-        self.qty = ko.observable();
-        self.amount = ko.observable();
-        self.description = ko.observable();
-
-        self.Item.subscribe(function(data) { 
-            if (data && data.description && data.description.length > 0) { 
-                self.description(data.description); } 
-            if (data && data.unitPrice && data.unitPrice.length > 0) { 
-                self.amount(data.unitPrice); } 
-            if (data && data.trackingCode && data.trackingCode.length > 0) { 
-                self.trackingCode({ id: data.trackingCode }); 
-            } 
-            if (self.qty() == null || self.qty().length == 0) { 
-                self.qty('1'); 
-            } 
-        });
-
-        self.AmountAsNumber = ko.computed(function() { 
-            var amount = Globalize.parseFloat((self.amount() || '').toString()); 
-            if (isNaN(amount)) { amount = 0; }; 
-            return amount; 
-        });
-        self.LineTotal = ko.computed(function() { 
-            var qty = Globalize.parseFloat((self.qty() || '').toString()); 
-            var amount = Globalize.parseFloat((self.amount() || '').toString()); 
-            var discount = Globalize.parseFloat((self.discount() || '').toString()); 
-            var discountAmount = Globalize.parseFloat((self.discountAmount() || '').toString());
-            if (isNaN(qty)) { qty = 1; }; 
-            if (isNaN(amount)) { amount = 0; }; 
-            var subtotal = qty*amount; 
-            if (!isNaN(discount) && discount != 0 && subtotal != 0) { 
-                subtotal = (subtotal/100)*(100-discount); 
-            }; 
-            if (!isNaN(discountAmount) && discountAmount != 0) { 
-                subtotal -= discountAmount; 
-            }; 
-            return subtotal; 
-        });
-        self.FormattedLineTotal = ko.computed(function() { 
-            var total = self.LineTotal(); 
-            return Globalize.format(total, 'n'+total.getDecimals());
-        });
-    }
 
     self.description = ko.observable();
     self.discount = ko.observable(); 
@@ -155,8 +164,6 @@ function ReservationsViewModel() {
             self.Lines()[i].discountAmount(null); 
         }; 
     });
-
-    self.RemoveLines = function(line) { self.Lines.remove(line); };
     self.AddLines = function() {self.Lines.push(new transactionLinesModel());};
     self.Add5Lines = function() { 
         for (var i = 0; i < 5; i++) 
@@ -170,123 +177,104 @@ function ReservationsViewModel() {
         for (var i = 0; i < 20; i++) 
         self.Lines.push(new transactionLinesModel()); 
     };
-    
-    self.createVoucher = function(){alert(ko.toJSON(this));};
+    self.RemoveLines = function(line) { self.Lines.remove(line); };
+    self.createVoucherEnable = ko.computed(function() {
+        if(ko.toJSON(self.issueDate) != "" && ko.toJSON(self.supplier) != undefined && ko.toJSON(self.supplier) != "null"){return true;}
+        else{return false;}
+     });
+    self.createVoucher = function(){
+        //alert('create: '+ ko.toJSON(this));
+        $.ajax({
+            url: 'add_record',
+            method: 'GET',
+            contentType: "application/json; charset:utf-8",
+            dataType: 'json',
+            data: {'model': ko.toJSON(this)},
+            success: onSuccess_add_record(this, 0),
+            error: function (res) {
+                swal("Upexpected Error", "Please contact system administrator.", "error");
+            },
+            failure: function (res) {
+                swal("Upexpected Error", "Please try again later.", "error");
+            }
+        });
+    };
+    self.createVoucherNew = function(){
+        //alert('create: '+ ko.toJSON(this));
+        $.ajax({
+            url: 'add_record',
+            method: 'GET',
+            contentType: "application/json; charset:utf-8",
+            dataType: 'json',
+            data: {'model': ko.toJSON(this)},
+            success: onSuccess_add_record(this, 1),
+            error: function (res) {
+                swal("Upexpected Error", "Please contact system administrator.", "error");
+            },
+            failure: function (res) {
+                swal("Upexpected Error", "Please try again later.", "error");
+            }
+        });
+    };
   }
 
-
-  function get_view(){
-    $.ajax({
-        url: controllerNameV+'/get_view_create',
-        method: 'GET',
-        success: onSuccess_get_view,
-        error: function (res) {
-            swal("Upexpected Error", "Please contact system administrator.", "error");
-        },
-        failure: function (res) {
-            swal("Upexpected Error", "Please try again later.", "error");
-        }
-    });
-}
-var viewModel = new ReservationsViewModel();
-
-$(".date").datepicker({
-    todayBtn: "linked",
-    keyboardNavigation: false,
-    forceParse: false,
-    calendarWeeks: true,
-    autoclose: true,
-    format: "dd/mm/yyyy"
-}).datepicker('setDate', new Date()).datepicker('update').val('');
-$('.selectpicker').selectpicker('refresh');
-try{
-    // Overall viewmodel for the popup screen, along with initial state
-    viewModelInit = true;
-    viewModel.issueDate(new Date());
-    viewModel.referenceNo("");
-    viewModel.VoucherDescription();
-    viewModel.discount(false);
-    viewModel.discountType("Percentage");
-
-    viewModel.AddLines();
-    viewModel.Lines()[0].description();
-    viewModel.Lines()[0].amount("0");
+$(document).ready(function(){
+    var viewModel = new ReservationsViewModel();
+    var d = new Date();
+    $(".date").datepicker({
+        todayBtn: "linked",
+        keyboardNavigation: false,
+        forceParse: false,
+        calendarWeeks: true,
+        autoclose: true,
+        format: "dd/mm/yyyy"
+    }).datepicker('setDate',moment((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()).format('DD/MM/YYYY')).datepicker('update').val('');
+    $('.selectpicker').selectpicker('refresh');
+    try{
+        // Overall viewmodel for the popup screen, along with initial state
+        viewModelInit = true;
+        viewModel.issueDate(moment((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()).format('DD/MM/YYYY'));
+        viewModel.referenceNo("");
+        viewModel.purchaseNo = $('#txtPurchaseNo').val();
+        viewModel.VoucherDescription();
+        viewModel.discount(false);
+        viewModel.discountType("Percentage");
     
-    ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
-}catch(e){alert(e.message);ko.cleanNode(document.getElementById("createVoucherView"));}
+        viewModel.AddLines();
+        viewModel.Lines()[0].description();
+        viewModel.Lines()[0].amount("0");
+        
+        ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
+    }catch(e){alert(e.message);ko.cleanNode(document.getElementById("createVoucherView"));}
+});
 //////////////////////////////////////////////////
 ///////////     Add New Record     //////////////
 ////////////////////////////////////////////////
-function add_pre(){
-    swal({
-        title: 'Create Voucher',
-        html: insert_add_view(),
-        showCancelButton: true,
-        focusConfirm: true,
-        confirmButtonText: "Save it!",
-        showLoaderOnConfirm: true,
-        onOpen: function() {
-            get_attributes(null);
-            $("#data").datepicker({
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true,
-                format: "dd/mm/yyyy"
-            }).datepicker('setDate', new Date()).datepicker('update').val('');
-        },
-        preConfirm: function () {
-            return new Promise(function (resolve,reject) {
-                if($('#txtName').val() == "" || $('#txtFullName').val() == "" || $('#txtPass').val() == "" || $('#selTypID').val() == "" || $('#txtDOB').val() == "")
-                {reject("Please fill all mendatory(*) fields first!");}
-            resolve([
-                $('#txtDateTimeCreated').val(),
-                $('#txtPass').val(),
-                $('#txtFullName').val(),
-                $('#txtEmail').val(),
-                $('#txtMobile').val(),
-                $('#txtTell').val(),
-                $('#txtAddress').val(),
-                $('#selUsrTyp').val(),
-                $('#txtDOB').val()
-            ])
-            })
+function onSuccess_add_record(viewModel, isNew){
+    return function(res){
+        try{
+            if(res.status == 200){
+                swal("User Profile", "Voucher Created!", "success");
+                if(isNew){
+                    var d = new Date();
+                    viewModel.issueDate(moment((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()).format('DD/MM/YYYY'));
+                    viewModel.referenceNo("");
+                    viewModel.purchaseNo = (parseInt($('#txtPurchaseNo').val()) + 1);
+                    viewModel.VoucherDescription("");
+                    viewModel.discount(false);
+                    viewModel.discountType("Percentage");
+                    viewModel.Lines.clear();
+
+                    viewModel.AddLines();
+                    viewModel.Lines()[0].description("");
+                    viewModel.Lines()[0].amount("0");
+                }
+            }else{
+                swal("User Profile", "nope", "error");
+            }
+        }catch(e){
+            swal("User Profile", e.message, "error");
         }
-    })
-    .then(function (result) {
-        swal.showLoading();
-        add_record(JSON.parse(JSON.stringify(result)));
-    })
-    .catch(swal.noop);
-}
-function add_record(detail){
-    var DOB = detail[8].toString().split('/');
-    $.ajax({
-        url: controllerNameUsers+'/add_record',
-        method: 'GET',
-        contentType: "application/json; charset:utf-8",
-        dataType: 'json',
-        data: {'name':detail[0],'pass':detail[1],'fullName':detail[2],'email':detail[3],'mobile':detail[4],'tell':detail[5],'address':detail[6],'typID':detail[7],'DOB':moment(DOB[1]+'/'+DOB[0]+'/'+DOB[2]).format('YYYY/MM/DD')},
-        success: onSuccess_add_record,
-        error: function (res) {
-            swal("Upexpected Error", "Please contact system administrator.", "error");
-        },
-        failure: function (res) {
-            swal("Upexpected Error", "Please try again later.", "error");
-        }
-    });
-}
-function onSuccess_add_record(res){
-    try{
-        if(res.status == 200){
-            add_new_row_dataTable(null, res);
-            swal("User Profile", "User Added Successfully!", "success");
-        }else{
-            swal("User Profile", res.msg, "error");
-        }
-    }catch(e){
-        swal("User Profile", e.message, "error");
     }
 }
 //////////////////////////////////////////////////

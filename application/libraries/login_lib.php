@@ -8,7 +8,7 @@ class login_lib {
 
 		if(count($result)>0){	
 			$array=array(
-			'ID'=>$result->ID,
+			'usrID'=>$result->ID,
 			'usrName'=>$result->fullName,
 			'typID'=>$result->typID,
 			'logged_in'=>true

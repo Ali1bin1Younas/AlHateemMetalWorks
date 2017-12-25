@@ -61,11 +61,20 @@
                               </div>
                             </div>
                           </td>
+                          <td style="padding-left: 10px">
+                            <div class="form-group text-left">
+                              <label>Reciept</label>
+                              <div class="input-group" style="margin-bottom: 0px">
+                                <span class="input-group-addon">#</span>
+                                <input id="txtPurchaseNo"  value="<?php echo $purchaseNo;?>" class="form-control input-sm" style="width: 80px; text-align: center" data-bind="textInput: purchaseNo" type="text" readonly="readonly">
+                              </div>
+                            </div>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
-                  <div class="form-group col-sm-12">
+                  <div class="form-group col-sm-3">
                     <div class="row-fluid pull-left text-left">
                       <label>Supplier</label>
                       <div class="controls">
@@ -73,7 +82,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="form-group col-sm-12">
+                  <div class="form-group col-sm-9">
                     <div class="pull-left text-left">
                       <label>Description</label>
                       <div class="controls">
@@ -185,13 +194,13 @@
               <div class="panel-footer">
                 <img src="<?php echo base_url(); ?>Assets/img/ajax-loader.gif" id="ajaxIndicator" style="display: none; margin-right: 10px">
                 <div class="btn-group">
-                  <input class="btn btn-primary" data-bind="click: createVoucher" style="font-weight: bold" value="Create" type="button">
-                  <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <input class="btn btn-primary" data-bind="click: createVoucher, enable: createVoucherEnable" style="font-weight: bold" value="Create" type="button">
+                  <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bind="enable: createVoucherEnable">
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
                     <li>
-                      <input id="btnCreateAndAddAnother" class="btn btn-link" value="Create &amp; add another" type="button">
+                      <input class="btn btn-link" data-bind="click: createVoucherNew" value="Create &amp; add another" type="button">
                     </li>
                   </ul>
                 </div>
@@ -216,7 +225,7 @@
 <script src="<?php echo base_url(); ?>assets/js/globalize.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/custum/vouchers_create.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/custum/purchase_create.js"></script>
 <!-- Page-Level Scripts -->
 </body>
 </html>

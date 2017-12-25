@@ -1,6 +1,6 @@
 <?php
 
-class Vouchers extends CI_Controller{
+class purchase extends CI_Controller{
 
 	function __construct(){
 		parent::__construct();	
@@ -16,25 +16,53 @@ class Vouchers extends CI_Controller{
 
 	function index(){
 		$data['pageHeading'] = $this->router->fetch_class();
-		$data['row_data'] = $this->Vouchers_model->get_records();
+		$data['row_data'] = $this->purchase_model->get_records();
 		$data["name"] = $this->session->userdata('name');
-		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
+		$this->load->view("vouchers/".$this->router->fetch_class()."_view",$data);
 	}
-	function voucherCreate(){
+	function purchaseCreate(){
 		$data['pageHeading'] = "Create Voucher";
+		$data['purchaseNo'] = $this->purchase_model->get_purchaseNo();
 		$data["name"] = $this->session->userdata('name');
-		$this->load->view($this->router->fetch_class()."/"."vouchers_create",$data);
-	}    
+		$this->load->view("vouchers/purchase_create",$data);
+	}
+	/////////////////////////////////////////////    
 	public function add_record(){
-		$usrData = array();
-		foreach($this->input->get() as $key => $val){
-			if($key != 'ID')
-				$usrData[$key] = $val;
-		}
-		$usrData["dateTimeCreated"] = date('Y-m-d H:i:s');
 
+		$Vdata = json_decode($this->input->get("model"));
+		$issueDateStr = null;
+		$deliveryDateStr = null;
+		$VoucherDescriptionStr = "";
+		if(isset($Vdata->issueDate)){
+			$issueDateStr = explode("/", (string)$Vdata->issueDate);
+			$issueDateStr = $issueDateStr[2] . "/" . $issueDateStr[1] ."/" . $issueDateStr[0];
+		}
+		if(isset($Vdata->deliveryDate)){
+			$deliveryDateStr = explode("/", (string)$Vdata->deliveryDate);
+			$deliveryDateStr = $deliveryDateStr[2] . "/" . $deliveryDateStr[1] ."/" . $deliveryDateStr[0];
+		}
+		if(isset($Vdata->VoucherDescription)){
+			$VoucherDescriptionStr = $Vdata->VoucherDescription;
+		}
+
+		$data['dateIssue'] = $issueDateStr;
+		$data['dateDelivery'] = $deliveryDateStr;
+		$data["dateTimeCreated"] = date('Y-m-d H:i:s');
+		$data['referenceNo'] = $Vdata->referenceNo;
+		$data['usrID'] = $Vdata->supplier->id;
+		$data['typID'] = 2;
+		$data['descrip'] = $VoucherDescriptionStr;
+		$data['discount'] = $Vdata->discount;
+		$data['discountType'] = $Vdata->discountType;
+		$data['usrID_usr'] = $this->session->userdata('usrID');
+		$data['purchaseNo'] = $Vdata->purchaseNo;
+
+		
+		// echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $lineStr));
+		// die();
+		
 		$this->load->model($this->router->fetch_class()."_model");
-		$result = $this->Vouchers_model->add_record_with_data('tbl_'.$this->router->fetch_class(), $usrData);
+		$result = $this->purchase_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $result));
 		}else{
@@ -109,7 +137,7 @@ class Vouchers extends CI_Controller{
 	//////////////     Helping functions     ///
 	///////////////////////////////////////////
 	public function getProducts(){
-		$res = $this->Vouchers_model->getProducts($this->input->get("Term"));
+		$res = $this->purchase_model->getProducts($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else
@@ -117,7 +145,7 @@ class Vouchers extends CI_Controller{
 	}
 
 	public function getSuppliers(){
-		$res = $this->Vouchers_model->getSuppliers($this->input->get("Term"));
+		$res = $this->purchase_model->getSuppliers($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else
@@ -125,7 +153,7 @@ class Vouchers extends CI_Controller{
 	}
 	///////////////
 	public function ko(){
-		$data['row_data'] = $this->Vouchers_model->get_records();
+		$data['row_data'] = $this->purchase_model->get_records();
 		$this->load->view("vouchers/koFunctions",$data);
 	}
 }

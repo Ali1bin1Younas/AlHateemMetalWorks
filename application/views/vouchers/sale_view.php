@@ -27,7 +27,7 @@
                 <div class="box-body">
                   <div class="row">
                   <div class="col-lg-12 text-right form-group">
-                  <a class="btn btn-primary pad"  href="voucherCreate"><i class="fa fa-plus" aria-hidden="true"></i>Create voucher</a>
+                  <a class="btn btn-primary pad"  href="sale/saleCreate"><i class="fa fa-plus" aria-hidden="true"></i>New Sale Invoice</a>
                   </div>
                   </div>
                     <div class="table-responsive">

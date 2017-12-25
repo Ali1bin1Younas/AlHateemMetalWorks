@@ -1,24 +1,33 @@
 <?Php
-class vouchers_model extends CI_Model{
+class sale_model extends CI_Model{
 
     function get_records(){
-        $qry = "SELECT tbl_voucher.*,ifNull(tbl_voucher.saleNo,tbl_voucher.purchaseNo) as voucherNo , tbl_users.name as usrName, tbl_voucherType.name as typName FROM  `tbl_voucher` ".
-            " inner join tbl_users on tbl_users.ID = tbl_voucher.usrID ".
-            " inner join tbl_voucherType on tbl_voucherType.ID = tbl_voucher.typID ".
-            " where tbl_voucher.deleted = 0";
+        $qry = "SELECT tbl_vouchers.*, ifNull(tbl_vouchers.saleNo,1) as voucherNo,".
+            " tbl_users.name as usrName, tbl_vouchersType.name as typName ".
+            " FROM  `tbl_vouchers` ".
+            " inner join tbl_users on tbl_users.ID = tbl_vouchers.usrID ".
+            " inner join tbl_vouchersType on tbl_vouchersType.ID = tbl_vouchers.typID ".
+            " where tbl_vouchers.deleted = 0 and tbl_vouchersType.ID = 1";
         $record=$this->db->query($qry);
         return $record->result_array();
     }
-
     function get_record($id){
-        $qry = "SELECT tbl_voucher.*,ifNull(tbl_voucher.saleNo,tbl_voucher.purchaseNo) as voucherNo , tbl_users.name as usrName, tbl_voucherType.name as typName FROM  `tbl_voucher` ".
-            " inner join tbl_users on tbl_users.ID = tbl_voucher.usrID ".
-            " inner join tbl_voucherType on tbl_voucherType.ID = tbl_voucher.typID ".
-            " where tbl_voucher.deleted = 0 and tbl_voucher.ID = '".$id."'";
+        $qry = "SELECT tbl_vouchers.*,ifNull(tbl_vouchers.saleNo,1) as voucherNo,".
+            " tbl_users.name as usrName, tbl_vouchersType.name as typName ".
+            " FROM  `tbl_vouchers` ".
+            " inner join tbl_users on tbl_users.ID = tbl_vouchers.usrID ".
+            " inner join tbl_vouchersType on tbl_vouchersType.ID = tbl_vouchers.typID ".
+            " where tbl_vouchers.deleted = 0 and tbl_vouchersType.ID = 1 and tbl_vouchers.ID = '".$id."'";
         $record=$this->db->query($qry);
         return $record->result_array();
     }
 
+    function get_saleNo(){
+        $qry = "SELECT ((ifNull(Max(saleNo),1))+1) as saleNo from tbl_vouchers";
+        return $this->db->query($qry)->row()->saleNo;
+    }
+    
+    ///////////////////////////////////////////
     public function get_attributes(){
         try{
             $qry = " SELECT id,name from tbl_users where deleted = 0 and enable = 1";
@@ -50,19 +59,24 @@ class vouchers_model extends CI_Model{
         }
     }
 
-    public function add_record_with_data($tbl, $data){
+    public function add_record_with_data($tbl, $data, $LinesArr){
         $this->db->trans_start();
         $this->db->insert($tbl,$data);
-        $usrID = $this->db->insert_id();
+        $VID = $this->db->insert_id();
+        $LinesStr = '';
+		foreach($LinesArr as $Line){
+			$LinesStr = ' Insert Into tbl_vouchersDetail (vID,prdID,qty,price,discount) '.
+					   ' Values('.$VID.','.$Line->Item->id.','.$Line->qty.','.$Line->AmountAsNumber.','.$Line->discountAmount.');';	
+                       $this->db->query($LinesStr);
+                    }
+        // $this->db->query("Insert Into tbl_Accounts (code,tblID) values('1','1')");
+        // $accID = $this->db->insert_id();
 
-        $this->db->query("Insert Into tbl_Accounts (code,tblID) values('1','1')");
-        $accID = $this->db->insert_id();
-
-        $this->db->query("Insert Into tbl_Accounts_users (accID,usrID) values('".$accID."','".$usrID."')");
+        // $this->db->query("Insert Into tbl_Accounts_users (accID,usrID) values('".$accID."','".$usrID."')");
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === TRUE)
-			return $this->get_record($usrID);
+			return $VID;
         else
             return false;
 	}
