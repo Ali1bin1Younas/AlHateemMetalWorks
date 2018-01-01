@@ -15,7 +15,7 @@ class sale extends CI_Controller{
 	}
 
 	function index(){
-		$data['pageHeading'] = $this->router->fetch_class();
+		$data['pageHeading'] = "Sales Invoice";
 		$data['row_data'] = $this->sale_model->get_records();
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view("vouchers/".$this->router->fetch_class()."_view",$data);
@@ -48,11 +48,12 @@ class sale extends CI_Controller{
 		$data['dateIssue'] = $issueDateStr;
 		$data['dateDelivery'] = $deliveryDateStr;
 		$data["dateTimeCreated"] = date('Y-m-d H:i:s');
-		$data['referenceNo'] = $Vdata->referenceNo;
-		$data['usrID'] = $Vdata->supplier->id;
-		$data['typID'] = 2;
-		$data['descrip'] = $VoucherDescriptionStr;
-		$data['discount'] = $Vdata->discount;
+		$data['usrID'] = $Vdata->customer->id;
+		$data['typID'] = 1;
+		if($Vdata->discount){
+			$data['descrip'] = $VoucherDescriptionStr;
+			$data['discount'] = $Vdata->discount;
+		}
 		$data['discountType'] = $Vdata->discountType;
 		$data['usrID_usr'] = $this->session->userdata('usrID');
 		$data['saleNo'] = $Vdata->saleNo;
@@ -144,8 +145,8 @@ class sale extends CI_Controller{
 			echo json_encode(array('results' => $res));
 	}
 
-	public function getSuppliers(){
-		$res = $this->sale_model->getSuppliers($this->input->get("Term"));
+	public function getCustomers(){
+		$res = $this->sale_model->getCustomers($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else

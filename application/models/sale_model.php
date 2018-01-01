@@ -23,7 +23,7 @@ class sale_model extends CI_Model{
     }
 
     function get_saleNo(){
-        $qry = "SELECT ((ifNull(Max(saleNo),1))+1) as saleNo from tbl_vouchers";
+        $qry = "SELECT ((ifNull(Max(saleNo),0))+1) as saleNo from tbl_vouchers";
         return $this->db->query($qry)->row()->saleNo;
     }
     
@@ -48,11 +48,11 @@ class sale_model extends CI_Model{
         }
     }
 
-    public function getSuppliers($term){
+    public function getCustomers($term){
         try{
             $nameClause = "";
             if($term != ""){$nameClause = "and name LIKE '%".$term."%'";}
-            $qry = " SELECT id,name as text from tbl_users where deleted = 0 and enable = 1 and typID = 4 " . $nameClause;
+            $qry = " SELECT id,name as text from tbl_users where deleted = 0 and enable = 1 and typID = 3 " . $nameClause;
             return $this->db->query($qry)->result_array();
         }catch(Exception $e){
             return false;
@@ -65,8 +65,11 @@ class sale_model extends CI_Model{
         $VID = $this->db->insert_id();
         $LinesStr = '';
 		foreach($LinesArr as $Line){
+            $discountAmount = 0;
+            if(isset($Line->discountAmount))
+                $discountAmount = $Line->discountAmount;
 			$LinesStr = ' Insert Into tbl_vouchersDetail (vID,prdID,qty,price,discount) '.
-					   ' Values('.$VID.','.$Line->Item->id.','.$Line->qty.','.$Line->AmountAsNumber.','.$Line->discountAmount.');';	
+					   ' Values('.$VID.','.$Line->Item->id.','.$Line->qty.','.$Line->AmountAsNumber.','.$discountAmount.');';	
                        $this->db->query($LinesStr);
                     }
         // $this->db->query("Insert Into tbl_Accounts (code,tblID) values('1','1')");
