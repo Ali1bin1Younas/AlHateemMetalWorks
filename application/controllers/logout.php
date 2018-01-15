@@ -9,8 +9,7 @@ class logout extends CI_Controller {
 	}
 	public function index()
 	{
-		//echo base_url().'login';exit;
-		
+		//echo base_url().'login';exit;	
 		$this->session->unset_userdata('logged_in');
 		$this->session->unset_userdata('usrID');
 		redirect(base_url().'login');
