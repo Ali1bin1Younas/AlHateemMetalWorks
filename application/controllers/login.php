@@ -7,10 +7,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	{
 		parent::__construct();		
 		$this->load->library('login_lib');
-		$this->load->model('login_model');
+		$this->load->model('Login_model');
 		
 		if($this->session->userdata('logged_in') && $this->session->userdata('usrTypID')==0){	
-			redirect(base_url().'dashboard/');
+			redirect(base_url().'Dashboard/');
 		}
 	}
 	public function index()
@@ -50,21 +50,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			if($this->login_lib->validate_login($username, $password))
 			{ 
 				if( $this->session->userdata('usrTypID')==0) {
-						redirect(base_url().'dashboard/');
+						redirect(base_url().'Dashboard/');
 				}
 			}
 			else
 			{
 				$this->session->set_flashdata('usrName',$username);
 				$this->session->set_flashdata('login_error','Incorrect Username or Password');
-				redirect(base_url(). login);
+				redirect(base_url().'Login');
 			}
 		}
 	}
 	public function update_pass(){
 		$user_id=$this->session->userdata('user_id');
 		$password=$this->input->post('password');
-		$update_pass=$this->login_model->update_pass($user_id,$password );
+		$update_pass=$this->Login_model->update_pass($user_id,$password );
 		if($update_pass){
 			redirect(base_url().$this->config->item('certificate_path').'manage_certificate');
 		}else{

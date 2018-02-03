@@ -2,17 +2,17 @@
 class purchase_model extends CI_Model{
 
     function get_records(){
-        $qry = "SELECT tbl_vouchers.*,ifNull(tbl_vouchers.saleNo,tbl_vouchers.purchaseNo) as voucherNo , tbl_users.name as usrName, tbl_vouchersType.name as typName FROM  `tbl_vouchers` ".
+        $qry = "SELECT tbl_vouchers.*,ifNull(tbl_vouchers.saleNo,tbl_vouchers.purchaseNo) as voucherNo , tbl_users.name as usrName, tbl_voucherstype.name as typName FROM  `tbl_vouchers` ".
             " inner join tbl_users on tbl_users.ID = tbl_vouchers.usrID ".
-            " inner join tbl_vouchersType on tbl_vouchersType.ID = tbl_vouchers.typID ".
+            " inner join tbl_voucherstype on tbl_voucherstype.ID = tbl_vouchers.typID ".
             " where tbl_vouchers.deleted = 0";
         $record=$this->db->query($qry);
         return $record->result_array();
     }
     function get_record($id){
-        $qry = "SELECT tbl_vouchers.*,ifNull(tbl_vouchers.saleNo,tbl_vouchers.purchaseNo) as voucherNo , tbl_users.name as usrName, tbl_vouchersType.name as typName FROM  `tbl_vouchers` ".
+        $qry = "SELECT tbl_vouchers.*,ifNull(tbl_vouchers.saleNo,tbl_vouchers.purchaseNo) as voucherNo , tbl_users.name as usrName, tbl_voucherstype.name as typName FROM  `tbl_vouchers` ".
             " inner join tbl_users on tbl_users.ID = tbl_vouchers.usrID ".
-            " inner join tbl_vouchersType on tbl_vouchersType.ID = tbl_vouchers.typID ".
+            " inner join tbl_voucherstype on tbl_voucherstype.ID = tbl_vouchers.typID ".
             " where tbl_vouchers.deleted = 0 and tbl_vouchers.ID = '".$id."'";
         $record=$this->db->query($qry);
         return $record->result_array();

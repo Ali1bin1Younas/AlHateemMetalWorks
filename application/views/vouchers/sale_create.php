@@ -21,10 +21,10 @@
   <div class="panel panel-default" style="margin-top:10px;">
     <div class="panel-heading">
       <span class="header">
-        <h1>
-        <img style="width:50px; cursor:pointer;" onclick="window.history.back();" src="<?php echo base_url(); ?>Assets/img/custom/if_arrow-left.png"/>
+        <h3>
+        <img style="width:30px; cursor:pointer;" onclick="window.history.back();" src="<?php echo base_url(); ?>Assets/img/custom/if_arrow-left.png"/>
           <?php echo $pageHeading; ?>
-        </h1>
+        </h3>
       </span>
     </div>
     <div class="panel-body">
@@ -91,6 +91,8 @@
                             <th style="text-align: left"><label>Description</label></th>
                             <th style="text-align: center"><label>Qty</label></th>
                             <th style="text-align: center"><label>Unit price</label></th>
+                            <th style="text-align: center"><label>Builty No</label></th>
+                            <th style="text-align: center"><label>Cargo</label></th>
                             <th style="text-align: center; display: none;" data-bind="visible: $root.discount()"><label>Discount</label></th>
                             <th style="text-align: center"><label>Amount</label></th>
                           </tr>
@@ -98,17 +100,17 @@
                         <tbody>
                           <tr>
                             <td class="pull-left">
-                            </td><td></td><td></td><td></td>
+                            </td><td></td><td></td><td></td><td></td><td></td>
                             <td data-bind="visible: $root.discount()" style="display: none;"></td>
                             <td>
                               <div class="input-group" style="margin-bottom: 0px">
-                                <input class="form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; font-weight: bold" readonly="readonly" type="text" data-bind="value: function() { var total = 0; for (i = 0; i < $root.Lines().length; i++) { total += $root.Lines()[i].LineTotal(); } return Globalize.format(total, 'n'+total.getDecimals()); }()">
+                                <input data-bind="value: function() { var total = 0; for (i = 0; i < $root.Lines().length; i++) { total += $root.Lines()[i].LineTotal(); } return Globalize.format(total, 'n'+total.getDecimals()); }()" class="form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; font-weight: bold" readonly="readonly" type="text">
                                 <span class="input-group-addon input-sm" style="color: #999; text-shadow: 1px 1px 0px #fff">PKR</span>
                               </div>
                             </td>
                           </tr>
                         </tbody>
-                        <tbody class="ko_container ui-sortable" data-bind="sortable: { data: Lines, options: { handle: '.sortableHandle', cursor: 'move' } }">
+                        <tbody data-bind="sortable: { data: Lines, options: { handle: '.sortableHandle', cursor: 'move' } }" class="ko_container ui-sortable">
                           <tr data-select2height="46">
                             <td style="vertical-align: top; min-width: 150px">
                               <div class="controls select-picker-item">
@@ -116,29 +118,35 @@
                               </div>
                             </td>
                             <td style="vertical-align: top">
-                              <textarea class="form-control input-sm autosize" style="height: 48px; width: 300px; margin-bottom: 0px; resize: none; overflow: hidden; overflow-wrap: break-word;" data-bind="value: description" spellcheck="true"></textarea>
+                              <textarea data-bind="value: description" spellcheck="true" class="form-control input-sm autosize" style="height: 48px; width: 300px; margin-bottom: 0px; resize: none; overflow: hidden; overflow-wrap: break-word;" ></textarea>
                             </td>
                             <td style="vertical-align: top">
-                              <input class="regular form-control input-sm" style="width: 80px; text-align: center; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" data-bind="textInput: qty" type="text">
+                              <input data-bind="textInput: qty" type="text" class="regular form-control input-sm" style="width: 80px; text-align: center; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" >
                             </td>
                             <td style="vertical-align: top">
-                              <input class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" data-bind="textInput: amount" type="text">
+                              <input data-bind="textInput: amount" type="text" class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" >
+                            </td>
+                            <td style="vertical-align: top">
+                              <input data-bind="textInput: builtyNo" type="text" class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" >
+                            </td>
+                            <td style="vertical-align: top">
+                              <input data-bind="textInput: cargoName" type="text" class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" >
                             </td>
                             <td style="vertical-align: top; display: none;" data-bind="visible: $root.discount()">
                               <div class="input-group" style="margin-bottom: 0px" data-bind="visible: $root.discountType() == 'Percentage'">
-                                <input class="regular form-control input-sm" style="width: 50px; text-align: center; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" placeholder="0" data-bind="textInput: discount" type="text">
+                                <input data-bind="textInput: discount" placeholder="0" type="text" class="regular form-control input-sm" style="width: 50px; text-align: center; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" >
                                 <span class="input-group-addon" style="vertical-align: top; padding-left: 5px; padding-right: 5px">%</span>
                               </div>
-                              <input class="regular form-control input-sm" style="width: 80px; text-align: right; margin-bottom: 0px; line-height: 14px; display: none; height: 48px; padding-bottom: 24px;" placeholder="0" data-bind="textInput: discountAmount, visible: $root.discountType() == 'ExactAmount'" type="text">
+                              <input data-bind="textInput: discountAmount, visible: $root.discountType() == 'ExactAmount'" placeholder="0" type="text"class="regular form-control input-sm" style="width: 80px; text-align: right; margin-bottom: 0px; line-height: 14px; display: none; height: 48px; padding-bottom: 24px;" >
                             </td>
                             <td style="vertical-align: top">
                               <div class="input-group" style="margin-bottom: 0px">
-                                <input class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" readonly="readonly" data-bind="value: FormattedLineTotal" type="text">
+                                <input data-bind="value: FormattedLineTotal" type="text" class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" readonly="readonly" >
                                 <span class="input-group-addon input-sm" style="vertical-align: top; line-height: 14px; color: #999; text-shadow: 1px 1px 0px #fff">PKR</span>
                                 </div>
                               </td>
                               <td style="vertical-align: top; padding-left: 5px; padding-top: 5px">
-                                <a href="#" class="close" style="font-size: 24px; float: none; display: none;" data-bind="click: $root.RemoveLines, visible: $root.Lines().length > 1">×</a>
+                                <a data-bind="click: $root.RemoveLines, visible: $root.Lines().length > 1" href="#" class="close" style="font-size: 24px; float: none; display: none;">×</a>
                               </td>
                               <td style="vertical-align: top; padding-left: 10px" colspan="2">
                               </td>
@@ -160,7 +168,7 @@
                                 <li><a href="#" data-bind="click: Add20Lines">Add line (20×)</a></li>
                               </ul>
                             </div>
-                            </td><td></td><td></td><td></td>
+                            </td><td></td><td></td><td></td><td></td><td></td>
                             <td data-bind="visible: $root.discount()" style="display: none;"></td>
                             <td>
                               <div class="input-group" style="margin-bottom: 0px">
@@ -209,14 +217,14 @@
 <?php  $this->load->view('common/footer');  ?>
 
 <!--Page Scripts -->
-<script src="<?php echo base_url(); ?>assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/bootstrap-select/bootstrap-select.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/select2/select2.full.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/globalize.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/custum/sale_create.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/bootstrap-select/bootstrap-select.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/globalize.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/custum/sale_create.js"></script>
 <!-- Page-Level Scripts -->
 </body>
 </html>

@@ -54,7 +54,7 @@ function btn_update_detail(e, ID){
 }
 function update_detail(e, detail){
     $.ajax({
-        url: 'products/update_detail',
+        url: 'Products/update_detail',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -87,7 +87,7 @@ function onSuccess_update_detail(e){
 function get_attributes(e){
     swal.showLoading();
     $.ajax({
-        url: 'products/get_attributes',
+        url: 'Products/get_attributes',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -173,7 +173,7 @@ function add_pre(){
 }
 function add_record(detail){
     $.ajax({
-        url: 'products/add_record',
+        url: 'Products/add_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -226,7 +226,7 @@ function btn_disable(e, ID){
 }
 function disable_record(e, enable, ID){
     $.ajax({
-        url: 'products/disable_record',
+        url: 'Products/disable_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -287,7 +287,7 @@ function btn_delete(e, ID){
 }
 function delete_record(e, deleted, ID){
     $.ajax({
-        url: 'products/delete_record',
+        url: 'Products/delete_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',

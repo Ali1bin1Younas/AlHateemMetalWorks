@@ -29,7 +29,7 @@ class Products extends CI_Controller{
 		}
 		$rowData["dateTimeCreated"] = date('Y-m-d H:i:s');
 
-		$result = $this->products_model->add_record_with_data('tbl_'.$this->router->fetch_class(), $rowData);
+		$result = $this->Products_model->add_record_with_data('tbl_'.$this->router->fetch_class(), $rowData);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $result));
 		}else{
@@ -45,7 +45,7 @@ class Products extends CI_Controller{
 				$rowData[$key] = $val;
 		}
 		if($ID != "" && $ID != "0"){
-			$res = $this->products_model->update_record_with_data('tbl_'.$this->router->fetch_class(),'ID',$ID, $rowData);
+			$res = $this->Products_model->update_record_with_data('tbl_'.$this->router->fetch_class(),'ID',$ID, $rowData);
 			if($res['status'] == 200){
 				echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $res['res']));
 			}else{
@@ -105,7 +105,7 @@ class Products extends CI_Controller{
 	//////////////     Helping functions     ///
 	///////////////////////////////////////////
 	public function get_attributes(){
-		$res = $this->products_model->get_attributes();
+		$res = $this->Products_model->get_attributes();
 		if($res)
 			echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $res));
 		else

@@ -63,17 +63,20 @@
                     <li>
                         <a href="<?php echo base_url(); ?>"><i class="fa fa-user"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
-                    <li>
-                        <a href="<?php echo base_url(); ?>users"><i class="fa fa-user"></i> <span class="nav-label">Users</span></a>
-                    </li>
+					<li>
+                    <a href="#"><i class="fa fa-user"></i> <span class="nav-label">Users</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                        <li><a href="<?php echo base_url(); ?>users/employee"><i class="fa fa-user"></i> <span class="nav-label">Employee</span></span></a></li>
+                        <li><a href="<?php echo base_url(); ?>users/customer"><i class="fa fa-user"></i> <span class="nav-label">Customer</span></span></a></li>
+                        <li><a href="<?php echo base_url(); ?>users/vendor"><i class="fa fa-user"></i> <span class="nav-label">Vendor</span></span></a></li>
+                        <li><a href="<?php echo base_url(); ?>users/misc"><i class="fa fa-user"></i> <span class="nav-label">Misc.</span></span></a></li>
+                    </ul>
+					</li>
                     <li>
                         <a href="<?php echo base_url(); ?>Products"><i class="fa fa-user"></i> <span class="nav-label">Product</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>purchase"><i class="fa fa-user"></i> <span class="nav-label">Purchase Invoices</span></a>
-                    </li>
-                    <li>
-                        <a href="<?php echo base_url(); ?>sale"><i class="fa fa-user"></i> <span class="nav-label">Sale Invoices</span></a>
+                        <a href="<?php echo base_url(); ?>Vouchers"><i class="fa fa-user"></i> <span class="nav-label">Voucher</span></a>
                     </li>
                 </ul>
             </div>
@@ -94,7 +97,7 @@
                     <li>
                         <span class="m-r-sm text-muted welcome-message">Welcome <b><?php echo $this->session->userdata('usrName'); ?></b>.</span>
                     </li>
-                    <li class="dropdown">
+                   <!-- <li class="dropdown">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                             <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
                         </a>
@@ -135,7 +138,7 @@
                                 </div>
                             </li>
                         </ul>
-                    </li>
+                    </li>-->
 
                     <li>
                         <a href="<?php echo base_url(); ?>logout">

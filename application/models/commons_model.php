@@ -1,5 +1,5 @@
 <?php 
-class commons_model extends CI_Model
+class Commons_model extends CI_Model
 {
 	/////////////////////////////////////////////////////
 	//////////////     update methods     //////////////

@@ -4,10 +4,10 @@ class Products_model extends CI_Model{
     ////////////////     Get Methods     ///////////
     ///////////////////////////////////////////////
     function get_records(){
-        $qry = "SELECT tbl_products.*,tbl_UOMs.name as UOMName,tbl_catagories.name as catName, ".
+        $qry = "SELECT tbl_products.*,tbl_uoms.name as UOMName,tbl_catagories.name as catName, ".
         " tbl_types.name as typName ".
         " FROM `tbl_products` ".
-        " inner join tbl_UOMs on tbl_products.UOMID = tbl_UOMs.ID and tbl_UOMs.enable = 1 and tbl_UOMs.deleted = 0 ".
+        " inner join tbl_uoms on tbl_products.UOMID = tbl_uoms.ID and tbl_uoms.enable = 1 and tbl_uoms.deleted = 0 ".
         " inner join tbl_catagories on tbl_products.catID = tbl_catagories.ID and tbl_catagories.enable = 1 and tbl_catagories.deleted = 0 ".
         " inner join tbl_types on tbl_products.typID = tbl_types.ID and tbl_types.enable = 1 and tbl_types.deleted = 0 ".
         " where tbl_products.Deleted = 0";
@@ -16,10 +16,10 @@ class Products_model extends CI_Model{
     }
 
     public function get_record($id){   
-        $qry = "SELECT tbl_products.*,tbl_UOMs.name as UOMName,tbl_catagories.name as catName, ".
+        $qry = "SELECT tbl_products.*,tbl_uoms.name as UOMName,tbl_catagories.name as catName, ".
         " tbl_types.name as typName ".
         " FROM `tbl_products` ".
-        " inner join tbl_UOMs on tbl_products.UOMID = tbl_UOMs.ID and tbl_UOMs.enable = 1 and tbl_UOMs.deleted = 0 ".
+        " inner join tbl_uoms on tbl_products.UOMID = tbl_uoms.ID and tbl_uoms.enable = 1 and tbl_uoms.deleted = 0 ".
         " inner join tbl_catagories on tbl_products.catID = tbl_catagories.ID and tbl_catagories.enable = 1 and tbl_catagories.deleted = 0 ".
         " inner join tbl_types on tbl_products.typID = tbl_types.ID and tbl_types.enable = 1 and tbl_types.deleted = 0 ".
         "where tbl_products.Deleted = 0 and tbl_Products.ID ='".$id."'";
@@ -29,7 +29,7 @@ class Products_model extends CI_Model{
 
     public function get_attributes(){
         try{
-            $qryUOM = " SELECT id,name from tbl_UOMs where deleted = 0 and enable = 1;";
+            $qryUOM = " SELECT id,name from tbl_uoms where deleted = 0 and enable = 1;";
             $qryCat = " SELECT id,name from tbl_Catagories where deleted = 0 and enable = 1;";
             $qryTyp = " SELECT id,name from tbl_types where deleted = 0 and enable = 1;";
             return array('UOM' => $this->db->query($qryUOM)->result_array(), 

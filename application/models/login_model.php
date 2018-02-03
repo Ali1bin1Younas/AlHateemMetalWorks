@@ -24,9 +24,9 @@ class Login_model extends CI_Model
 	
 	public function user_edit($user_id){	
 		echo $user_id;
-		$data['original_form_values']=1;
-		$data['ID']=$user_id;
-		$data['user_data']=$this->commons_model->single_record('tbl_users','ID',$user_id);
+		$data['original_form_values'] = 1;
+		$data['ID'] = $user_id;
+		$data['user_data']=$this->Commons_model->single_record('tbl_users','ID',$user_id);
 		$this->load->view('user_edit',$data);
 	}
 	public function update_pass($user_id,$password){

@@ -92,6 +92,8 @@ function transactionLinesModel(){
     self.discountAmount = ko.observable();
     self.qty = ko.observable();
     self.amount = ko.observable();
+    self.builtyNo = ko.observable();
+    self.cargoName = ko.observable();
     self.description = ko.observable();
 
     self.Item.subscribe(function(data) { 
@@ -145,6 +147,7 @@ function ReservationsViewModel() {
     self.description = ko.observable();
     self.discount = ko.observable(); 
     self.discountType = ko.observable();
+    self.GradeTotal = ko.observable();
     self.qty = ko.observable();
     self.amount = ko.observable();
     self.discountAmount = ko.observable();
@@ -162,6 +165,11 @@ function ReservationsViewModel() {
             self.Lines()[i].discount(null); 
             self.Lines()[i].discountAmount(null); 
         }; 
+    });
+    self.GradeTotal = ko.computed(function(data) { 
+        var total = 0; 
+        for (i = 0; i < self.Lines().length; i++) { total += self.Lines()[i].LineTotal(); } 
+        return Globalize.format(total, 'n'+total.getDecimals()); 
     });
     self.AddLines = function() {self.Lines.push(new transactionLinesModel());};
     self.Add5Lines = function() { 

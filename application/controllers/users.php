@@ -13,9 +13,27 @@ class Users extends CI_Controller{
 			redirect(base_url().'login');
 		} 
 	}
-	function index(){
+	function employee(){
 		$data['pageHeading'] = $this->router->fetch_class();
-		$data['row_data'] = $this->users_model->get_records();
+		$data['row_data'] = $this->users_model->get_user_records_by_its_type(2);
+		$data["name"] = $this->session->userdata('name');
+		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
+	}
+	function customer(){
+		$data['pageHeading'] = $this->router->fetch_class();
+		$data['row_data'] = $this->users_model->get_user_records_by_its_type(3);
+		$data["name"] = $this->session->userdata('name');
+		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
+	}
+	function vendor(){
+		$data['pageHeading'] = $this->router->fetch_class();
+		$data['row_data'] = $this->users_model->get_user_records_by_its_type(4);
+		$data["name"] = $this->session->userdata('name');
+		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
+	}
+	function Misc(){
+		$data['pageHeading'] = $this->router->fetch_class();
+		$data['row_data'] = $this->users_model->get_user_records_by_its_type(5);
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
@@ -126,12 +144,13 @@ class Users extends CI_Controller{
 	/////////////////////////////////////////////
 	//////////////     Helping functions     ///
 	///////////////////////////////////////////
-	public function get_attributes(){
+	/*public function get_attributes(){
 		$res = $this->Users_model->get_attributes();
+		print_r($res);exit;
 		if($res)
 			echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $res));
 		else
 			echo json_encode(array('status' => '201', 'msg' => 'Unable to update Product detail!.', 'result' => $res));
-	}
+	}*/
 }
 ?>

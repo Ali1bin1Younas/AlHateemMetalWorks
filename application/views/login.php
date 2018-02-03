@@ -14,8 +14,8 @@
     <link href="<?php echo base_url(); ?>Assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>Assets/font-awesome/css/font-awesome.css" rel="stylesheet">
 
-    <link href="<?php echo base_url(); ?>assets/css/animate.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>assets/css/style.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>Assets/css/animate.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>Assets/css/style.css" rel="stylesheet">
 </head>
 <body class="hold-transition login-page">
   <div class="middle-box text-center loginscreen animated fadeInDown">
@@ -41,8 +41,8 @@
     </div>
 
 <!-- Mainly scripts -->
-    <script src="<?php echo base_url(); ?>assets/js/jquery-2.1.1.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
+    <script src="<?php echo base_url(); ?>Assets/js/jquery-2.1.1.js"></script>
+    <script src="<?php echo base_url(); ?>Assets/js/bootstrap.min.js"></script>
 <script>
   $(function () {
     $('input').iCheck({

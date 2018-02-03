@@ -1,10 +1,10 @@
 <?php
 
-class purchase extends CI_Controller{
+class Purchase extends CI_Controller{
 
 	function __construct(){
 		parent::__construct();	
-	    $this->load->model($this->router->fetch_class()."_model");
+	    $this->load->model("Purchase_model");
      	$this->load->model('commons_model');	
  		$this->load->library('commons_lib');
 	
@@ -16,13 +16,13 @@ class purchase extends CI_Controller{
 
 	function index(){
 		$data['pageHeading'] = $this->router->fetch_class();
-		$data['row_data'] = $this->purchase_model->get_records();
+		$data['row_data'] = $this->Purchase_model->get_records();
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view("vouchers/".$this->router->fetch_class()."_view",$data);
 	}
 	function purchaseCreate(){
 		$data['pageHeading'] = "Create Voucher";
-		$data['purchaseNo'] = $this->purchase_model->get_purchaseNo();
+		$data['purchaseNo'] = $this->Purchase_model->get_purchaseNo();
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view("vouchers/purchase_create",$data);
 	}
@@ -62,7 +62,7 @@ class purchase extends CI_Controller{
 		// die();
 		
 		$this->load->model($this->router->fetch_class()."_model");
-		$result = $this->purchase_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines);
+		$result = $this->Purchase_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $result));
 		}else{
@@ -137,7 +137,7 @@ class purchase extends CI_Controller{
 	//////////////     Helping functions     ///
 	///////////////////////////////////////////
 	public function getProducts(){
-		$res = $this->purchase_model->getProducts($this->input->get("Term"));
+		$res = $this->Purchase_model->getProducts($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else
@@ -145,7 +145,7 @@ class purchase extends CI_Controller{
 	}
 
 	public function getSuppliers(){
-		$res = $this->purchase_model->getSuppliers($this->input->get("Term"));
+		$res = $this->Purchase_model->getSuppliers($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else

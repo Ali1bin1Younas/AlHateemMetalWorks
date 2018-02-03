@@ -1,10 +1,10 @@
 <?php
 
-class sale extends CI_Controller{
+class Sale extends CI_Controller{
 
 	function __construct(){
 		parent::__construct();	
-	    $this->load->model($this->router->fetch_class()."_model");
+	    $this->load->model("Sale_model");
      	$this->load->model('commons_model');	
  		$this->load->library('commons_lib');
 	
@@ -16,19 +16,18 @@ class sale extends CI_Controller{
 
 	function index(){
 		$data['pageHeading'] = "Sales Invoice";
-		$data['row_data'] = $this->sale_model->get_records();
+		$data['row_data'] = $this->Sale_model->get_records();
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view("vouchers/".$this->router->fetch_class()."_view",$data);
 	}
-	function saleCreate(){
+	function sale_create(){
 		$data['pageHeading'] = "Create Voucher";
-		$data['saleNo'] = $this->sale_model->get_saleNo();
+		$data['saleNo'] = $this->Sale_model->get_saleNo();
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view("vouchers/sale_create",$data);
 	}
 	/////////////////////////////////////////////    
 	public function add_record(){
-
 		$Vdata = json_decode($this->input->get("model"));
 		$issueDateStr = null;
 		$deliveryDateStr = null;
@@ -57,13 +56,10 @@ class sale extends CI_Controller{
 		$data['discountType'] = $Vdata->discountType;
 		$data['usrID_usr'] = $this->session->userdata('usrID');
 		$data['saleNo'] = $Vdata->saleNo;
+		$data['gradeTotal'] = $Vdata->GradeTotal;
 
-		
-		// echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $lineStr));
-		// die();
-		
 		$this->load->model($this->router->fetch_class()."_model");
-		$result = $this->sale_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines);
+		$result = $this->Sale_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $result));
 		}else{
@@ -131,14 +127,14 @@ class sale extends CI_Controller{
 	///////////////////////////////////////////
 	public function get_view_create(){
 		$data['pageHeading'] = "Create ". $this->router->fetch_class();
-		$data['row_data'] = $this->vouchers_model->get_records("tbl_".$this->router->fetch_class());
+		$data['row_data'] = $this->Vouchers_model->get_records("tbl_".$this->router->fetch_class());
 		echo $this->load->view("vouchers/".$this->router->fetch_class()."_create", $data, true);
 	}
 	/////////////////////////////////////////////
 	//////////////     Helping functions     ///
 	///////////////////////////////////////////
 	public function getProducts(){
-		$res = $this->sale_model->getProducts($this->input->get("Term"));
+		$res = $this->Sale_model->getProducts($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else
@@ -146,7 +142,7 @@ class sale extends CI_Controller{
 	}
 
 	public function getCustomers(){
-		$res = $this->sale_model->getCustomers($this->input->get("Term"));
+		$res = $this->Sale_model->getCustomers($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else

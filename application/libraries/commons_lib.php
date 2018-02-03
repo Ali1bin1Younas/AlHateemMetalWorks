@@ -1,5 +1,5 @@
 <?php 
-class commons_lib {
+class Commons_lib {
 
 	function __construct()
 	{		

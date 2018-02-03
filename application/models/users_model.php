@@ -31,6 +31,14 @@ class Users_model extends CI_Model{
         return $query->row();		
 	}
 
+    function get_user_records_by_its_type($id){
+        $qry = "SELECT tbl_users.*, tbl_usersType.name as typName FROM  `tbl_users` ".
+            " inner join tbl_usersType on tbl_usersType.ID = tbl_users.typID ".
+            " where deleted = 0 and tbl_usersType.ID = $id";
+        $record=$this->db->query($qry);
+        return $record->result_array();
+    }
+    
     public function add_record_with_data($tbl, $data){
         $this->db->trans_start();
         $this->db->insert($tbl,$data);

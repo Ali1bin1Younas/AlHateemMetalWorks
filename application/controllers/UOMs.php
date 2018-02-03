@@ -90,7 +90,7 @@ class UOMs extends CI_Controller{
 	//////////////////////////////////////////////
 	public function get_view_main(){
 			$data['row_data'] = $this->UOMs_model->get_records();
-			echo $this->load->view("products/".$this->router->fetch_class()."_view", $data, true);
+			echo $this->load->view("Products/".$this->router->fetch_class()."_view", $data, true);
 	}
 	/////////////////////////////////////////////
 	//////////////     Helping functions     ///

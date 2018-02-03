@@ -13,12 +13,11 @@ class Dashboard extends CI_Controller {
 		if(!$this->session->userdata('logged_in'))
 		{
 			redirect(base_url().'login');
-			//$this->load->view('dashboard');
+			$this->load->view('dashboard');
 		}	
 	}
 	public function index()
 	{	
-		//	echo "asd";exit;
 		//$data["total_cust"]=$this->dashboard_model->total_cust();
 		//$data["total_file"]=$this->dashboard_model->total_file();
 		//$data["sold_file"]=$this->dashboard_model->sold_file();
