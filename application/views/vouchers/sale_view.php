@@ -27,7 +27,7 @@
                 <div class="box-body">
                   <div class="row">
                   <div class="col-lg-12 text-right form-group">
-                  <a class="btn btn-primary pad"  href="<?php echo base_url(); ?>sale/sale_create"><i class="fa fa-plus" aria-hidden="true"></i>New Sale Invoice</a>
+                  <a class="btn btn-primary pad"  href="<?php echo base_url(); ?>Sale/sale_create"><i class="fa fa-plus" aria-hidden="true"></i>New Sale Invoice</a>
                   </div>
                   </div>
                     <div class="table-responsive">
@@ -57,7 +57,7 @@
                             <td><?php echo $row['referenceNo'];?></td>
                             <td><?php echo $row['usrName'];?></td>
                             <td>
-                              <a title="Edit" class="btn btn-primary btn-icon" id="btnEdit" href="sale/sale_create/<?php echo $row['ID'];?>" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                              <a title="Edit" class="btn btn-primary btn-icon" onclick="edit_sale(<?php echo $row['ID'];?>);" id="btnEdit" href="#" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                               <?php if($row['deleted']){?>
                                 <a title="Retore" class="btn btn-primary btn-icon" id="btnRestore" onclick="btn_delete(this,<?php echo $row['ID'];?>);" data-id="0" href="javascript:void(0);" ><i class="fa fa-undo" aria-hidden="true"></i></a>
                                 </button>
@@ -81,6 +81,7 @@
     <!-- /.content -->
   </div>
  <!-- /.content-wrapper -->
+ <input id="callBackLoc" value="<?php echo base_url('sale');?>" type="hidden">
 <div>
 <?php  $this->load->view('common/footer');  ?>
 
@@ -121,7 +122,6 @@
         ]
     });
   });
-
 </script>
 </body>
 </html>

@@ -6,7 +6,8 @@ class Sale extends CI_Controller{
 		parent::__construct();	
 	    $this->load->model("Sale_model");
      	$this->load->model('commons_model');	
- 		$this->load->library('commons_lib');
+		$this->load->library('commons_lib');
+		$this->load->helper('url');
 	
 		if(!$this->session->userdata('logged_in'))
 		{
@@ -22,8 +23,21 @@ class Sale extends CI_Controller{
 	}
 	function sale_create(){
 		$data['pageHeading'] = "Create Voucher";
-		$data['saleNo'] = $this->Sale_model->get_saleNo();
 		$data["name"] = $this->session->userdata('name');
+
+		if(null != $this->session->userdata('VID')){
+			$data['saleNo'] = $this->session->userdata('VID');
+			$this->session->unset_userdata('VID');
+		}else{
+			$data['saleNo'] = $this->Sale_model->get_saleNo();
+		}
+		$this->load->view("vouchers/sale_create",$data);
+	}
+	function sale_create_edit(){
+		$data['pageHeading'] = "Create Voucher";
+		$data['saleNo'] = $this->session->userdata('VID');
+		$data["name"] = $this->session->userdata('name');
+		$data["id"] = $this->session->userdata('VID');
 		$this->load->view("vouchers/sale_create",$data);
 	}
 	/////////////////////////////////////////////    
@@ -147,6 +161,17 @@ class Sale extends CI_Controller{
 			echo json_encode(array('results' => $res));
 		else
 			echo json_encode(array('results' => $res));
+	}
+
+	public function set_edit_session(){
+		$this->ci =& get_instance();
+	
+			$array=array(
+			'VID'=>$this->input->get("id")
+			);
+		$this->ci->session->set_userdata($array);
+
+		echo json_encode(array('id' => $this->session->userdata('VID')));
 	}
 }
 ?>

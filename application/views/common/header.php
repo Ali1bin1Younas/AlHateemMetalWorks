@@ -76,7 +76,10 @@
                         <a href="<?php echo base_url(); ?>Products"><i class="fa fa-user"></i> <span class="nav-label">Product</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>Vouchers"><i class="fa fa-user"></i> <span class="nav-label">Voucher</span></a>
+                        <a href="<?php echo base_url(); ?>Sale"><i class="fa fa-user"></i> <span class="nav-label">Sale</span></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo base_url(); ?>Purchase"><i class="fa fa-user"></i> <span class="nav-label">Purchase</span></a>
                     </li>
                 </ul>
             </div>
