@@ -27,6 +27,7 @@ class Purchase extends CI_Controller{
 		$data['purchaseNo'] = $this->Purchase_model->get_purchaseNo();
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
+		$this->session->unset_userdata('VID');
 		$this->load->view("vouchers/purchase_create",$data);
 	}
 	function purchase_edit(){
