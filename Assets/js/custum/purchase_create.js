@@ -7,7 +7,7 @@ function onSuccess_add_record(viewModel, isNew){
     return function(res){
         try{
             if(res.status == 200){
-                swal("User Profile", "Voucher Created!", "success");
+                swal("Purchase", "Record updated!", "success");
                 if(isNew){
                     var d = new Date();
                     viewModel.issueDate(moment((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()).format('DD/MM/YYYY'));
@@ -21,12 +21,14 @@ function onSuccess_add_record(viewModel, isNew){
                     viewModel.AddLines();
                     viewModel.Lines()[0].description("");
                     viewModel.Lines()[0].amount("0");
+                }else{
+                    $(location).attr('href', $('#callBackLoc').val());
                 }
             }else{
-                $(location).attr('href', $('#callBackLoc').val());
+                swal("Purchase", "Unexpected error, please contact system administrator.", "error");
             }
         }catch(e){
-            swal("User Profile", e.message, "error");
+            swal("Purchase", e.message, "error");
         }
     }
 }

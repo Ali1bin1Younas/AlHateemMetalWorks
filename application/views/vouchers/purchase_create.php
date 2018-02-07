@@ -58,7 +58,7 @@
                               <label>Reference</label>
                               <div class="input-group" style="margin-bottom: 0px">
                                 <span class="input-group-addon">#</span>
-                                <input class="form-control input-sm" style="width: 80px; text-align: center" data-bind="textInput: referenceNo" type="text" readonly="readonly">
+                                <input class="form-control input-sm" style="width: 80px; text-align: center" data-bind="textInput: referenceNo" type="text">
                               </div>
                             </div>
                           </td>

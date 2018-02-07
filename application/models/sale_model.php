@@ -52,11 +52,10 @@ class sale_model extends CI_Model{
             $VID = $this->db->insert_id();
         }
         
-        $LinesStr = '';
-
         $this->db->where('VID', $VID);
         $this->db->delete('tbl_vouchersDetail');
 
+        $LinesStr = '';
 		foreach($LinesArr as $Line){
             $discountAmount = 0;
             $builtyNo = "";

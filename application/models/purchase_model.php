@@ -53,21 +53,24 @@ class purchase_model extends CI_Model{
             $VID = $this->db->insert_id();
         }
 
+        $this->db->where('VID', $VID);
+        $this->db->delete('tbl_vouchersDetail');
+
         $LinesStr = '';
 		foreach($LinesArr as $Line){
             $discountAmount = 0;
             $builtyNo = "";
             $cargoName = "";
 
-            if(isset($Line->discountAmount))
+            if(isset($Line->discountAmount) && $Line->discountAmount != '' && $Line->discountAmount != null)
                 $discountAmount = $Line->discountAmount;
             if(isset($Line->builtyNo))
                 $builtyNo = $Line->builtyNo;
             if(isset($Line->cargoName))
                 $cargoName = $Line->cargoName;
-                
+
 			$LinesStr = " Insert Into tbl_vouchersDetail (vID,prdID,qty,price,builtyNo,cargoName,discount) ".
-					   " Values(".$VID.",".$Line->Item->id.",".$Line->qty.",".$Line->AmountAsNumber.",'".$builtyNo."','".$cargoName."',".$Line->discountAmount.");";	
+					   " Values(".$VID.",".$Line->Item->id.",".$Line->qty.",".$Line->AmountAsNumber.",'".$builtyNo."','".$cargoName."',".$discountAmount.");";	
                        $this->db->query($LinesStr);
                     }
 
