@@ -27,7 +27,7 @@
                 <div class="box-body">
                   <div class="row">
                   <div class="col-lg-12 text-right form-group">
-                  <a class="btn btn-primary pad"  href="purchase/purchaseCreate"><i class="fa fa-plus" aria-hidden="true"></i>New Purchase Invoice</a>
+                  <a class="btn btn-primary pad"  href="<?php echo base_url(); ?>Purchase/purchase_create"><i class="fa fa-plus" aria-hidden="true"></i>New Purchase Invoice</a>
                   </div>
                   </div>
                     <div class="table-responsive">
@@ -57,7 +57,7 @@
                             <td><?php echo $row['referenceNo'];?></td>
                             <td><?php echo $row['usrName'];?></td>
                             <td>
-                              <a title="Edit" class="btn btn-primary btn-icon" id="btnEdit" onclick="btn_update_detail(this,<?php echo $row['ID'];?>);" href="javascript:void(0);" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                              <a title="Edit" class="btn btn-primary btn-icon" id="btnEdit" onclick="btn_edit(<?php echo $row['ID'];?>);" href="javascript:void(0);" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                               <?php if($row['deleted']){?>
                                 <a title="Retore" class="btn btn-primary btn-icon" id="btnRestore" onclick="btn_delete(this,<?php echo $row['ID'];?>);" data-id="0" href="javascript:void(0);" ><i class="fa fa-undo" aria-hidden="true"></i></a>
                                 </button>
@@ -81,6 +81,7 @@
     <!-- /.content -->
   </div>
  <!-- /.content-wrapper -->
+ <input id="callBackLoc" value="<?php echo base_url('Purchase');?>" type="hidden">
 <div>
 <?php  $this->load->view('common/footer');  ?>
 
@@ -93,7 +94,7 @@
 <script src="<?php echo base_url(); ?>assets/js/globalize.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/custum/vouchers_view.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/custum/purchase_view.js"></script>
 <!-- Page-Level Scripts -->
 <script>
   $(document).ready(function(){

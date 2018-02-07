@@ -7,7 +7,8 @@ class sale_model extends CI_Model{
             " FROM  `tbl_vouchers` ".
             " inner join tbl_users on tbl_users.ID = tbl_vouchers.usrID ".
             " inner join tbl_voucherstype on tbl_voucherstype.ID = tbl_vouchers.typID ".
-            " where tbl_vouchers.deleted = 0 and tbl_voucherstype.ID = 1";
+            " where tbl_vouchers.deleted = 0 and tbl_voucherstype.ID = 1 ".
+            " order by tbl_vouchers.id desc ";
         $record=$this->db->query($qry);
         return $record->result_array();
     }
@@ -21,13 +22,81 @@ class sale_model extends CI_Model{
         $record=$this->db->query($qry);
         return $record->result_array();
     }
+    public function get_invoice_detail($id){
+        $qry = "SELECT ifNull(tv.dateDelivery, '') as dateDelivery,tv.dateIssue,tv.discount,tv.discountType,ifNull(tv.saleNo,1) as voucherNo, tv.descrip, ".
+            " tu.id as usrID, tu.name as usrName".
+            " FROM  `tbl_vouchers` tv".
+            " inner join tbl_users tu on tu.ID = tv.usrID ".
+            " where tv.typID = 1 and tv.ID = '".$id."'";
+        $rec = $this->db->query($qry)->result_array();
+        $qry = "SELECT tvd.id,tp.ID as prdID,tp.Name as prdName,tp.descrip as prdDescrip,tvd.qty,tvd.price as amount, ".
+            " tvd.builtyNo,tvd.cargoName,tvd.discount as discountAmount ".
+            " FROM  `tbl_vouchersdetail` tvd ".
+            " inner join tbl_products tp on tp.ID = tvd.prdID ".
+            " where tvd.VID = '".$id."'";
+        $rec_detail = $this->db->query($qry)->result_array();
+        return json_encode(array('res' => $rec, 'res_detail' => $rec_detail));
+    }
+    ////////////////////////////////////////////
+    //////////////     CRUD Methods     ///////
+    //////////////////////////////////////////
+    public function add_record_with_data($tbl, $data, $LinesArr, $idEdit, $ID){
+        $this->db->trans_start();
+        $VID = $ID;
 
-    function get_saleNo(){
-        $qry = "SELECT ((ifNull(Max(saleNo),0))+1) as saleNo from tbl_vouchers";
-        return $this->db->query($qry)->row()->saleNo;
+        if($idEdit == "1"){
+            $this->db->where('id', $VID);
+            $this->db->update($tbl, $data);
+        }else{
+            $this->db->insert($tbl,$data);
+            $VID = $this->db->insert_id();
+        }
+        
+        $LinesStr = '';
+
+        $this->db->where('VID', $VID);
+        $this->db->delete('tbl_vouchersDetail');
+
+		foreach($LinesArr as $Line){
+            $discountAmount = 0;
+            $builtyNo = "";
+            $cargoName = "";
+            if(isset($Line->discountAmount))
+                $discountAmount = $Line->discountAmount;
+            if(isset($Line->builtyNo))
+                $builtyNo = $Line->builtyNo;
+            if(isset($Line->cargoName))
+                $cargoName = $Line->cargoName;
+
+			$LinesStr = " Insert Into tbl_vouchersDetail (vID,prdID,qty,price,builtyNo,cargoName,discount) ".
+					   " Values(".$VID.",".$Line->Item->id.",".$Line->qty.",".$Line->AmountAsNumber.",'".$builtyNo."','".$cargoName."',".$discountAmount.");";	
+                       $this->db->query($LinesStr);
+        }
+        $this->db->query("Insert Into tbl_Transactions (typID,amount,accID,traLID) ".
+         " values('1',".$data['gradeTotal'].",'".$this->get_account_ID($data['usrID'])."','2')");
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === TRUE)
+			return $VID;
+        else
+            return false;
     }
     
+    public function delete_record($deleted, $id){
+        $qry = "UPDATE tbl_users SET `deleted` = ".$usrDeleted.", `enable` = ".($usrDeleted = 1 ? 0 : 1)." WHERE ID='". $id ."'";
+        $query = $this->db->query($qry);
+        return $this->db->affected_rows();
+    }
+
+    public function disable_record($enable, $id){
+        $query = $this->db->query("UPDATE tbl_users SET enable = ". $usrEnable ." WHERE ID='".$id."'");
+        return $query;
+    }
+
     ///////////////////////////////////////////
+    /////////////     Attributes     /////////
+    /////////////////////////////////////////
     public function get_attributes(){
         try{
             $qry = " SELECT id,name from tbl_users where deleted = 0 and enable = 1";
@@ -58,63 +127,17 @@ class sale_model extends CI_Model{
             return false;
         }
     }
-
-    public function add_record_with_data($tbl, $data, $LinesArr){
-        $this->db->trans_start();
-        $this->db->insert($tbl,$data);
-        $VID = $this->db->insert_id();
-        $LinesStr = '';
-		foreach($LinesArr as $Line){
-            $discountAmount = 0;
-            $builtyNo = "";
-            $cargoName = "";
-            if(isset($Line->discountAmount))
-                $discountAmount = $Line->discountAmount;
-            if(isset($Line->builtyNo))
-                $builtyNo = $Line->builtyNo;
-            if(isset($Line->cargoName))
-                $cargoName = $Line->cargoName;
-
-			$LinesStr = " Insert Into tbl_vouchersDetail (vID,prdID,qty,price,builtyNo,cargoName,discount) ".
-					   " Values(".$VID.",".$Line->Item->id.",".$Line->qty.",".$Line->AmountAsNumber.",'".$builtyNo."','".$cargoName."',".$discountAmount.");";	
-                       $this->db->query($LinesStr);
-        }
-        $this->db->query("Insert Into tbl_Transactions (typID,amount,accID,traLID) ".
-         " values('1',".$data['gradeTotal'].",'".$this->get_account_ID($data['usrID'])."','2')");
-
-        $this->db->trans_complete();
-
-        if ($this->db->trans_status() === TRUE)
-			return $VID;
-        else
-            return false;
-	}
-
-    public function update_record_with_data($table,$colum,$id,$data){
-		$this->db->where($colum, $id);
-		$this->db->update($table, $data); 
-		if($this->db->affected_rows() > 0){	
-			return array('status' => '200', 'res' => $this->get_record($id));
-		}else{
-			return false;
-		}
-	}
-
-    public function delete_record($deleted, $id){
-        $qry = "UPDATE tbl_users SET `deleted` = ".$usrDeleted.", `enable` = ".($usrDeleted = 1 ? 0 : 1)." WHERE ID='". $id ."'";
-        $query = $this->db->query($qry);
-        return $this->db->affected_rows();
-    }
-
-    public function disable_record($enable, $id){
-        $query = $this->db->query("UPDATE tbl_users SET enable = ". $usrEnable ." WHERE ID='".$id."'");
-        return $query;
-    }
-
-    //////////////////////////
+    /////////////////////////////////////////
+    /////////////     Helping Methods     //
+    ///////////////////////////////////////
     public function get_account_ID($id){
         $query = $this->db->query("select accID from tbl_accounts_users where usrID = '".$id."'");
         return $query->row('accID');
     }
+    function get_saleNo(){
+        $qry = "SELECT ((ifNull(Max(saleNo),0))+1) as saleNo from tbl_vouchers";
+        return $this->db->query($qry)->row()->saleNo;
+    }
+
 }
 ?>

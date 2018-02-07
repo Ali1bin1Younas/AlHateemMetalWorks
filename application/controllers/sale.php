@@ -24,23 +24,30 @@ class Sale extends CI_Controller{
 	function sale_create(){
 		$data['pageHeading'] = "Create Voucher";
 		$data["name"] = $this->session->userdata('name');
+		$data['isEdit'] = 0;
+		$data['saleNo'] = $this->Sale_model->get_saleNo();
+		$this->session->unset_userdata('VID');
+		$this->load->view("vouchers/sale_create",$data);
+	}
+
+	function sale_edit(){
+		$data['pageHeading'] = "Create Voucher";
+		$data["name"] = $this->session->userdata('name');
 
 		if(null != $this->session->userdata('VID')){
 			$data['saleNo'] = $this->session->userdata('VID');
-			$this->session->unset_userdata('VID');
+			$data['isEdit'] = 1;
 		}else{
 			$data['saleNo'] = $this->Sale_model->get_saleNo();
 		}
 		$this->load->view("vouchers/sale_create",$data);
 	}
-	function sale_create_edit(){
-		$data['pageHeading'] = "Create Voucher";
-		$data['saleNo'] = $this->session->userdata('VID');
-		$data["name"] = $this->session->userdata('name');
-		$data["id"] = $this->session->userdata('VID');
-		$this->load->view("vouchers/sale_create",$data);
+
+	function get_invoice_detail(){
+		echo $this->Sale_model->get_invoice_detail($this->input->get('ID'));
 	}
-	/////////////////////////////////////////////    
+	/////////////////////////////////////////////
+	//////////////////////////////////////////// 
 	public function add_record(){
 		$Vdata = json_decode($this->input->get("model"));
 		$issueDateStr = null;
@@ -64,39 +71,20 @@ class Sale extends CI_Controller{
 		$data['usrID'] = $Vdata->customer->id;
 		$data['typID'] = 1;
 		if($Vdata->discount){
-			$data['descrip'] = $VoucherDescriptionStr;
 			$data['discount'] = $Vdata->discount;
+			$data['discountType'] = $Vdata->discountType;
 		}
-		$data['discountType'] = $Vdata->discountType;
+		$data['descrip'] = $VoucherDescriptionStr;
 		$data['usrID_usr'] = $this->session->userdata('usrID');
 		$data['saleNo'] = $Vdata->saleNo;
 		$data['gradeTotal'] = $Vdata->GradeTotal;
 
 		$this->load->model($this->router->fetch_class()."_model");
-		$result = $this->Sale_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines);
+		$result = $this->Sale_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines, $Vdata->isEdit, $Vdata->VID);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $result));
 		}else{
 			echo json_encode(array('status' => '201', 'msg' => 'Unexpexted error, please try again..'));
-		}
-	 }
-
-	public function update_detail(){
-		$ID = $this->input->get('ID');
-		$usrData = array();
-		foreach($this->input->get() as $key => $val){
-			if($key != 'ID')
-				$usrData[$key] = $val;
-		}
-		if($ID != "" && $ID != "0"){
-			$res = $this->Vouchers_model->update_record_with_data('tbl_'.$this->router->fetch_class(),'ID',$ID, $usrData);
-			if($res['status'] == 200){
-				echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'result' => $res['res']));
-			}else{
-				echo json_encode(array('status' => '201', 'msg' => 'User update failed!', 'result' => $res['res']));
-			}
-		}else{
-			echo json_encode(array('status' => '204', 'msg' => 'Unexpected error!, please contact system administrator.'));
 		}
 	 }
 	

@@ -60,7 +60,6 @@
                                 <div class="input-group" style="margin-bottom: 0px">
                                   <span class="input-group-addon">#</span>
                                   <input class="form-control input-sm" style="width: 80px; text-align: center" data-bind="textInput: saleNo" type="text" readonly="readonly">
-                                  <input id="txtSaleNo" type="hidden" value="<?php echo $saleNo;?>"
                                 </div>
                               </div>
                             </td>
@@ -211,7 +210,9 @@
           </li>
         </ul>
       </div>
-      <input id="callBackLoc" value="<?php echo base_url('sale');?>" type="hidden">
+      <input id="txtSaleNo" type="hidden" value="<?php echo $saleNo;?>">
+      <input id="txtIsEdit" type="hidden" value="<?php echo $isEdit;?>">
+      <input id="callBackLoc" value="<?php echo base_url('Sale');?>" type="hidden">
     </div>
   </div>
 </div>
@@ -225,271 +226,314 @@
 <script src="<?php echo base_url(); ?>Assets/js/globalize.js"></script>
 <script src="<?php echo base_url(); ?>Assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
 <script src="<?php echo base_url(); ?>Assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
+<!-- Page-Level Scripts -->
 <script type="text/javascript">
   var bs_url = "<?php echo base_url();?>";
   load(bs_url+'Assets/js/plugins/select2/select2.full.min.js').then(bs_url+'Assets/js/custum/sale_create.js').thenRun(function () {
   
-    //////////////////////////////////////////////////
-/     setting up ViewModel using KnowkoutJS     /
-////////////////////////////////////////////////
-var viewModelInit = true;
-Number.prototype.getDecimals = function() {
-    var num = parseFloat(this.toFixed(10));
-    var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-    if (!match)
-        return 0;
-    return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
-}
-ko.bindingHandlers.ddlSelect2 = {
-    init: function(element, valueAccessor, allBindingsAccessor) {
-        
-            var select2options = {};
-        if ($(element).is('select'))
-        {
-            select2options.width = $(element).attr('data-width');
-            select2options.allowClear = ($(element).attr('data-placeholder'));
-            select2options.formatNoMatches = function() { return "No matches found"; };
-            if (select2options.allowClear) select2options.placeholder = $(element).attr('data-placeholder');
-        }
-        if ($(element).is('input'))
-        {
-            try{
-                var select2options = {
-                allowClear: true,
-                placeholder: ' ',
-                formatNoMatches: function() { return "No matches found"; },
-                formatSearching: function() { return "Searching ..."; },
-                ajax:
-                {
-                    url: $(element).attr('data-autocomplete'),
-                    dataType: 'json',
-                    width: 'copy',
-                    data: function (term, page) { return { Term: term } },
-                    results: function(data, page) { return data; }
-                }};
-            select2options.width = $(element).attr('data-width');
-            }catch(e){alert(e.message);}
-        }
-
-        try{
-            $(element).select2(select2options);
-        }catch(e){alert(e.message);}
-        var tr = $(element).select2('container').closest('tr');
-        if (tr.attr('data-select2height'))
-        {
-            $(element).select2('container').find('.select2-choice').height(tr.attr('data-select2height'));
-        }
-
-        ko.utils.registerEventHandler(element, 'change', function ()
-        {
-            var observable = valueAccessor();
-            var data = $(element).select2('data');
-            if (data != null)
-            {
-                data = jQuery.extend(true, {}, data);
-                delete data.element;
-                delete data.disabled;
-                delete data.locked;
-            }
-            observable(data);
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
-            $(element).select2('destroy');
-        });
-        
-    },update: function(element, valueAccessor) {
-        var data = ko.utils.unwrapObservable(valueAccessor());
-        if ($(element).is('input'))
-        {
-            $(element).select2('data', data);
-        }
-        if ($(element).is('select'))
-        {
-            if (data == null) $(element).select2('val', '');
-            else $(element).select2('val', data.id);
-        }
-    }
-};
-ko.bindingHandlers.autosize = {
-    update: function (element, valueAccessor) {
-        ko.utils.unwrapObservable(valueAccessor());
-        $(element).trigger('autosize.resize');
-    }
-};
-function transactionLinesModel(){
-    var self = this;
-    self.Item = ko.observable();
-    self.trackingCode = ko.observable(); 
-    self.discount = ko.observable();
-    self.discountType = ko.observable();
-    self.discountAmount = ko.observable();
-    self.qty = ko.observable();
-    self.amount = ko.observable();
-    self.builtyNo = ko.observable();
-    self.cargoName = ko.observable();
-    self.description = ko.observable();
-
-    self.Item.subscribe(function(data) { 
-        if (data && data.description && data.description.length > 0) { 
-            self.description(data.description); } 
-        if (data && data.unitPrice && data.unitPrice.length > 0) { 
-            self.amount(data.unitPrice); } 
-        if (data && data.trackingCode && data.trackingCode.length > 0) { 
-            self.trackingCode({ id: data.trackingCode }); 
-        } 
-        if (self.qty() == null || self.qty().length == 0) { 
-            self.qty('1'); 
-        } 
-    });
-    self.AmountAsNumber = ko.computed(function() { 
-        var amount = Globalize.parseFloat((self.amount() || '').toString()); 
-        if (isNaN(amount)) { amount = 0; }; 
-        return amount; 
-    });
-    self.LineTotal = ko.computed(function() { 
-        var qty = Globalize.parseFloat((self.qty() || '').toString()); 
-        var amount = Globalize.parseFloat((self.amount() || '').toString()); 
-        var discount = Globalize.parseFloat((self.discount() || '').toString()); 
-        var discountAmount = Globalize.parseFloat((self.discountAmount() || '').toString());
-        if (isNaN(qty)) { qty = 1; }; 
-        if (isNaN(amount)) { amount = 0; }; 
-        var subtotal = qty*amount; 
-        if (!isNaN(discount) && discount != 0 && subtotal != 0) { 
-            subtotal = (subtotal/100)*(100-discount); 
-        }; 
-        if (!isNaN(discountAmount) && discountAmount != 0) { 
-            subtotal -= discountAmount; 
-        }; 
-        return subtotal; 
-    });
-    self.FormattedLineTotal = ko.computed(function() { 
-        var total = self.LineTotal(); 
-        return Globalize.format(total, 'n'+total.getDecimals());
-    });
-}
-function ReservationsViewModel() {
-    var self = this;
-    self.Lines = ko.observableArray();
-
-    self.issueDate = ko.observable();
-    self.deliveryDate = ko.observable();
-    self.saleNo = ko.observable();
-    self.VoucherDescription = ko.observable();
-    self.customer = ko.observable();
-
-    self.description = ko.observable();
-    self.discount = ko.observable(); 
-    self.discountType = ko.observable();
-    self.GradeTotal = ko.observable();
-    self.qty = ko.observable();
-    self.amount = ko.observable();
-    self.discountAmount = ko.observable();
-    self.LoadingVoucherEnable = ko.observable();
-    self.discount.subscribe(function(data) {
-        if (viewModelInit) return; 
-        for (var i = 0; i < self.Lines().length; i++) { 
-            self.Lines()[i].discount(null); 
-            self.Lines()[i].discountAmount(null); 
-        }; 
-    });
-    self.discountType.subscribe(function(data) { 
-        if (viewModelInit) return; 
-        for (var i = 0; i < self.Lines().length; i++) { 
-            self.Lines()[i].discount(null); 
-            self.Lines()[i].discountAmount(null); 
-        }; 
-    });
-    self.GradeTotal = ko.computed(function(data) { 
-        var total = 0; 
-        for (i = 0; i < self.Lines().length; i++) { total += self.Lines()[i].LineTotal(); } 
-        return Globalize.format(total, 'n'+total.getDecimals()); 
-    });
-    self.AddLines = function() {self.Lines.push(new transactionLinesModel());};
-    self.Add5Lines = function() { 
-        for (var i = 0; i < 5; i++) 
-            self.Lines.push(new transactionLinesModel()); 
-    }; 
-    self.Add10Lines = function() { 
-        for (var i = 0; i < 10; i++) 
-            self.Lines.push(new transactionLinesModel()); 
-    }; 
-    self.Add20Lines = function() { 
-        for (var i = 0; i < 20; i++) 
-        self.Lines.push(new transactionLinesModel()); 
-    };
-    self.RemoveLines = function(line) { self.Lines.remove(line); };
-    self.createVoucherEnable = ko.computed(function() {
-        if(ko.toJSON(self.issueDate) != "" && ko.toJSON(self.customer) != undefined && ko.toJSON(self.customer) != "null"){return true;}
-        else{return false;}
-     });
-    self.createVoucher = function(){
-        self.LoadingVoucherEnable(true);
-        $.ajax({
-            url: 'add_record',
-            method: 'GET',
-            contentType: "application/json; charset:utf-8",
-            dataType: 'json',
-            data: {'model': ko.toJSON(this)},
-            success: onSuccess_add_record(this, 0),
-            error: function (res) {
-                swal("Upexpected Error", "Please contact system administrator.", "error");
-            },
-            failure: function (res) {
-                swal("Upexpected Error", "Please try again later.", "error");
-            }
-        });
-    };
-    self.createVoucherNew = function(){
-        self.LoadingVoucherEnable(true);
-        $.ajax({
-            url: 'add_record',
-            method: 'GET',
-            contentType: "application/json; charset:utf-8",
-            dataType: 'json',
-            data: {'model': ko.toJSON(this)},
-            success: onSuccess_add_record(this, 1),
-            error: function (res) {
-                swal("Upexpected Error", "Please contact system administrator.", "error");
-            },
-            failure: function (res) {
-                swal("Upexpected Error", "Please try again later.", "error");
-            }
-        });
-    };
+    ////////////////////////////////////////////////
+   //     setting up ViewModel using KnowkoutJS   /
+  ////////////////////////////////////////////////
+  var viewModelInit = true;
+  Number.prototype.getDecimals = function() {
+      var num = parseFloat(this.toFixed(10));
+      var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+      if (!match)
+          return 0;
+      return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
   }
+  ko.bindingHandlers.ddlSelect2 = {
+      init: function(element, valueAccessor, allBindingsAccessor) {
+          
+              var select2options = {};
+          if ($(element).is('select'))
+          {
+              select2options.width = $(element).attr('data-width');
+              select2options.allowClear = ($(element).attr('data-placeholder'));
+              select2options.formatNoMatches = function() { return "No matches found"; };
+              if (select2options.allowClear) select2options.placeholder = $(element).attr('data-placeholder');
+          }
+          if ($(element).is('input'))
+          {
+              try{
+                  var select2options = {
+                  allowClear: true,
+                  placeholder: ' ',
+                  formatNoMatches: function() { return "No matches found"; },
+                  formatSearching: function() { return "Searching ..."; },
+                  ajax:
+                  {
+                      url: $(element).attr('data-autocomplete'),
+                      dataType: 'json',
+                      width: 'copy',
+                      data: function (term, page) { return { Term: term } },
+                      results: function(data, page) { return data; }
+                  }};
+              select2options.width = $(element).attr('data-width');
+              }catch(e){alert(e.message);}
+          }
 
-$(document).ready(function(){
-    var viewModel = new ReservationsViewModel();
-    var d = new Date();
-    $(".date").datepicker({
-        todayBtn: "linked",
-        keyboardNavigation: false,
-        forceParse: false,
-        calendarWeeks: true,
-        autoclose: true,
-        format: "dd/mm/yyyy"
-    }).datepicker('setDate',moment((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()).format('DD/MM/YYYY')).datepicker('update').val('');
-    $('.selectpicker').selectpicker('refresh');
-    try{
-        // Overall viewmodel for the popup screen, along with initial state
-        viewModelInit = true;
+          try{
+              $(element).select2(select2options);
+          }catch(e){alert(e.message);}
+          var tr = $(element).select2('container').closest('tr');
+          if (tr.attr('data-select2height'))
+          {
+              $(element).select2('container').find('.select2-choice').height(tr.attr('data-select2height'));
+          }
+
+          ko.utils.registerEventHandler(element, 'change', function ()
+          {
+              var observable = valueAccessor();
+              var data = $(element).select2('data');
+              if (data != null)
+              {
+                  data = jQuery.extend(true, {}, data);
+                  delete data.element;
+                  delete data.disabled;
+                  delete data.locked;
+              }
+              observable(data);
+          });
+
+          ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+              $(element).select2('destroy');
+          });
+          
+      },update: function(element, valueAccessor) {
+          var data = ko.utils.unwrapObservable(valueAccessor());
+          if ($(element).is('input'))
+          {
+              $(element).select2('data', data);
+          }
+          if ($(element).is('select'))
+          {
+              if (data == null) $(element).select2('val', '');
+              else $(element).select2('val', data.id);
+          }
+      }
+  };
+  ko.bindingHandlers.autosize = {
+      update: function (element, valueAccessor) {
+          ko.utils.unwrapObservable(valueAccessor());
+          $(element).trigger('autosize.resize');
+      }
+  };
+  function transactionLinesModel(){
+      var self = this;
+      self.Item = ko.observable();
+      self.trackingCode = ko.observable(); 
+      self.discount = ko.observable();
+      self.discountType = ko.observable();
+      self.discountAmount = ko.observable();
+      self.qty = ko.observable();
+      self.amount = ko.observable();
+      self.builtyNo = ko.observable();
+      self.cargoName = ko.observable();
+      self.description = ko.observable();
+
+      self.Item.subscribe(function(data) { 
+          if (data && data.description && data.description.length > 0) { 
+              self.description(data.description); } 
+          if (data && data.unitPrice && data.unitPrice.length > 0) { 
+              self.amount(data.unitPrice); } 
+          if (data && data.trackingCode && data.trackingCode.length > 0) { 
+              self.trackingCode({ id: data.trackingCode }); 
+          } 
+          if (self.qty() == null || self.qty().length == 0) { 
+              self.qty('1'); 
+          } 
+      });
+      self.AmountAsNumber = ko.computed(function() { 
+          var amount = Globalize.parseFloat((self.amount() || '').toString()); 
+          if (isNaN(amount)) { amount = 0; }; 
+          return amount; 
+      });
+      self.LineTotal = ko.computed(function() { 
+          var qty = Globalize.parseFloat((self.qty() || '').toString()); 
+          var amount = Globalize.parseFloat((self.amount() || '').toString()); 
+          var discount = Globalize.parseFloat((self.discount() || '').toString()); 
+          var discountAmount = Globalize.parseFloat((self.discountAmount() || '').toString());
+          if (isNaN(qty)) { qty = 1; }; 
+          if (isNaN(amount)) { amount = 0; }; 
+          var subtotal = qty*amount; 
+          if (!isNaN(discount) && discount != 0 && subtotal != 0) { 
+              subtotal = (subtotal/100)*(100-discount); 
+          }; 
+          if (!isNaN(discountAmount) && discountAmount != 0) { 
+              subtotal -= discountAmount; 
+          }; 
+          return subtotal; 
+      });
+      self.FormattedLineTotal = ko.computed(function() { 
+          var total = self.LineTotal(); 
+          return Globalize.format(total, 'n'+total.getDecimals());
+      });
+  }
+  function ReservationsViewModel() {
+      var self = this;
+      self.isEdit = ko.observable();
+      self.VID = ko.observable();
+
+      self.Lines = ko.observableArray();
+      
+      self.issueDate = ko.observable();
+      self.deliveryDate = ko.observable();
+      self.saleNo = ko.observable();
+      self.VoucherDescription = ko.observable();
+      self.customer = ko.observable();
+
+      self.description = ko.observable();
+      self.discount = ko.observable(); 
+      self.discountType = ko.observable();
+      self.GradeTotal = ko.observable();
+      self.qty = ko.observable();
+      self.amount = ko.observable();
+      self.discountAmount = ko.observable();
+      self.LoadingVoucherEnable = ko.observable();
+      self.discount.subscribe(function(data) {
+          if (viewModelInit) return; 
+          for (var i = 0; i < self.Lines().length; i++) { 
+              self.Lines()[i].discount(null); 
+              self.Lines()[i].discountAmount(null); 
+          }; 
+      });
+      self.discountType.subscribe(function(data) { 
+          if (viewModelInit) return; 
+          for (var i = 0; i < self.Lines().length; i++) { 
+              self.Lines()[i].discount(null); 
+              self.Lines()[i].discountAmount(null); 
+          }; 
+      });
+      self.GradeTotal = ko.computed(function(data) { 
+          var total = 0; 
+          for (i = 0; i < self.Lines().length; i++) { total += self.Lines()[i].LineTotal(); } 
+          return Globalize.format(total, 'n'+total.getDecimals()); 
+      });
+      self.AddLines = function() {self.Lines.push(new transactionLinesModel());};
+      self.Add5Lines = function() { 
+          for (var i = 0; i < 5; i++) 
+              self.Lines.push(new transactionLinesModel()); 
+      }; 
+      self.Add10Lines = function() { 
+          for (var i = 0; i < 10; i++) 
+              self.Lines.push(new transactionLinesModel()); 
+      }; 
+      self.Add20Lines = function() { 
+          for (var i = 0; i < 20; i++) 
+          self.Lines.push(new transactionLinesModel()); 
+      };
+      self.RemoveLines = function(line) { self.Lines.remove(line); };
+      self.createVoucherEnable = ko.computed(function() {
+          if(ko.toJSON(self.issueDate) != "" && ko.toJSON(self.customer) != undefined && ko.toJSON(self.customer) != "null"){return true;}
+          else{return false;}
+      });
+      self.createVoucher = function(){
+          self.LoadingVoucherEnable(true);
+          $.ajax({
+              url: 'add_record',
+              method: 'GET',
+              contentType: "application/json; charset:utf-8",
+              dataType: 'json',
+              data: {'model': ko.toJSON(this)},
+              success: onSuccess_add_record(this, 0),
+              error: function (res) {
+                  swal("Upexpected Error", "Please contact system administrator.", "error");
+              },
+              failure: function (res) {
+                  swal("Upexpected Error", "Please try again later.", "error");
+              }
+          });
+      };
+      self.createVoucherNew = function(){
+          self.LoadingVoucherEnable(true);
+          $.ajax({
+              url: 'add_record',
+              method: 'GET',
+              contentType: "application/json; charset:utf-8",
+              dataType: 'json',
+              data: {'model': ko.toJSON(this)},
+              success: onSuccess_add_record(this, 1),
+              error: function (res) {
+                  swal("Upexpected Error", "Please contact system administrator.", "error");
+              },
+              failure: function (res) {
+                  swal("Upexpected Error", "Please try again later.", "error");
+              }
+          });
+      };
+    }
+
+  $(document).ready(function(){
+      var viewModel = new ReservationsViewModel();
+      viewModel.isEdit = "0";
+      viewModel.VID = 0;
+      var d = new Date();
+      $(".date").datepicker({
+          todayBtn: "linked",
+          keyboardNavigation: false,
+          forceParse: false,
+          calendarWeeks: true,
+          autoclose: true,
+          format: "dd/mm/yyyy"
+      }).datepicker('setDate',moment((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()).format('DD/MM/YYYY')).datepicker('update').val('');
+      $('.selectpicker').selectpicker('refresh');
+      try{
+        if($('#txtIsEdit').val() == "1"){
+          viewModel.isEdit = $('#txtIsEdit').val();
+          viewModel.VID = $('#txtSaleNo').val();
+
+          $.ajax({
+            url: $('#callBackLoc').val()+'/get_invoice_detail',
+            method: 'GET',
+            contentType: "application/json; charset:utf-8",
+            dataType: 'json',
+            data: {'ID':$('#txtSaleNo').val(),'pass':''},
+            success: function(res){
+              var res_row = res.res[0];
+              var res_di = res_row.dateIssue.split("-");
+              var res_dd = res_row.dateDelivery.split("-");
+              viewModel.issueDate(moment((res_di[1])+'/'+res_di[2]+'/'+res_di[0]).format('DD/MM/YYYY'));
+              viewModel.deliveryDate(moment((res_dd[1])+'/'+res_dd[2]+'/'+res_dd[0]).format('DD/MM/YYYY'));
+              viewModel.saleNo(res_row.voucherNo);
+              viewModel.customer({id:res_row.usrID, text:res_row.usrName});
+              viewModel.VoucherDescription(res_row.descrip);
+              viewModel.Lines([]);
+              for(var i=0; i < res.res_detail.length; i++){
+                viewModel.AddLines();
+                viewModel.Lines()[i].Item({id:res.res_detail[i].prdID,text:res.res_detail[i].prdName});
+                viewModel.Lines()[i].description(res.res_detail[i].prdDescrip);
+                viewModel.Lines()[i].amount(res.res_detail[i].amount);
+                viewModel.Lines()[i].builtyNo(res.res_detail[i].builtyNo);
+                viewModel.Lines()[i].cargoName(res.res_detail[i].cargoName);
+                viewModel.Lines()[i].discountAmount(res.res_detail[i].discountAmount);
+                viewModel.LoadingVoucherEnable(false);
+              }
+              viewModel.discount(res_row.discount);
+              viewModel.discountType(res_row.discountType);
+            },
+            error: function (res) {
+                swal("Upexpected Error", "Please contact system administrator.", "error");
+            },
+            failure: function (res) {
+                swal("Upexpected Error", "Please try again later.", "error");
+            }
+          });
+        }
+
         viewModel.issueDate(moment((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()).format('DD/MM/YYYY'));
         viewModel.saleNo($('#txtSaleNo').val());
         viewModel.VoucherDescription();
         viewModel.discount(false);
         viewModel.discountType("Percentage");
-    
         viewModel.AddLines();
         viewModel.Lines()[0].description();
         viewModel.Lines()[0].amount("0");
         viewModel.LoadingVoucherEnable(false);
-
         ko.applyBindings(viewModel, document.getElementById("createSaleView"));
-    }catch(e){alert(e.message);ko.cleanNode(document.getElementById("createSaleView"));}
-});
+      }catch(e){alert(e.message);ko.cleanNode(document.getElementById("createSaleView"));}
+    });
   });
 </script>
-<!-- Page-Level Scripts -->
 </body>
 </html>

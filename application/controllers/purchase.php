@@ -8,8 +8,7 @@ class Purchase extends CI_Controller{
      	$this->load->model('commons_model');	
  		$this->load->library('commons_lib');
 	
-		if(!$this->session->userdata('logged_in'))
-		{
+		if(!$this->session->userdata('logged_in')){
 			redirect(base_url().'login');
 		} 
 	}
@@ -20,19 +19,40 @@ class Purchase extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view("vouchers/".$this->router->fetch_class()."_view",$data);
 	}
-	function purchaseCreate(){
-		$data['pageHeading'] = "Create Voucher";
+	/////////////////////////////////////////////
+	////////     create & Edit Purchase     ////
+	///////////////////////////////////////////
+	function purchase_create(){
+		$data['pageHeading'] = "Purchase";
 		$data['purchaseNo'] = $this->Purchase_model->get_purchaseNo();
 		$data["name"] = $this->session->userdata('name');
+		$data['isEdit'] = 0;
 		$this->load->view("vouchers/purchase_create",$data);
 	}
-	/////////////////////////////////////////////    
-	public function add_record(){
+	function purchase_edit(){
+		$data['pageHeading'] = "Edit Purchase";
+		$data["name"] = $this->session->userdata('name');
 
+		if(null != $this->session->userdata('VID')){
+			$data['purchaseNo'] = $this->session->userdata('VID');
+			$data['isEdit'] = 1;
+		}else{
+			$data['purchaseNo'] = $this->Purchase_model->get_purchaseNo();
+		}
+		$this->load->view("vouchers/purchase_create",$data);
+	}
+	function get_invoice_detail(){
+		echo $this->Purchase_model->get_invoice_detail($this->input->get('ID'));
+	}
+	/////////////////////////////////////////////
+	///////////     Add Record Purchase     ////
+	///////////////////////////////////////////    
+	public function add_record(){
 		$Vdata = json_decode($this->input->get("model"));
 		$issueDateStr = null;
 		$deliveryDateStr = null;
 		$VoucherDescriptionStr = "";
+		$referenceNo = '';
 		if(isset($Vdata->issueDate)){
 			$issueDateStr = explode("/", (string)$Vdata->issueDate);
 			$issueDateStr = $issueDateStr[2] . "/" . $issueDateStr[1] ."/" . $issueDateStr[0];
@@ -48,21 +68,22 @@ class Purchase extends CI_Controller{
 		$data['dateIssue'] = $issueDateStr;
 		$data['dateDelivery'] = $deliveryDateStr;
 		$data["dateTimeCreated"] = date('Y-m-d H:i:s');
-		$data['referenceNo'] = $Vdata->referenceNo;
+		if(isset($Vdata->referenceNo))
+			$referenceNo = $Vdata->referenceNo;
+		$data['referenceNo'] = $referenceNo;
 		$data['usrID'] = $Vdata->supplier->id;
 		$data['typID'] = 2;
+		if($Vdata->discount){
+			$data['discount'] = $Vdata->discount;
+			$data['discountType'] = $Vdata->discountType;
+		}
 		$data['descrip'] = $VoucherDescriptionStr;
-		$data['discount'] = $Vdata->discount;
-		$data['discountType'] = $Vdata->discountType;
 		$data['usrID_usr'] = $this->session->userdata('usrID');
 		$data['purchaseNo'] = $Vdata->purchaseNo;
+		$data['gradeTotal'] = $Vdata->GradeTotal;
 
-		
-		// echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $lineStr));
-		// die();
-		
 		$this->load->model($this->router->fetch_class()."_model");
-		$result = $this->Purchase_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines);
+		$result = $this->Purchase_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines, $Vdata->isEdit, $Vdata->VID);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $result));
 		}else{
@@ -70,43 +91,9 @@ class Purchase extends CI_Controller{
 		}
 	 }
 
-	public function update_detail(){
-		$ID = $this->input->get('ID');
-		$usrData = array();
-		foreach($this->input->get() as $key => $val){
-			if($key != 'ID')
-				$usrData[$key] = $val;
-		}
-		if($ID != "" && $ID != "0"){
-			$res = $this->Vouchers_model->update_record_with_data('tbl_'.$this->router->fetch_class(),'ID',$ID, $usrData);
-			if($res['status'] == 200){
-				echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'result' => $res['res']));
-			}else{
-				echo json_encode(array('status' => '201', 'msg' => 'User update failed!', 'result' => $res['res']));
-			}
-		}else{
-			echo json_encode(array('status' => '204', 'msg' => 'Unexpected error!, please contact system administrator.'));
-		}
-	 }
 	
-	public function disable_record(){
-		$ID = $this->input->get('ID');
-		$usrData = array();
-		foreach($this->input->get() as $key => $val){
-			if($key != 'ID')
-				$usrData[$key] = (int)$val;
-		}
-		if($ID != "" && $ID != "0"){
-			//$res = $this->Vouchers_model->disable_user($this->input->get('usrEnable'), $ID);
-			$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
-			if($res == true)
-				echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'res' => array('usrEnable' => 0),'res2' => $usrData));
-			else
-				echo json_encode(array('status' => $res, 'msg' => 'Unable to update user detail!.', 'res' => $usrData));
-		}else{
-			echo json_encode(array('status' => '204', 'msg' => 'Unexpected error!, please contact system administrator.'));
-		}
-	}
+	
+
 	public function delete_record(){
 		$ID = $this->input->get('ID');
 		if($ID == "" && $ID == 0){echo json_encode(array('status' => '204', 'msg' => 'Unexpected error, please contact system administrator!'));}
@@ -150,6 +137,17 @@ class Purchase extends CI_Controller{
 			echo json_encode(array('results' => $res));
 		else
 			echo json_encode(array('results' => $res));
+	}
+
+	public function set_edit_session(){
+		$this->ci =& get_instance();
+	
+			$array=array(
+			'VID'=>$this->input->get("id")
+			);
+		$this->ci->session->set_userdata($array);
+
+		echo json_encode(array('id' => $this->session->userdata('VID')));
 	}
 	///////////////
 	public function ko(){

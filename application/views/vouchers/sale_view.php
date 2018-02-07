@@ -81,7 +81,7 @@
     <!-- /.content -->
   </div>
  <!-- /.content-wrapper -->
- <input id="callBackLoc" value="<?php echo base_url('sale');?>" type="hidden">
+ <input id="callBackLoc" value="<?php echo base_url('Sale');?>" type="hidden">
 <div>
 <?php  $this->load->view('common/footer');  ?>
 
@@ -94,7 +94,7 @@
 <script src="<?php echo base_url(); ?>assets/js/globalize.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
 <script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/custum/vouchers_view.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/custum/sale_view.js"></script>
 <!-- Page-Level Scripts -->
 <script>
   $(document).ready(function(){
