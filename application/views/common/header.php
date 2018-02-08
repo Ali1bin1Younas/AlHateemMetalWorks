@@ -73,13 +73,16 @@
                     </ul>
 					</li>
                     <li>
-                        <a href="<?php echo base_url(); ?>Products"><i class="fa fa-user"></i> <span class="nav-label">Product</span></a>
+                        <a href="<?php echo base_url(); ?>Products"><i class="fa fa-user"></i> <span class="nav-label">Products</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>Sale"><i class="fa fa-user"></i> <span class="nav-label">Sale</span></a>
+                        <a href="<?php echo base_url(); ?>Sale"><i class="fa fa-user"></i> <span class="nav-label">Sale Book</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>Purchase"><i class="fa fa-user"></i> <span class="nav-label">Purchase</span></a>
+                        <a href="<?php echo base_url(); ?>Purchase"><i class="fa fa-user"></i> <span class="nav-label">Purchase Book</span></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo base_url(); ?>Expenses"><i class="fa fa-user"></i> <span class="nav-label">Expense Book</span></a>
                     </li>
                 </ul>
             </div>

@@ -1,6 +1,15 @@
 <?php 
 class Commons_model extends CI_Model
 {
+
+	public function get_records($tbl){
+        $record=$this->db->query("SELECT * FROM  ".$tbl." where deleted = 0");
+        return $record->result_array();
+    }
+    public function get_record($tbl, $id){   
+        $query = $this->db->query("SELECT * FROM  ".$tbl." WHERE ID ='".$id."'");
+        return $query->row();		
+    }
 	/////////////////////////////////////////////////////
 	//////////////     update methods     //////////////
 	///////////////////////////////////////////////////
@@ -31,6 +40,16 @@ class Commons_model extends CI_Model
 	public function insert_record($table, $data){
 		$this->db->insert($table,$data);
 		return $this->db->insert_id();		
+	}
+	public function insert_record_with_data($tbl, $data){
+		$this->db->insert($tbl,$data);
+		$id = $this->db->insert_id();
+		if($this->db->affected_rows() > 0){
+			$this->db->select('*');
+			$this->db->where('ID', $id);
+			$query = $this->db->get($tbl);
+			return $query->result_array();
+		}
 	}
 	/////////////////////////////////////////////////////
 	//////////////     get single Record     ///////////

@@ -1,5 +1,6 @@
 var pageNameV = 'Create Purchase';
 var controllerNameV = 'Purchase';
+var win_loc = document.getElementById("callBackLoc").value;
 //////////////////////////////////////////////////
 ///////////     Add New Record     //////////////
 ////////////////////////////////////////////////
@@ -38,7 +39,7 @@ function onSuccess_add_record(viewModel, isNew){
 function get_attributes(e){
     swal.showLoading();
     $.ajax({
-        url: controllerNameUsers+'/get_attributes',
+        url: win_loc+'/get_attributes',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -101,7 +102,7 @@ function btn_delete(e, ID){
 }
 function delete_record(e, deleted, ID){
     $.ajax({
-        url: controllerNameUsers+'/delete_record',
+        url: win_loc+'/delete_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',

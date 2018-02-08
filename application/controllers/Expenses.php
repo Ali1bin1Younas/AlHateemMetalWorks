@@ -1,53 +1,61 @@
 <?php
 
-class Purchase extends CI_Controller{
+class Expenses extends CI_Controller{
 
 	function __construct(){
 		parent::__construct();	
-	    $this->load->model("Purchase_model");
+	    $this->load->model($this->router->fetch_class()."_model");
      	$this->load->model('commons_model');	
  		$this->load->library('commons_lib');
 	
-		if(!$this->session->userdata('logged_in')){
+		if(!$this->session->userdata('logged_in'))
+		{
 			redirect(base_url().'login');
 		} 
 	}
-
+	
 	function index(){
 		$data['pageHeading'] = $this->router->fetch_class();
-		$data['row_data'] = $this->Purchase_model->get_records();
+		$data['row_data'] = $this->Expenses_model->get_records('tbl_'.strtolower($this->router->fetch_class()));
 		$data["name"] = $this->session->userdata('name');
-		$this->load->view("vouchers/".$this->router->fetch_class()."_view",$data);
-	}
+		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
+	}   
 	/////////////////////////////////////////////
-	////////     create & Edit Purchase     ////
+	////////     create & Edit Methods     /////
 	///////////////////////////////////////////
-	function purchase_create(){
-		$data['pageHeading'] = "Purchase";
-		$data['purchaseNo'] = $this->Purchase_model->get_purchaseNo();
+	function expense_create(){
+		$data['pageHeading'] = "New Expenses";
+		$data['No'] = $this->Expenses_model->get_No();
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
-		$this->session->unset_userdata('VID');
-		$this->load->view("vouchers/purchase_create",$data);
+		$this->session->unset_userdata('expID');
+		$this->load->view($this->router->fetch_class()."/".strtolower($this->router->fetch_class())."_create",$data);
 	}
-	function purchase_edit(){
-		$data['pageHeading'] = "Edit Purchase";
+	function expenses_edit(){
+		$data['pageHeading'] = "Edit Expense";
 		$data["name"] = $this->session->userdata('name');
 
-		if(null != $this->session->userdata('VID')){
-			$data['purchaseNo'] = $this->session->userdata('VID');
+		if(null != $this->session->userdata('expID')){
+			$data['No'] = $this->session->userdata('expID');
 			$data['isEdit'] = 1;
 		}else{
-			$data['purchaseNo'] = $this->Purchase_model->get_purchaseNo();
+			$data['No'] = $this->Expenses_model->get_purchaseNo();
 		}
-		$this->load->view("vouchers/purchase_create",$data);
+		$this->load->view($this->router->fetch_class()+"/expenses_create",$data);
 	}
 	function get_invoice_detail(){
-		echo $this->Purchase_model->get_invoice_detail($this->input->get('ID'));
+		echo $this->Expenses_model->get_invoice_detail($this->input->get('ID'));
+	}
+	public function getProducts(){
+		$res = $this->Expenses_model->getProducts($this->input->get("Term"));
+		if($res)
+			echo json_encode(array('results' => $res));
+		else
+			echo json_encode(array('results' => $res));
 	}
 	/////////////////////////////////////////////
-	///////////     Add Record Purchase     ////
-	///////////////////////////////////////////    
+	//////////////     CRUD Method     /////////
+	///////////////////////////////////////////
 	public function add_record(){
 		$Vdata = json_decode($this->input->get("model"));
 		$issueDateStr = null;
@@ -97,60 +105,28 @@ class Purchase extends CI_Controller{
 		if($ID == "" && $ID == 0){echo json_encode(array('status' => '204', 'msg' => 'Unexpected error, please contact system administrator!'));}
 		
 		$res = 0;
-		$usrData = array();
+		$rowData = array();
 		foreach($this->input->get() as $key => $val){
 			if($key != 'ID')
-				$usrData[$key] = (int)$val;
+				$rowData[$key] = (int)$val;
 		}	
-		$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
-		
-		//$res = $this->Vouchers_model->delete_user($this->input->get('usrDeleted'), ID);
+		$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $rowData);
 		if($res > 0)
-			echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'result' => $usrData));
+			echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $rowData));
 		else
-			echo json_encode(array('status' => '201', 'msg' => 'Unable to update user detail!.', 'result' => $res));
-	}
-	/////////////////////////////////////////////
-	//////////////     Get Views Methods    ////
-	///////////////////////////////////////////
-	public function get_view_create(){
-		$data['pageHeading'] = "Create ". $this->router->fetch_class();
-		$data['row_data'] = $this->vouchers_model->get_records("tbl_".$this->router->fetch_class());
-		echo $this->load->view("vouchers/".$this->router->fetch_class()."_create", $data, true);
+			echo json_encode(array('status' => '201', 'msg' => 'Unable to update Product detail!.', 'result' => $res));
 	}
 	/////////////////////////////////////////////
 	//////////////     Helping functions     ///
 	///////////////////////////////////////////
-	public function getProducts(){
-		$res = $this->Purchase_model->getProducts($this->input->get("Term"));
-		if($res)
-			echo json_encode(array('results' => $res));
-		else
-			echo json_encode(array('results' => $res));
-	}
-
-	public function getSuppliers(){
-		$res = $this->Purchase_model->getSuppliers($this->input->get("Term"));
-		if($res)
-			echo json_encode(array('results' => $res));
-		else
-			echo json_encode(array('results' => $res));
-	}
-
 	public function set_edit_session(){
 		$this->ci =& get_instance();
-	
 			$array=array(
-			'VID'=>$this->input->get("id")
+			'expID'=>$this->input->get("id")
 			);
 		$this->ci->session->set_userdata($array);
 
-		echo json_encode(array('id' => $this->session->userdata('VID')));
-	}
-	///////////////
-	public function ko(){
-		$data['row_data'] = $this->purchase_model->get_records();
-		$this->load->view("vouchers/koFunctions",$data);
+		echo json_encode(array('id' => $this->session->userdata('expID')));
 	}
 }
 ?>
