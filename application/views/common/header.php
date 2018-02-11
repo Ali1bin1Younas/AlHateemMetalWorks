@@ -66,10 +66,10 @@
 					<li>
                     <a href="#"><i class="fa fa-user"></i> <span class="nav-label">Users</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
-                        <li><a href="<?php echo base_url(); ?>users/employee"><i class="fa fa-user"></i> <span class="nav-label">Employee</span></span></a></li>
-                        <li><a href="<?php echo base_url(); ?>users/customer"><i class="fa fa-user"></i> <span class="nav-label">Customer</span></span></a></li>
-                        <li><a href="<?php echo base_url(); ?>users/vendor"><i class="fa fa-user"></i> <span class="nav-label">Vendor</span></span></a></li>
-                        <li><a href="<?php echo base_url(); ?>users/misc"><i class="fa fa-user"></i> <span class="nav-label">Misc.</span></span></a></li>
+                        <li><a href="<?php echo base_url(); ?>Users/employee"><i class="fa fa-user"></i> <span class="nav-label">Employee</span></span></a></li>
+                        <li><a href="<?php echo base_url(); ?>Users/customer"><i class="fa fa-user"></i> <span class="nav-label">Customer</span></span></a></li>
+                        <li><a href="<?php echo base_url(); ?>Users/vendor"><i class="fa fa-user"></i> <span class="nav-label">Vendor</span></span></a></li>
+                        <li><a href="<?php echo base_url(); ?>Users/misc"><i class="fa fa-user"></i> <span class="nav-label">Misc.</span></span></a></li>
                     </ul>
 					</li>
                     <li>

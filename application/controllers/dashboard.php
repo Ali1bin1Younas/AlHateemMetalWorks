@@ -11,7 +11,7 @@ class Dashboard extends CI_Controller {
 		$this->load->library('Commons_lib');
 		if(!$this->session->userdata('logged_in'))
 		{
-			redirect(base_url().'login');
+			redirect(base_url().'Login');
 			$this->load->view('Dashboard');
 		}	
 	}

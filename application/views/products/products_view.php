@@ -92,7 +92,10 @@
         </div>
     </section>
     <!-- /.content -->
-    <input type="hidden" id="callBackLoc_c" value"<?php  echo base_url('Catagories');?>"/>
+    <input type="hidden" id="callBackLoc" value="<?php echo base_url('Products');?>"/>
+    <input type="hidden" id="callBackLoc_c" value="<?php echo base_url('Catagories');?>"/>
+    <input type="hidden" id="callBackLoc_t" value="<?php echo base_url('Types');?>"/>
+    <input type="hidden" id="callBackLoc_u" value="<?php echo base_url('UOMs');?>"/>
   </div>
  <!-- /.content-wrapper -->
 <?php  $this->load->view('common/footer');  ?>

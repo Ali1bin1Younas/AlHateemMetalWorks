@@ -76,15 +76,19 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
+
 	'username' => 'root',
 	'password' => '',
 	'database' => 'DB_MetalWorks',
+
 	// 'username' => 'harrcheez_usr_inventory_system',
 	// 'password' => 'InventorySystem@12',
 	// 'database' => 'harrcheez_Inventory_system',
+
 	// 'username' => 'usrHateem',
 	// 'password' => 'AlHateem@18',
 	// 'database' => 'mwaqar_AlHateem',
+
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

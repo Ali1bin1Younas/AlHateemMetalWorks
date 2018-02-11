@@ -58,6 +58,6 @@
         </div>
     </section>
     <!-- /.content -->
-    <input id="callBackLoc_u" value="<?php echo base_url('UOMs');?>" type="hidden">
+    <!-- <input id="callBackLoc_u" value="<?php echo base_url('UOMs');?>" type="hidden"> -->
   </div>
  <!-- /.content-wrapper -->

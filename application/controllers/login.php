@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	function __construct(){
 		parent::__construct();		
-		$this->load->library('Login_lib');
+		$this->load->library('login_lib');
 		$this->load->model('Login_model');
 		
 		if($this->session->userdata('logged_in') && $this->session->userdata('usrTypID')==0){	
@@ -42,7 +42,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$this->session->set_flashdata('login_error','Minimum 3 Character Required');
 			$this->load->view('login');
 		}else{
-			if($this->Login_lib->validate_login($username, $password))
+			if($this->login_lib->validate_login($username, $password))
 			{ 
 				if( $this->session->userdata('usrTypID')==0) {
 						redirect(base_url().'Dashboard/');

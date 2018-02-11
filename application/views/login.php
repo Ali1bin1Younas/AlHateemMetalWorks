@@ -24,7 +24,7 @@
                 <h1 class="logo-name">AH</h1>
             </div>
             <h3>Welcome to Al-Hateem Metal Works</h3>
-            <form class="m-t" role="form" action="<?php echo base_url();?>login/login_verify" method="post">
+            <form class="m-t" role="form" action="<?php echo base_url();?>Login/login_verify" method="post">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="username" name="usrName" required="">
                 </div>
