@@ -50,12 +50,23 @@ class Expenses_model extends CI_Model{
         return $query;
     }
     /////////////////////////
-    public function getProducts($term){
+    public function getPersons($term){
         try{
             $nameClause = "";
             if($term != ""){$nameClause = "and name LIKE '%".$term."%'";}
-            $qry = " SELECT id,name as text,descrip as description,costPrice as unitPrice, id as trackingCode ".
-            " from tbl_products where typID = 3 and deleted = 0 and enable = 1 " . $nameClause;
+            $qry = " SELECT id, name as text ".
+            " from tbl_users where deleted = 0 and enable = 1 " . $nameClause;
+            return $this->db->query($qry)->result_array();
+        }catch(Exception $e){
+            return false;
+        }
+    }
+    public function getBankAccounts($term){
+        try{
+            $nameClause = "";
+            if($term != ""){$nameClause = "and accountNo LIKE '%".$term."%'";}
+            $qry = " SELECT id, accountNo as text ".
+            " from tbl_bankaccounts where deleted = 0 and enable = 1 " . $nameClause;
             return $this->db->query($qry)->result_array();
         }catch(Exception $e){
             return false;

@@ -1,4 +1,5 @@
 var controllerNameUsers = 'Users';
+var win_loc = document.getElementById("callBackLoc").value;
 //////////////////////////////////////////////////
 ///////////     Update record     ///////////////
 ////////////////////////////////////////////////
@@ -84,7 +85,7 @@ function update_detail(e, detail){
     var strDOB = detail[8];
     var DOB = strDOB.toString().split('/');
     $.ajax({
-        url: 'users/update_detail',
+        url: win_loc+'/update_detail',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -163,7 +164,7 @@ function add_pre(){
 function add_record(detail){
     var DOB = detail[8].toString().split('/');
     $.ajax({
-        url: controllerNameUsers+'/add_record',
+        url: win_loc+'/add_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -195,7 +196,7 @@ function onSuccess_add_record(res){
 function get_attributes(e){
     swal.showLoading();
     $.ajax({
-        url: controllerNameUsers+'/get_attributes',
+        url: win_loc+'/get_attributes',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -258,7 +259,7 @@ function btn_disable(e, ID){
 }
 function disable_record(e, enable, ID){
     $.ajax({
-        url: controllerNameUsers+'/disable_record',
+        url: win_loc+'/disable_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -319,7 +320,7 @@ function btn_delete(e, ID){
 }
 function delete_record(e, deleted, ID){
     $.ajax({
-        url: controllerNameUsers+'/delete_record',
+        url: win_loc+'/delete_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -411,7 +412,7 @@ function btn_change_pass(e, ID){
 }
 function change_pass(detail){
     $.ajax({
-        url: controllerNameUsers+'/change_pass',
+        url: win_loc+'/change_pass',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',

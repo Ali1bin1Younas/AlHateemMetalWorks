@@ -1,11 +1,12 @@
 var pageName = 'Type';
 var controllerName = 'types';
+var win_loc_t = document.getElementById("callBackLoc_t").value;
 //////////////////////////////////////////////////
 ///////////     View Record     //////////////
 ////////////////////////////////////////////////
 function get_view_typ(){
     $.ajax({
-        url: controllerName+'/get_view_main',
+        url: win_loc_t+'/get_view_main',
         method: 'GET',
         success: onSuccess_get_view_typ,
         error: function (res) {
@@ -73,7 +74,7 @@ function add_pre_typ(){
 }
 function add_record_typ(detail){
     $.ajax({
-        url: controllerName+'/add_record',
+        url: win_loc_t+'/add_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -157,7 +158,7 @@ function btn_update_detail_typ(e, ID){
 }
 function update_detail_typ(e, detail){
     $.ajax({
-        url: controllerName+'/update_detail',
+        url: win_loc_t+'/update_detail',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -215,7 +216,7 @@ function btn_disable_typ(e, ID){
 }
 function disable_record_typ(e, enable, ID){
     $.ajax({
-        url: controllerName+'/disable_record',
+        url: win_loc_t+'/disable_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -273,7 +274,7 @@ function btn_delete_typ(e, ID){
 }
 function delete_record_typ(e, deleted, ID){
     $.ajax({
-        url: controllerName+'/delete_record',
+        url: win_loc_t+'/delete_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',

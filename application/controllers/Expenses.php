@@ -41,13 +41,20 @@ class Expenses extends CI_Controller{
 		}else{
 			$data['No'] = $this->Expenses_model->get_purchaseNo();
 		}
-		$this->load->view($this->router->fetch_class()+"/expenses_create",$data);
+		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_create",$data);
 	}
 	function get_invoice_detail(){
 		echo $this->Expenses_model->get_invoice_detail($this->input->get('ID'));
 	}
-	public function getProducts(){
-		$res = $this->Expenses_model->getProducts($this->input->get("Term"));
+	public function getPersons(){
+		$res = $this->Expenses_model->getPersons($this->input->get("Term"));
+		if($res)
+			echo json_encode(array('results' => $res));
+		else
+			echo json_encode(array('results' => $res));
+	}
+	public function getBankAccounts(){
+		$res = $this->Expenses_model->getBankAccounts($this->input->get("Term"));
 		if($res)
 			echo json_encode(array('results' => $res));
 		else

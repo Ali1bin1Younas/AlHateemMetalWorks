@@ -5,12 +5,12 @@ class UOMs extends CI_Controller{
 	function __construct(){
 		parent::__construct();	
 	    $this->load->model($this->router->fetch_class()."_model");
-     	$this->load->model('commons_model');	
- 		$this->load->library('commons_lib');
+     	$this->load->model('Commons_model');	
+ 		$this->load->library('Commons_lib');
 	
 		if(!$this->session->userdata('logged_in'))
 		{
-			redirect(base_url().'login');
+			redirect(base_url().'Login');
 		} 
 	}       
 	
@@ -23,31 +23,11 @@ class UOMs extends CI_Controller{
 		$rowData["dateTimeCreated"] = date('Y-m-d H:i:s');
 
 		$this->load->model("uoms_model");
-		$result = $this->uoms_model->add_record("tbl_".$this->router->fetch_class(), $rowData);
+		$result = $this->UOMs_model->add_record("tbl_".$this->router->fetch_class(), $rowData);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'UOM detail added successfully.', 'result' => $result));
 		}else{
 			echo json_encode(array('status' => '201', 'msg' => 'Unexpexted error, please try again..'));
-		}
-	 }
-
-	public function update_detail(){
-		$ID = $this->input->get('ID');
-		$rowData = array();
-		foreach($this->input->get() as $key => $val){
-			if($key != 'ID')
-				$rowData[$key] = $val;
-		}
-		if($ID != "" && $ID != "0"){
-			$this->load->model($this->router->fetch_class()."_model");
-			$res = $this->UOMs_model->update_record('tbl_'.$this->router->fetch_class(),'ID',$ID, $rowData);
-			if($res){
-				echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $res['res']));
-			}else{
-				echo json_encode(array('status' => '201', 'msg' => 'Product update failed!', 'result' => $res['res']));
-			}
-		}else{
-			echo json_encode(array('status' => '204', 'msg' => 'Unexpected error!, please contact system administrator.'));
 		}
 	 }
 	
@@ -60,7 +40,7 @@ class UOMs extends CI_Controller{
 		}
 		if($ID != "" && $ID != "0"){
 			//$res = $this->users_model->disable_user($this->input->get('usrEnable'), $ID);
-			$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
+			$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
 			if($res == true)
 				echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'res' => array('usrEnable' => 0),'res2' => $usrData));
 			else
@@ -79,7 +59,7 @@ class UOMs extends CI_Controller{
 			if($key != 'ID')
 				$rowData[$key] = (int)$val;
 		}	
-		$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $rowData);
+		$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $rowData);
 		
 		//$res = $this->users_model->delete_user($this->input->get('usrDeleted'), ID);
 		if($res > 0)

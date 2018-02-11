@@ -1,11 +1,12 @@
 var pageNamecat = 'Catagory';
 var controllerNameCat = 'catagories';
+var win_loc_c = document.getElementById("callBackLoc_c").value;
 //////////////////////////////////////////////////
 ///////////     View Record     //////////////
 ////////////////////////////////////////////////
 function get_view_cat(){
     $.ajax({
-        url: controllerNameCat+'/get_view_main',
+        url: win_loc_c+'/get_view_main',
         method: 'GET',
         success: onSuccess_get_view_cat,
         error: function (res) {
@@ -73,7 +74,7 @@ function add_pre_cat(){
 }
 function add_record_cat(detail){
     $.ajax({
-        url: controllerNameCat+'/add_record',
+        url: win_loc_c+'/add_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -157,7 +158,7 @@ function btn_update_detail_cat(e, ID){
 }
 function update_detail_cat(e, detail){
     $.ajax({
-        url: controllerNameCat+'/update_detail',
+        url: win_loc_c+'/update_detail',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -215,7 +216,7 @@ function btn_disable_cat(e, ID){
 }
 function disable_record_cat(e, enable, ID){
     $.ajax({
-        url: controllerNameCat+'/disable_record',
+        url: win_loc_c+'/disable_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -273,7 +274,7 @@ function btn_delete_cat(e, ID){
 }
 function delete_record_cat(e, deleted, ID){
     $.ajax({
-        url: controllerNameCat+'/delete_record',
+        url: win_loc_c+'/delete_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',

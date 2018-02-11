@@ -58,5 +58,6 @@
         </div>
     </section>
     <!-- /.content -->
+    <input type="hidden" id="callBackLoc_c" value"<?php  echo base_url('Products');?>"/>
   </div>
  <!-- /.content-wrapper -->

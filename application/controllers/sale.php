@@ -5,13 +5,13 @@ class Sale extends CI_Controller{
 	function __construct(){
 		parent::__construct();	
 	    $this->load->model("Sale_model");
-     	$this->load->model('commons_model');	
-		$this->load->library('commons_lib');
+     	$this->load->model('Commons_model');	
+		$this->load->library('Commons_lib');
 		$this->load->helper('url');
 	
 		if(!$this->session->userdata('logged_in'))
 		{
-			redirect(base_url().'login');
+			redirect(base_url().'Login');
 		} 
 	}
 
@@ -19,7 +19,7 @@ class Sale extends CI_Controller{
 		$data['pageHeading'] = "Sales Invoice";
 		$data['row_data'] = $this->Sale_model->get_records();
 		$data["name"] = $this->session->userdata('name');
-		$this->load->view("vouchers/".$this->router->fetch_class()."_view",$data);
+		$this->load->view("Vouchers/".$this->router->fetch_class()."_view",$data);
 	}
 	function sale_create(){
 		$data['pageHeading'] = "Create Voucher";
@@ -27,7 +27,7 @@ class Sale extends CI_Controller{
 		$data['isEdit'] = 0;
 		$data['saleNo'] = $this->Sale_model->get_saleNo();
 		$this->session->unset_userdata('VID');
-		$this->load->view("vouchers/sale_create",$data);
+		$this->load->view("Vouchers/sale_create",$data);
 	}
 
 	function sale_edit(){
@@ -40,7 +40,7 @@ class Sale extends CI_Controller{
 		}else{
 			$data['saleNo'] = $this->Sale_model->get_saleNo();
 		}
-		$this->load->view("vouchers/sale_create",$data);
+		$this->load->view("Vouchers/".$this->router->fetch_class()."_create",$data);
 	}
 
 	function get_invoice_detail(){
@@ -88,24 +88,7 @@ class Sale extends CI_Controller{
 		}
 	 }
 	
-	public function disable_record(){
-		$ID = $this->input->get('ID');
-		$usrData = array();
-		foreach($this->input->get() as $key => $val){
-			if($key != 'ID')
-				$usrData[$key] = (int)$val;
-		}
-		if($ID != "" && $ID != "0"){
-			//$res = $this->Vouchers_model->disable_user($this->input->get('usrEnable'), $ID);
-			$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
-			if($res == true)
-				echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'res' => array('usrEnable' => 0),'res2' => $usrData));
-			else
-				echo json_encode(array('status' => $res, 'msg' => 'Unable to update user detail!.', 'res' => $usrData));
-		}else{
-			echo json_encode(array('status' => '204', 'msg' => 'Unexpected error!, please contact system administrator.'));
-		}
-	}
+
 	public function delete_record(){
 		$ID = $this->input->get('ID');
 		if($ID == "" && $ID == 0){echo json_encode(array('status' => '204', 'msg' => 'Unexpected error, please contact system administrator!'));}
@@ -116,7 +99,7 @@ class Sale extends CI_Controller{
 			if($key != 'ID')
 				$usrData[$key] = (int)$val;
 		}	
-		$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
+		$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
 		
 		//$res = $this->Vouchers_model->delete_user($this->input->get('usrDeleted'), ID);
 		if($res > 0)
@@ -125,11 +108,11 @@ class Sale extends CI_Controller{
 			echo json_encode(array('status' => '201', 'msg' => 'Unable to update user detail!.', 'result' => $res));
 	}
 	/////////////////////////////////////////////
-	//////////////     Get Views Methods    ////
+	//////////////     Get Views Methods(not bieng used)    ////
 	///////////////////////////////////////////
 	public function get_view_create(){
 		$data['pageHeading'] = "Create ". $this->router->fetch_class();
-		$data['row_data'] = $this->Vouchers_model->get_records("tbl_".$this->router->fetch_class());
+		$data['row_data'] = $this->Purchase_model->get_records("tbl_".$this->router->fetch_class());
 		echo $this->load->view("vouchers/".$this->router->fetch_class()."_create", $data, true);
 	}
 	/////////////////////////////////////////////
@@ -153,12 +136,10 @@ class Sale extends CI_Controller{
 
 	public function set_edit_session(){
 		$this->ci =& get_instance();
-	
-			$array=array(
+		$array=array(
 			'VID'=>$this->input->get("id")
-			);
+		);
 		$this->ci->session->set_userdata($array);
-
 		echo json_encode(array('id' => $this->session->userdata('VID')));
 	}
 }

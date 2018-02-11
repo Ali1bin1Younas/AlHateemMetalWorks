@@ -5,35 +5,35 @@ class Users extends CI_Controller{
 	function __construct(){
 		parent::__construct();	
 	    $this->load->model($this->router->fetch_class()."_model");
-     	$this->load->model('commons_model');	
- 		$this->load->library('commons_lib');
+     	$this->load->model('Commons_model');	
+ 		$this->load->library('Commons_lib');
 	
 		if(!$this->session->userdata('logged_in'))
 		{
-			redirect(base_url().'login');
+			redirect(base_url().'Login');
 		} 
 	}
 	function employee(){
 		$data['pageHeading'] = $this->router->fetch_class();
-		$data['row_data'] = $this->users_model->get_user_records_by_its_type(2);
+		$data['row_data'] = $this->Users_model->get_user_records_by_its_type(2);
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
 	function customer(){
 		$data['pageHeading'] = $this->router->fetch_class();
-		$data['row_data'] = $this->users_model->get_user_records_by_its_type(3);
+		$data['row_data'] = $this->Users_model->get_user_records_by_its_type(3);
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
 	function vendor(){
 		$data['pageHeading'] = $this->router->fetch_class();
-		$data['row_data'] = $this->users_model->get_user_records_by_its_type(4);
+		$data['row_data'] = $this->Users_model->get_user_records_by_its_type(4);
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
 	function Misc(){
 		$data['pageHeading'] = $this->router->fetch_class();
-		$data['row_data'] = $this->users_model->get_user_records_by_its_type(5);
+		$data['row_data'] = $this->Users_model->get_user_records_by_its_type(5);
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
@@ -63,7 +63,7 @@ class Users extends CI_Controller{
 				$usrData[$key] = $val;
 		}
 		if($ID != "" && $ID != "0"){
-			$res = $this->users_model->update_record_with_data('tbl_'.$this->router->fetch_class(),'ID',$ID, $usrData);
+			$res = $this->Users_model->update_record_with_data('tbl_'.$this->router->fetch_class(),'ID',$ID, $usrData);
 			if($res['status'] == 200){
 				echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'result' => $res['res']));
 			}else{
@@ -83,7 +83,7 @@ class Users extends CI_Controller{
 		}
 		if($ID != "" && $ID != "0"){
 			//$res = $this->users_model->disable_user($this->input->get('usrEnable'), $ID);
-			$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
+			$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
 			if($res == true)
 				echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'res' => array('usrEnable' => 0),'res2' => $usrData));
 			else
@@ -102,7 +102,7 @@ class Users extends CI_Controller{
 			if($key != 'ID')
 				$usrData[$key] = (int)$val;
 		}	
-		$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
+		$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
 		
 		//$res = $this->users_model->delete_user($this->input->get('usrDeleted'), ID);
 		if($res > 0)
@@ -118,7 +118,7 @@ class Users extends CI_Controller{
 		);
 		$res = "";
 		if($ID != "" && $ID != "0"){
-			if($this->commons_model->check_old_password($this->input->get('passOld'), $ID)){
+			if($this->Commons_model->check_old_password($this->input->get('passOld'), $ID)){
 				$res = $this->users_model->change_pass($this->input->get('pass'), $ID);
 				if($res > 0){
 					echo json_encode(array('status' => '200', 'msg' => 'User password updated successfully.'));

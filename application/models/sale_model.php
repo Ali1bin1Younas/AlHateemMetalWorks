@@ -1,5 +1,5 @@
 <?Php
-class sale_model extends CI_Model{
+class Sale_model extends CI_Model{
 
     function get_records(){
         $qry = "SELECT tbl_vouchers.*, ifNull(tbl_vouchers.saleNo,1) as voucherNo,".

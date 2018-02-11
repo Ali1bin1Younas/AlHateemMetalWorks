@@ -30,7 +30,7 @@ class Products_model extends CI_Model{
     public function get_attributes(){
         try{
             $qryUOM = " SELECT id,name from tbl_uoms where deleted = 0 and enable = 1;";
-            $qryCat = " SELECT id,name from tbl_Catagories where deleted = 0 and enable = 1;";
+            $qryCat = " SELECT id,name from tbl_catagories where deleted = 0 and enable = 1;";
             $qryTyp = " SELECT id,name from tbl_types where deleted = 0 and enable = 1;";
             return array('UOM' => $this->db->query($qryUOM)->result_array(), 
                 'cat' => $this->db->query($qryCat)->result_array(),
@@ -48,10 +48,10 @@ class Products_model extends CI_Model{
         $this->db->insert($table,$data);
         $prdID = $this->db->insert_id();
 
-        $this->db->query("Insert Into tbl_Accounts (code,tblID) values('1','2')");
+        $this->db->query("Insert Into tbl_accounts (code,tblID) values('1','2')");
         $accID = $this->db->insert_id();
 
-        $this->db->query("Insert Into tbl_Accounts_Products (accID,prdID) values('".$accID."','".$prdID."')");
+        $this->db->query("Insert Into tbl_accounts_Products (accID,prdID) values('".$accID."','".$prdID."')");
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === TRUE)

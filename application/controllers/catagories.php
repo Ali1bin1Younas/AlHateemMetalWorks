@@ -1,12 +1,12 @@
 <?php
 
-class catagories extends CI_Controller{
+class Catagories extends CI_Controller{
 
 	function __construct(){
 		parent::__construct();	
 	    $this->load->model($this->router->fetch_class()."_model");
-     	$this->load->model('commons_model');	
- 		$this->load->library('commons_lib');
+     	$this->load->model('Commons_model');	
+ 		$this->load->library('Commons_lib');
 	
 		if(!$this->session->userdata('logged_in'))
 		{
@@ -23,7 +23,7 @@ class catagories extends CI_Controller{
 		$rowData["dateTimeCreated"] = date('Y-m-d H:i:s');
 
 		$this->load->model($this->router->fetch_class()."_model");
-		$result = $this->catagories_model->add_record("tbl_".$this->router->fetch_class(), $rowData);
+		$result = $this->Catagories_model->add_record("tbl_".$this->router->fetch_class(), $rowData);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'UOM detail added successfully.', 'result' => $result));
 		}else{
@@ -40,7 +40,7 @@ class catagories extends CI_Controller{
 		}
 		if($ID != "" && $ID != "0"){
 			$this->load->model($this->router->fetch_class()."_model");
-			$res = $this->catagories_model->update_record('tbl_'.$this->router->fetch_class(),'ID',$ID, $rowData);
+			$res = $this->Catagories_model->update_record('tbl_'.$this->router->fetch_class(),'ID',$ID, $rowData);
 			if($res){
 				echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $res['res']));
 			}else{
@@ -59,7 +59,7 @@ class catagories extends CI_Controller{
 				$usrData[$key] = (int)$val;
 		}
 		if($ID != "" && $ID != "0"){
-			$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
+			$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
 			if($res == true)
 				echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'res' => array('usrEnable' => 0),'res2' => $usrData));
 			else
@@ -78,7 +78,7 @@ class catagories extends CI_Controller{
 			if($key != 'ID')
 				$rowData[$key] = (int)$val;
 		}	
-		$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $rowData);
+		$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $rowData);
 		
 		//$res = $this->users_model->delete_user($this->input->get('usrDeleted'), ID);
 		if($res > 0)
@@ -90,8 +90,8 @@ class catagories extends CI_Controller{
 	//////////////     Get View Method     /////
 	///////////////////////////////////////////
 	public function get_view_main(){
-		$data['row_data'] = $this->catagories_model->get_records("tbl_".$this->router->fetch_class());
-		echo $this->load->view("products/".$this->router->fetch_class()."_view", $data, true);
+		$data['row_data'] = $this->Catagories_model->get_records("tbl_".$this->router->fetch_class());
+		echo $this->load->view("Products/".$this->router->fetch_class()."_view", $data, true);
 	}
 	/////////////////////////////////////////////
 	//////////////     Helping functions     ///

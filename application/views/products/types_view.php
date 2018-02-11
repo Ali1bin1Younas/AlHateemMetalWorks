@@ -58,5 +58,6 @@
         </div>
     </section>
     <!-- /.content -->
+    <input id="callBackLoc_t" value="<?php echo base_url('Types');?>" type="hidden">
   </div>
  <!-- /.content-wrapper -->

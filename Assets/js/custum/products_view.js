@@ -1,4 +1,5 @@
 var res_txt_ddl_options = '';
+var win_loc = document.getElementById("callBackLoc").value;
 //////////////////////////////////////////////////
 ///////////     Update record     ///////////////
 ////////////////////////////////////////////////
@@ -54,7 +55,7 @@ function btn_update_detail(e, ID){
 }
 function update_detail(e, detail){
     $.ajax({
-        url: 'Products/update_detail',
+        url: win_loc+'/update_detail',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -87,7 +88,7 @@ function onSuccess_update_detail(e){
 function get_attributes(e){
     swal.showLoading();
     $.ajax({
-        url: 'Products/get_attributes',
+        url: win_loc+'/get_attributes',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -173,7 +174,7 @@ function add_pre(){
 }
 function add_record(detail){
     $.ajax({
-        url: 'Products/add_record',
+        url: win_loc+'/add_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -226,7 +227,7 @@ function btn_disable(e, ID){
 }
 function disable_record(e, enable, ID){
     $.ajax({
-        url: 'Products/disable_record',
+        url: win_loc+'/disable_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -287,7 +288,7 @@ function btn_delete(e, ID){
 }
 function delete_record(e, deleted, ID){
     $.ajax({
-        url: 'Products/delete_record',
+        url: win_loc+'/delete_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',

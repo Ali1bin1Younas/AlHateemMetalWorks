@@ -1,5 +1,5 @@
 <?Php
-class catagories_model extends CI_Model{
+class Catagories_model extends CI_Model{
 
     public function get_records($tbl){
         $record=$this->db->query("SELECT * FROM  ".$tbl." where deleted = 0");

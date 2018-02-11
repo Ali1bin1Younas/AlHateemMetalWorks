@@ -92,6 +92,7 @@
         </div>
     </section>
     <!-- /.content -->
+    <input type="hidden" id="callBackLoc_c" value"<?php  echo base_url('Catagories');?>"/>
   </div>
  <!-- /.content-wrapper -->
 <?php  $this->load->view('common/footer');  ?>

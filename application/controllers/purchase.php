@@ -5,11 +5,11 @@ class Purchase extends CI_Controller{
 	function __construct(){
 		parent::__construct();	
 	    $this->load->model("Purchase_model");
-     	$this->load->model('commons_model');	
- 		$this->load->library('commons_lib');
+     	$this->load->model('Commons_model');	
+ 		$this->load->library('Commons_lib');
 	
 		if(!$this->session->userdata('logged_in')){
-			redirect(base_url().'login');
+			redirect(base_url().'Login');
 		} 
 	}
 
@@ -17,7 +17,7 @@ class Purchase extends CI_Controller{
 		$data['pageHeading'] = $this->router->fetch_class();
 		$data['row_data'] = $this->Purchase_model->get_records();
 		$data["name"] = $this->session->userdata('name');
-		$this->load->view("vouchers/".$this->router->fetch_class()."_view",$data);
+		$this->load->view("Vouchers/".$this->router->fetch_class()."_view",$data);
 	}
 	/////////////////////////////////////////////
 	////////     create & Edit Purchase     ////
@@ -28,7 +28,7 @@ class Purchase extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
 		$this->session->unset_userdata('VID');
-		$this->load->view("vouchers/purchase_create",$data);
+		$this->load->view("Vouchers/Purchase_create",$data);
 	}
 	function purchase_edit(){
 		$data['pageHeading'] = "Edit Purchase";
@@ -40,7 +40,7 @@ class Purchase extends CI_Controller{
 		}else{
 			$data['purchaseNo'] = $this->Purchase_model->get_purchaseNo();
 		}
-		$this->load->view("vouchers/purchase_create",$data);
+		$this->load->view("Vouchers/Purchase_create",$data);
 	}
 	function get_invoice_detail(){
 		echo $this->Purchase_model->get_invoice_detail($this->input->get('ID'));
@@ -102,9 +102,7 @@ class Purchase extends CI_Controller{
 			if($key != 'ID')
 				$usrData[$key] = (int)$val;
 		}	
-		$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
-		
-		//$res = $this->Vouchers_model->delete_user($this->input->get('usrDeleted'), ID);
+		$res = $this->Commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $usrData);
 		if($res > 0)
 			echo json_encode(array('status' => '200', 'msg' => 'User detail updated successfully.', 'result' => $usrData));
 		else
@@ -115,8 +113,8 @@ class Purchase extends CI_Controller{
 	///////////////////////////////////////////
 	public function get_view_create(){
 		$data['pageHeading'] = "Create ". $this->router->fetch_class();
-		$data['row_data'] = $this->vouchers_model->get_records("tbl_".$this->router->fetch_class());
-		echo $this->load->view("vouchers/".$this->router->fetch_class()."_create", $data, true);
+		$data['row_data'] = $this->Purchase_model->get_records("tbl_".$this->router->fetch_class());
+		echo $this->load->view("Vouchers/".$this->router->fetch_class()."_create", $data, true);
 	}
 	/////////////////////////////////////////////
 	//////////////     Helping functions     ///
@@ -144,12 +142,11 @@ class Purchase extends CI_Controller{
 			'VID'=>$this->input->get("id")
 			);
 		$this->ci->session->set_userdata($array);
-
 		echo json_encode(array('id' => $this->session->userdata('VID')));
 	}
 	///////////////
 	public function ko(){
-		$data['row_data'] = $this->purchase_model->get_records();
+		$data['row_data'] = $this->Purchase_model->get_records();
 		$this->load->view("vouchers/koFunctions",$data);
 	}
 }

@@ -3,21 +3,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
 
-	function __construct()
-	{
+	function __construct(){
 		parent::__construct();
-		$this->load->model('commons_model');		
-		$this->load->model('dashboard_model');
+		$this->load->model('Commons_model');		
+		$this->load->model('Dashboard_model');
 
-		$this->load->library('commons_lib');
+		$this->load->library('Commons_lib');
 		if(!$this->session->userdata('logged_in'))
 		{
 			redirect(base_url().'login');
-			$this->load->view('dashboard');
+			$this->load->view('Dashboard');
 		}	
 	}
-	public function index()
-	{	
+	public function index(){	
 		//$data["total_cust"]=$this->dashboard_model->total_cust();
 		//$data["total_file"]=$this->dashboard_model->total_file();
 		//$data["sold_file"]=$this->dashboard_model->sold_file();
@@ -26,15 +24,14 @@ class Dashboard extends CI_Controller {
 		
 		$this->load->view('dashboard',$data);
 	}
-	public function change_password()
-	{	
+	public function change_password(){	
 		 $data["user_name"]=$this->session->userdata('user_name');
 		$this->load->view('change_password',$data);
 	}
 	
 	public function check_old_password_varification(){	
 		$old_password=$this->input->post('old_password');
-		$result_old_password = $this->commons_lib->check_old_password($old_password);
+		$result_old_password = $this->Commons_lib->check_old_password($old_password);
 		if ($result_old_password == 0)
 		{
 			$this->form_validation->set_message('check_old_password_varification', 'your old password does not recognized.');
@@ -61,7 +58,7 @@ class Dashboard extends CI_Controller {
 		}else
 		{ 
 			$data=array("user_pass"=>md5($c_password));
-			$updated_status = $this->commons_model->update_record('users','user_id',$this->session->userdata("user_id"), $data);
+			$updated_status = $this->Commons_model->update_record('users','user_id',$this->session->userdata("user_id"), $data);
 	
 			if($updated_status > 0)
 			{

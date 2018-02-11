@@ -1,10 +1,11 @@
 var pageName = 'UOM';
+var win_loc_u = document.getElementById("callBackLoc_u").value;
 //////////////////////////////////////////////////
 ///////////     View Record     //////////////
 ////////////////////////////////////////////////
 function get_view_uoms(){
     $.ajax({
-        url: 'UOMs/get_view_main',
+        url: win_loc_u+'/get_view_main',
         method: 'GET',
         success: onSuccess_get_view_uoms,
         error: function (res) {
@@ -72,7 +73,7 @@ function add_pre_uom(){
 }
 function add_record_uom(detail){
     $.ajax({
-        url: 'uoms/add_record',
+        url: win_loc_u+'/add_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -156,7 +157,7 @@ function btn_update_detail_uom(e, ID){
 }
 function update_detail_uom(e, detail){
     $.ajax({
-        url: 'UOMs/update_detail',
+        url: win_loc_u+'/update_detail',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -214,7 +215,7 @@ function btn_disable_uom(e, ID){
 }
 function disable_record_uom(e, enable, ID){
     $.ajax({
-        url: 'uoms/disable_record',
+        url: win_loc_u+'/disable_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
@@ -272,7 +273,7 @@ function btn_delete_uom(e, ID){
 }
 function delete_record_uom(e, deleted, ID){
     $.ajax({
-        url: 'UOMs/delete_record',
+        url: win_loc_u+'/delete_record',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',

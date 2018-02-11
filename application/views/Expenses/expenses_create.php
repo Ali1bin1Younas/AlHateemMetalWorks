@@ -59,14 +59,6 @@
                         </tbody>
                       </table>
                     </div>
-                    <div class="form-group col-sm-3">
-                      <div class="row-fluid pull-left text-left">
-                        <label>Customers</label>
-                        <div class="controls">
-                          <input data-bind="ddlSelect2: customer" data-autocomplete="<?php echo base_url(); ?>Sale/getCustomers" data-width="250px"  title="" />
-                        </div>
-                      </div>
-                    </div>
                     <div class="form-group col-sm-9">
                       <div class="pull-left text-left">
                         <label>Description</label>
@@ -79,10 +71,9 @@
                       <table>
                         <thead>
                           <tr>
-                            <th style="text-align: left; min-width: 150px"><label>Item</label></th>
                             <th style="text-align: left"><label>Description</label></th>
-                            <th style="text-align: center"><label>Qty</label></th>
-                            <th style="text-align: center"><label>Unit price</label></th>
+                            <th style="text-align: left; min-width: 150px"><label>Person</label></th>
+                            <th style="text-align: left; min-width: 120px"><label>Account</label></th>
                             <th style="text-align: center"><label>Amount</label></th>
                           </tr>
                         </thead>
@@ -101,16 +92,24 @@
                         </tbody>
                         <tbody data-bind="sortable: { data: Lines, options: { handle: '.sortableHandle', cursor: 'move' } }" class="ko_container ui-sortable">
                           <tr data-select2height="46">
-                            <td style="vertical-align: top; min-width: 150px">
-                              <div class="controls select-picker-item">
-                                <input data-bind="ddlSelect2: Item" data-autocomplete="<?php echo base_url(); ?>Expenses/getProducts" data-width="100%"  title="" />
-                              </div>
-                            </td>
                             <td style="vertical-align: top">
                               <textarea data-bind="value: description" spellcheck="true" class="form-control input-sm autosize" style="height: 48px; width: 300px; margin-bottom: 0px; resize: none; overflow: hidden; overflow-wrap: break-word;" ></textarea>
                             </td>
-                            <td style="vertical-align: top">
-                              <input data-bind="textInput: qty" type="text" class="regular form-control input-sm" style="width: 80px; text-align: center; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" >
+                            <td style="vertical-align: top; min-width: 150px">
+                              <div class="controls select-picker-item">
+                                <input data-bind="ddlSelect2: persons" data-autocomplete="<?php echo base_url(); ?>Expenses/getPersons" data-placeholder="Persons" data-width="100%"  title="" />
+                              </div>
+                            </td>
+                            <td style="vertical-align: top; min-width: 120px;max-width:270px; float:left;">
+                              <div class="controls select-picker-item" style="float:left;">
+                                <select style="width: 120px" data-bind="value: CB, ddlSelect2Value">
+                                  <option value="1">Cash</option>
+                                  <option value="2">Bank</option>
+                                </select>
+                              </div>
+                              <div data-bind="visible: isBank" class="controls select-picker-item" style="float:left; display:none;width: 150px;">
+                                <input data-bind="ddlSelect2: bankAccounts" data-autocomplete="<?php echo base_url(); ?>Expenses/getBankAccounts" data-placeholder="Bank Accounts" data-width="100%"  title="" />
+                              </div>
                             </td>
                             <td style="vertical-align: top">
                               <input data-bind="textInput: amount" type="text" class="regular form-control input-sm" style="width: 100px; text-align: right; margin-bottom: 0px; line-height: 14px; height: 48px; padding-bottom: 24px;" >
@@ -238,16 +237,14 @@
               select2options.width = $(element).attr('data-width');
               }catch(e){alert(e.message);}
           }
+          $(element).select2(select2options);
 
-          try{
-              $(element).select2(select2options);
-          }catch(e){alert(e.message);}
           var tr = $(element).select2('container').closest('tr');
           if (tr.attr('data-select2height'))
           {
               $(element).select2('container').find('.select2-choice').height(tr.attr('data-select2height'));
           }
-
+          
           ko.utils.registerEventHandler(element, 'change', function ()
           {
               var observable = valueAccessor();
@@ -261,6 +258,7 @@
               }
               observable(data);
           });
+          
 
           ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
               $(element).select2('destroy');
@@ -279,6 +277,28 @@
           }
       }
   };
+  ko.bindingHandlers.ddlSelect2Value = {
+    init: function(element, valueAccessor, allBindingsAccessor) {
+
+        var select2options = {};
+        if ($(element).is('select'))
+        {
+            select2options.width = $(element).attr('data-width');
+            select2options.allowClear = ($(element).attr('data-placeholder'));
+            select2options.formatNoMatches = function() { return "No matches found"; };
+            if (select2options.allowClear) select2options.placeholder = $(element).attr('data-placeholder');
+        }
+        $(element).select2(select2options);
+        var tr = $(element).select2('container').closest('tr');
+        if (tr.attr('data-select2height'))
+        {
+            $(element).select2('container').find('.select2-choice').height(tr.attr('data-select2height'));
+        }
+        ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+            $(element).select2('destroy');
+        });
+    },
+};
   ko.bindingHandlers.autosize = {
       update: function (element, valueAccessor) {
           ko.utils.unwrapObservable(valueAccessor());
@@ -287,23 +307,15 @@
   };
   function transactionLinesModel(){
       var self = this;
-      self.Item = ko.observable();
-      self.trackingCode = ko.observable(); 
-      self.qty = ko.observable();
-      self.amount = ko.observable();
       self.description = ko.observable();
-
-      self.Item.subscribe(function(data) { 
-          if (data && data.description && data.description.length > 0) { 
-              self.description(data.description); } 
-          if (data && data.unitPrice && data.unitPrice.length > 0) { 
-              self.amount(data.unitPrice); } 
-          if (data && data.trackingCode && data.trackingCode.length > 0) { 
-              self.trackingCode({ id: data.trackingCode }); 
-          } 
-          if (self.qty() == null || self.qty().length == 0) { 
-              self.qty('1'); 
-          } 
+      self.persons = ko.observable();
+      self.CB = ko.observable();
+      self.isBank = ko.observable(false);
+      self.bankAccounts = ko.observable();
+      self.amount = ko.observable();
+      
+      self.CB.subscribe(function(data) {
+        if(data == 2) self.isBank(true); else self.isBank(false);
       });
       self.AmountAsNumber = ko.computed(function() { 
           var amount = Globalize.parseFloat((self.amount() || '').toString()); 
@@ -311,12 +323,9 @@
           return amount; 
       });
       self.LineTotal = ko.computed(function() { 
-          var qty = Globalize.parseFloat((self.qty() || '').toString()); 
-          var amount = Globalize.parseFloat((self.amount() || '').toString()); 
-          if (isNaN(qty)) { qty = 1; }; 
+          var amount = Globalize.parseFloat((self.amount() || '').toString());  
           if (isNaN(amount)) { amount = 0; }; 
-          var subtotal = qty*amount; 
-          return subtotal; 
+          return amount; 
       });
       self.FormattedLineTotal = ko.computed(function() { 
           var total = self.LineTotal(); 
@@ -332,13 +341,12 @@
       
       self.dateCreated = ko.observable();
       self.VoucherDescription = ko.observable();
-      self.customer = ko.observable();
 
       self.description = ko.observable();
+
       self.GradeTotal = ko.observable();
-      self.qty = ko.observable();
       self.amount = ko.observable();
-      self.LoadingVoucherEnable = ko.observable();
+      self.LoadingVoucherEnable = ko.observable(false);
       self.GradeTotal = ko.computed(function(data) { 
           var total = 0; 
           for (i = 0; i < self.Lines().length; i++) { total += self.Lines()[i].LineTotal(); } 
@@ -359,11 +367,12 @@
       };
       self.RemoveLines = function(line) { self.Lines.remove(line); };
       self.createVoucherEnable = ko.computed(function() {
-          if(ko.toJSON(self.dateCreated) != "" && ko.toJSON(self.customer) != undefined && ko.toJSON(self.customer) != "null"){return true;}
+          if(ko.toJSON(self.dateCreated) != ""){return true;}
           else{return false;}
       });
       self.createVoucher = function(){
           self.LoadingVoucherEnable(true);
+          alert(ko.toJSON(this));return;
           $.ajax({
               url: 'add_record',
               method: 'GET',
@@ -427,12 +436,11 @@
               var res_row = res.res[0];
               var res_di = res_row.dateCreated.split("-");
               viewModel.dateCreated(moment((res_di[1])+'/'+res_di[2]+'/'+res_di[0]).format('DD/MM/YYYY'));
-              viewModel.customer({id:res_row.usrID, text:res_row.usrName});
               viewModel.VoucherDescription(res_row.descrip);
               viewModel.Lines([]);
               for(var i=0; i < res.res_detail.length; i++){
                 viewModel.AddLines();
-                viewModel.Lines()[i].Item({id:res.res_detail[i].prdID,text:res.res_detail[i].prdName});
+                viewModel.Lines()[i].persons({id:res.res_detail[i].prsID,text:res.res_detail[i].prsName});
                 viewModel.Lines()[i].description(res.res_detail[i].prdDescrip);
                 viewModel.Lines()[i].amount(res.res_detail[i].amount);
                 viewModel.LoadingVoucherEnable(false);
@@ -451,6 +459,7 @@
         viewModel.VoucherDescription();
         viewModel.AddLines();
         viewModel.Lines()[0].description();
+        viewModel.Lines()[0].isBank(false);
         viewModel.Lines()[0].amount("0");
         viewModel.LoadingVoucherEnable(false);
         ko.applyBindings(viewModel, document.getElementById("createExpenseView"));

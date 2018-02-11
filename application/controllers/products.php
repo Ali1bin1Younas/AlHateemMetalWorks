@@ -5,8 +5,8 @@ class Products extends CI_Controller{
 	function __construct(){
 		parent::__construct();	
 	    $this->load->model($this->router->fetch_class()."_model");
-     	$this->load->model('commons_model');	
- 		$this->load->library('commons_lib');
+     	$this->load->model('Commons_model');	
+ 		$this->load->library('Commons_lib');
 	
 		if(!$this->session->userdata('logged_in'))
 		{
@@ -86,8 +86,6 @@ class Products extends CI_Controller{
 				$rowData[$key] = (int)$val;
 		}	
 		$res = $this->commons_model->update_record('tbl_'.$this->router->fetch_class(), 'ID', $ID, $rowData);
-		
-		//$res = $this->users_model->delete_user($this->input->get('usrDeleted'), ID);
 		if($res > 0)
 			echo json_encode(array('status' => '200', 'msg' => 'Product detail updated successfully.', 'result' => $rowData));
 		else

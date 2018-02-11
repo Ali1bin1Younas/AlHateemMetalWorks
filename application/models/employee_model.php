@@ -1,46 +1,35 @@
 <?php 
 class Employee_model extends CI_Model
 {
-	
-	
-	
-	
-	public function insert_employee($user_data)
-	{
-			$query = $this->db->insert('employee',$user_data);
-			if($query){
-				return true;	
-			}
-			else{
-				return false;	
-			}
+	public function insert_employee($user_data){
+		$query = $this->db->insert('employee',$user_data);
+		if($query){
+			return true;	
+		}
+		else{
+			return false;	
+		}
 	}
 	
-	public function update_employee($emp_data,$id)
-	{
-			$this->db->where("employee_id",$id);
-			$query = $this->db->update('employee',$emp_data);
-			if($query){
-				return true;	
-			}
-			else{
-				return false;	
-			}
+	public function update_employee($emp_data,$id){
+		$this->db->where("employee_id",$id);
+		$query = $this->db->update('employee',$emp_data);
+		if($query){
+			return true;	
+		}
+		else{
+			return false;	
+		}
 	}
-	
-	
 	
 /*******************************************************************************************************************/	
-	public function all_employee()
-	{
+	public function all_employee(){
 		$this->db->where('delete_bit',1);
 		$query=$this->db->get('employee');
 		return $query->result_array();
 	}
 	
-	
-	public function get_employee($id)
-	{
+	public function get_employee($id){
 		$this->db->where("employee_id",$id);
 		$query=$this->db->get('employee');
 		return $query->row();
