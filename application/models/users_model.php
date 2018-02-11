@@ -2,16 +2,16 @@
 class Users_model extends CI_Model{
 
     function get_records(){
-        $qry = "SELECT tbl_users.*, tbl_usersType.name as typName FROM  `tbl_users` ".
-            " inner join tbl_usersType on tbl_usersType.ID = tbl_users.typID ".
+        $qry = "SELECT tbl_users.*, tbl_userstype.name as typName FROM  `tbl_users` ".
+            " inner join tbl_userstype on tbl_userstype.ID = tbl_users.typID ".
             " where deleted = 0";
         $record=$this->db->query($qry);
         return $record->result_array();
     }
 
     function get_record($id){
-        $qry = "SELECT tbl_users.*, tbl_usersType.name as typName FROM  `tbl_users` ".
-            " inner join tbl_usersType on tbl_usersType.ID = tbl_users.typID ".
+        $qry = "SELECT tbl_users.*, tbl_userstype.name as typName FROM  `tbl_users` ".
+            " inner join tbl_userstype on tbl_userstype.ID = tbl_users.typID ".
             " where deleted = 0 and tbl_users.ID = '".$id."'";
         $record=$this->db->query($qry);
         return $record->result_array();
@@ -19,7 +19,7 @@ class Users_model extends CI_Model{
 
     public function get_attributes(){
         try{
-            $qry = " SELECT id,name from tbl_usersType";
+            $qry = " SELECT id,name from tbl_userstype";
             return array('usersTypes' => $this->db->query($qry)->result_array());
         }catch(Exception $e){
             return false;
@@ -32,9 +32,9 @@ class Users_model extends CI_Model{
 	}
 
     function get_user_records_by_its_type($id){
-        $qry = "SELECT tbl_users.*, tbl_usersType.name as typName FROM  `tbl_users` ".
-            " inner join tbl_usersType on tbl_usersType.ID = tbl_users.typID ".
-            " where deleted = 0 and tbl_usersType.ID = $id";
+        $qry = "SELECT tbl_users.*, tbl_userstype.name as typName FROM  `tbl_users` ".
+            " inner join tbl_userstype on tbl_userstype.ID = tbl_users.typID ".
+            " where deleted = 0 and tbl_userstype.ID = $id";
         $record=$this->db->query($qry);
         return $record->result_array();
     }

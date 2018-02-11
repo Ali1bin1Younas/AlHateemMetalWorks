@@ -9,16 +9,16 @@
 
     <title> Al-Hateem Metal</title>
 
-    <link href="<?php echo base_url(); ?>assets/css/jquery-ui.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>assets/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>assets/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>Assets/css/jquery-ui.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>Assets/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>Assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>Assets/font-awesome/css/font-awesome.css" rel="stylesheet">
 
     <link href="<?php echo base_url(); ?>Assets/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>Assets/css/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet">
     
-    <link href="<?php echo base_url(); ?>assets/css/animate.css" rel="stylesheet">
-    <link href="<?php echo base_url(); ?>assets/css/style.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>Assets/css/animate.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>Assets/css/style.css" rel="stylesheet">
     <style>
     hr {
         height: 4px;
@@ -43,7 +43,7 @@
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
                         <div class="dropdown profile-element"> <span>
-                                <img alt="image" class="img-circle" src="<?php echo base_url(); ?>assets/img/profile_small.jpg" />
+                                <img alt="image" class="img-circle" src="<?php echo base_url(); ?>Assets/img/profile_small.jpg" />
                                 </span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"><?php echo $this->session->userdata('usrName'); ?></strong>

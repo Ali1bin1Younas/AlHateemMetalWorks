@@ -78,15 +78,15 @@
 <?php  $this->load->view('common/footer');  ?>
 
 <!--Page Scripts -->
-<script src="<?php echo base_url(); ?>assets/js/plugins/dataTables/datatables.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/bootstrap-select/bootstrap-select.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/select2/select2.full.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/globalize.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/custum/sale_view.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/dataTables/datatables.min.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/bootstrap-select/bootstrap-select.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/globalize.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/knockoutJS/knockout-3.4.2.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/knockoutJS/knockout-sortable.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/custum/sale_view.js"></script>
 <!-- Page-Level Scripts -->
 <script>
   $(document).ready(function(){

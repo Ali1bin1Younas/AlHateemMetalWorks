@@ -53,7 +53,7 @@ class Sale_model extends CI_Model{
         }
         
         $this->db->where('VID', $VID);
-        $this->db->delete('tbl_vouchersDetail');
+        $this->db->delete('tbl_vouchersdetail');
 
         $LinesStr = '';
 		foreach($LinesArr as $Line){
@@ -67,11 +67,11 @@ class Sale_model extends CI_Model{
             if(isset($Line->cargoName))
                 $cargoName = $Line->cargoName;
 
-			$LinesStr = " Insert Into tbl_vouchersDetail (vID,prdID,qty,price,builtyNo,cargoName,discount) ".
+			$LinesStr = " Insert Into tbl_vouchersdetail (vID,prdID,qty,price,builtyNo,cargoName,discount) ".
 					   " Values(".$VID.",".$Line->Item->id.",".$Line->qty.",".$Line->AmountAsNumber.",'".$builtyNo."','".$cargoName."',".$discountAmount.");";	
                        $this->db->query($LinesStr);
         }
-        $this->db->query("Insert Into tbl_Transactions (typID,amount,accID,traLID) ".
+        $this->db->query("Insert Into tbl_transactions (typID,amount,accID,traLID) ".
          " values('1',".$data['gradeTotal'].",'".$this->get_account_ID($data['usrID'])."','2')");
 
         $this->db->trans_complete();

@@ -97,9 +97,9 @@ $this->load->view('common/header');
 <?php  $this->load->view('common/footer');  ?>
 
 <!--Page Scripts -->
-<script src="<?php echo base_url(); ?>assets/js/plugins/dataTables/datatables.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/js/custum/users_view.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/dataTables/datatables.min.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/plugins/sweetalert/sweetalert2.0.min.js"></script>
+<script src="<?php echo base_url(); ?>Assets/js/custum/users_view.js"></script>
 <!-- Page-Level Scripts -->
   <script>
     $(document).ready(function(){
