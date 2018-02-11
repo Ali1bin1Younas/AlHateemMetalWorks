@@ -29,7 +29,7 @@ class Expenses extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
 		$this->session->unset_userdata('expID');
-		$this->load->view($this->router->fetch_class()."/".strtolower($this->router->fetch_class())."_create",$data);
+		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_create",$data);
 	}
 	function expenses_edit(){
 		$data['pageHeading'] = "Edit Expense";
