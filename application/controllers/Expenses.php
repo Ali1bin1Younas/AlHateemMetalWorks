@@ -65,41 +65,19 @@ class Expenses extends CI_Controller{
 	///////////////////////////////////////////
 	public function add_record(){
 		$Vdata = json_decode($this->input->get("model"));
-		$issueDateStr = null;
-		$deliveryDateStr = null;
 		$VoucherDescriptionStr = "";
 		$referenceNo = '';
-		if(isset($Vdata->issueDate)){
-			$issueDateStr = explode("/", (string)$Vdata->issueDate);
-			$issueDateStr = $issueDateStr[2] . "/" . $issueDateStr[1] ."/" . $issueDateStr[0];
-		}
-		if(isset($Vdata->deliveryDate)){
-			$deliveryDateStr = explode("/", (string)$Vdata->deliveryDate);
-			$deliveryDateStr = $deliveryDateStr[2] . "/" . $deliveryDateStr[1] ."/" . $deliveryDateStr[0];
-		}
+
 		if(isset($Vdata->VoucherDescription)){
 			$VoucherDescriptionStr = $Vdata->VoucherDescription;
 		}
 
-		$data['dateIssue'] = $issueDateStr;
-		$data['dateDelivery'] = $deliveryDateStr;
 		$data["dateTimeCreated"] = date('Y-m-d H:i:s');
-		if(isset($Vdata->referenceNo))
-			$referenceNo = $Vdata->referenceNo;
-		$data['referenceNo'] = $referenceNo;
-		$data['usrID'] = $Vdata->supplier->id;
-		$data['typID'] = 2;
-		if($Vdata->discount){
-			$data['discount'] = $Vdata->discount;
-			$data['discountType'] = $Vdata->discountType;
-		}
 		$data['descrip'] = $VoucherDescriptionStr;
 		$data['usrID_usr'] = $this->session->userdata('usrID');
-		$data['purchaseNo'] = $Vdata->purchaseNo;
-		$data['gradeTotal'] = $Vdata->GradeTotal;
-
-		$this->load->model($this->router->fetch_class()."_model");
-		$result = $this->Purchase_model->add_record_with_data('tbl_vouchers', $data, $Vdata->Lines, $Vdata->isEdit, $Vdata->VID);
+		$data['grandTotal'] = $Vdata->GradeTotal;
+		
+		$result = $this->Expenses_model->add_record('tbl_'.$this->router->fetch_class(), $data, $Vdata->Lines, $Vdata->isEdit, $Vdata->ID);
 		if($result){
 			echo json_encode(array('status' => '200', 'msg' => 'User detail added successfully.', 'result' => $result));
 		}else{

@@ -1,5 +1,5 @@
-var pageNameV = 'Create Voucher';
-var controllerNameV = 'Sale';
+var pageNameV = 'Expenses';
+var controllerNameV = 'Expenses';
 var win_loc = document.getElementById("callBackLoc").value;
 //////////////////////////////////////////////////
 ///////////     View Record     //////////////
@@ -7,7 +7,6 @@ var win_loc = document.getElementById("callBackLoc").value;
 function onSuccess_get_view(res){
     $('.page-contents').html(res);
     var viewModel = new ReservationsViewModel();
-
     $(".date").datepicker({
         todayBtn: "linked",
         keyboardNavigation: false,
@@ -21,7 +20,6 @@ function onSuccess_get_view(res){
         // Overall viewmodel for the popup screen, along with initial state
         viewModelInit = true;
         viewModel.issueDate(new Date());
-        viewModel.referenceNo("");
         viewModel.VoucherDescription();
         viewModel.discount(false);
         viewModel.discountType("Percentage");
@@ -30,9 +28,10 @@ function onSuccess_get_view(res){
         viewModel.Lines()[0].description();
         viewModel.Lines()[0].amount("0");
         
-        ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
-    }catch(e){alert(e.message);ko.cleanNode(document.getElementById("createVoucherView"));}
+        ko.applyBindings(viewModel, document.getElementById("createExpenseView"));
+    }catch(e){alert(e.message);ko.cleanNode(document.getElementById("createExpenseView"));}
 }
+//////////////////////////////////////////////////
 function expenses_edit(id){
     $.ajax({
         url: win_loc+'/set_edit_session',

@@ -103,8 +103,8 @@
                             <td style="vertical-align: top; min-width: 120px;max-width:270px; float:left;">
                               <div class="controls select-picker-item" style="float:left;">
                                 <select style="width: 120px" data-bind="value: CB, ddlSelect2Value">
-                                  <option value="1">Cash</option>
-                                  <option value="2">Bank</option>
+                                  <option value="26">Cash</option>
+                                  <option value="27">Bank</option>
                                 </select>
                               </div>
                               <div data-bind="visible: isBank" class="controls select-picker-item" style="float:left; display:none;width: 150px;">
@@ -194,7 +194,7 @@
 <!-- Page-Level Scripts -->
 <script type="text/javascript">
   var bs_url = "<?php echo base_url();?>";
-  load(bs_url+'Assets/js/plugins/select2/select2.full.min.js').then(bs_url+'Assets/js/custum/sale_create.js').thenRun(function () {
+  load(bs_url+'Assets/js/plugins/select2/select2.full.min.js').then(bs_url+'Assets/js/custum/expenses_create.js').thenRun(function () {
   
     ////////////////////////////////////////////////
    //     setting up ViewModel using KnowkoutJS   /
@@ -315,7 +315,7 @@
       self.amount = ko.observable();
       
       self.CB.subscribe(function(data) {
-        if(data == 2) self.isBank(true); else self.isBank(false);
+        if(data == 27) self.isBank(true); else self.isBank(false);
       });
       self.AmountAsNumber = ko.computed(function() { 
           var amount = Globalize.parseFloat((self.amount() || '').toString()); 
@@ -371,10 +371,10 @@
           else{return false;}
       });
       self.createVoucher = function(){
+        var win_loc = $('#callBackLoc').val();
           self.LoadingVoucherEnable(true);
-          alert(ko.toJSON(this));return;
           $.ajax({
-              url: 'add_record',
+              url: win_loc+'/add_record',
               method: 'GET',
               contentType: "application/json; charset:utf-8",
               dataType: 'json',
