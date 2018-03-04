@@ -76,6 +76,9 @@
                         <a href="<?php echo base_url(); ?>Products"><i class="fa fa-user"></i> <span class="nav-label">Products</span></a>
                     </li>
                     <li>
+                        <a href="<?php echo base_url(); ?>Rollers"><i class="fa fa-user"></i> <span class="nav-label">Rollers</span></a>
+                    </li>
+                    <li>
                         <a href="<?php echo base_url(); ?>Sale"><i class="fa fa-user"></i> <span class="nav-label">Sale Book</span></a>
                     </li>
                     <li>
