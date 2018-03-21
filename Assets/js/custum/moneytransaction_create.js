@@ -1,78 +1,38 @@
-var controllerNameUsers = 'Users';
+var pageNameV = 'Money Transaction';
+var controllerNameV = 'Money Transaction';
 var win_loc = document.getElementById("callBackLoc").value;
-var hTypID = document.getElementById("hTypID").value;
 //////////////////////////////////////////////////
 ///////////     Add New Record     //////////////
 ////////////////////////////////////////////////
-function add_pre(){
-    swal({
-        title: 'Add New Employee',
-        html: insert_add_view(),
-        showCancelButton: true,
-        focusConfirm: true,
-        confirmButtonText: "Save it!",
-        showLoaderOnConfirm: true,
-        onOpen: function() {
-            $("#data").datepicker({
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true,
-                format: "dd/mm/yyyy"
-            }).datepicker('setDate', new Date()).datepicker('update').val('');
-        },
-        preConfirm: function () {
-            return new Promise(function (resolve,reject) {
-                if($('#txtName').val() == "" || $('#txtFullName').val() == "" || $('#txtPass').val() == "" || $('#txtDOB').val() == "")
-                {reject("Please fill all mendatory(*) fields first!");}
-            resolve([
-                $('#txtName').val(),
-                $('#txtPass').val(),
-                $('#txtFullName').val(),
-                $('#txtEmail').val(),
-                $('#txtMobile').val(),
-                $('#txtTell').val(),
-                $('#txtAddress').val(),
-                hTypID,
-                $('#txtDOB').val()
-            ])
-            })
+function onSuccess_add_record(viewModel, isNew){
+    return function(res){
+        try{
+            viewModel.LoadingVoucherEnable(false);
+            if(res.status == 200){
+                swal("User Profile", "Voucher Created!", "success");
+                if(isNew){
+                    var d = new Date();
+                    viewModel.issueDate(moment((d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear()).format('DD/MM/YYYY'));
+                    viewModel.deliveryDate('');
+                    viewModel.saleNo(Globalize.parseInt(viewModel.saleNo()) + 1);
+                    viewModel.VoucherDescription('');
+                    viewModel.customer('');
+                    viewModel.discount(false);
+                    viewModel.discountType('Percentage');
+                    viewModel.Lines([]);
+            
+                    viewModel.AddLines();
+                    viewModel.Lines()[0].description('');
+                    viewModel.Lines()[0].amount("0");
+                }else{
+                    $(location).attr('href', $('#callBackLoc').val());
+                }
+            }else{
+                swal("User Profile", "nope", "error");
+            }
+        }catch(e){
+            swal("User Profile", e.message, "error");
         }
-    })
-    .then(function (result) {
-        swal.showLoading();
-        add_record(JSON.parse(JSON.stringify(result)));
-    })
-    .catch(swal.noop);
-}
-function add_record(detail){
-    var DOB = detail[8].toString().split('/');
-    $.ajax({
-        url: win_loc+'/add_record',
-        method: 'GET',
-        contentType: "application/json; charset:utf-8",
-        dataType: 'json',
-        data: {'name':detail[0],'pass':detail[1],'fullName':detail[2],'email':detail[3],'mobile':detail[4],'tell':detail[5],'address':detail[6],'typID':detail[7],'DOB':moment(DOB[1]+'/'+DOB[0]+'/'+DOB[2]).format('YYYY/MM/DD')},
-        success: onSuccess_add_record,
-        error: function (res) {
-            swal("Upexpected Error", "Please contact system administrator.", "error");
-        },
-        failure: function (res) {
-            swal("Upexpected Error", "Please try again later.", "error");
-        }
-    });
-}
-function onSuccess_add_record(res){
-    try{
-        if(res.status == 200){
-            add_new_row_dataTable(null, res);
-            swal("User Profile", "User Added Successfully!", "success");
-        }else{
-            swal("User Profile", res.msg, "error");
-        }
-    }catch(e){
-        swal("User Profile", e.message, "error");
     }
 }
 //////////////////////////////////////////////////
@@ -87,6 +47,7 @@ function btn_update_detail(e, ID){
         confirmButtonText: "Save it!",
         showLoaderOnConfirm: true,
         onOpen: function() {
+            get_attributes(e);
             $("#data").datepicker({
                 todayBtn: "linked",
                 keyboardNavigation: false,
@@ -126,7 +87,7 @@ function btn_update_detail(e, ID){
                 $('#txtMobile').val(),
                 $('#txtTell').val(),
                 $('#txtAddress').val(),
-                hTypID,
+                $('#selUsrTyp').val(),
                 $('#txtDOB').val(),
                 $('#txtID').val()
             ])
@@ -473,12 +434,12 @@ function insert_add_view(){
                     '<div class="col-sm-8">'+
                         '<Textarea type="text" placeholder="Address" id="txtAddress" value="" class="form-control m-b "></Textarea>'+
                     '</div>'+
-                    // '<label class="col-sm-4 control-label">User Type<font color="red">*</font></label>'+
-                    // '<div class="col-sm-8">'+
-                    //     '<select id="selUsrTyp" class="form-control m-b">'+
-                    //         '<option value="">-Select Type-</option>'+
-                    //     '</select>'+
-                    // '</div>'+
+                    '<label class="col-sm-4 control-label">User Type<font color="red">*</font></label>'+
+                    '<div class="col-sm-8">'+
+                        '<select id="selUsrTyp" class="form-control m-b">'+
+                            '<option value="">-Select Type-</option>'+
+                        '</select>'+
+                    '</div>'+
                     '<label class="col-sm-4 control-label">DOB<font color="red">*</font></label>'+
                     '<div class="col-sm-8">'+
                         '<div id="data" class="input-group date">'+

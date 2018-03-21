@@ -323,6 +323,7 @@ function insert_add_view_cat(){
         '</div>';
         return strView;
 }
+
 function error_swal(res){
     swal({title: pageNamecat, text: res.msg, type: "error",
         preConfirm: function (value) {

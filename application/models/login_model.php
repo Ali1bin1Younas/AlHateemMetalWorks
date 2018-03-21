@@ -7,9 +7,13 @@ class Login_model extends CI_Model
 		$this->db->where('name',$username);		
 		//$this->db->where('usrPass',md5($password));
 		$this->db->where('pass',$password);
-		$this->db->where('enable',1);		
-		$query=$this->db->get('tbl_users');	
-		return $query->row();	
+		$this->db->where('enable',1);
+		try{		
+			$query = $this->db->get('tbl_users');	
+			return $query->row();
+		}catch(Exception $e){
+			return $this->db->_error_message();
+		}	
 	}	
 	
 	public function check_pass($user_id,$password){ 

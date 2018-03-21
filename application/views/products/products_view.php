@@ -113,7 +113,7 @@
       var table = $('.dataTables-grd');
       table.DataTable({
           "columnDefs": [
-              //{ "targets": [2,3,4], "visible": false, "searchable": false}
+              //{ "targets": [0], "visible": false, "searchable": false}
           ],
           "bAutoWidth": false,
           pageLength: 10,

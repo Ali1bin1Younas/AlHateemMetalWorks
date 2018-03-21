@@ -17,18 +17,21 @@ class Users extends CI_Controller{
 		$data['pageHeading'] = $this->router->fetch_class();
 		$data['row_data'] = $this->Users_model->get_user_records_by_its_type(2);
 		$data["name"] = $this->session->userdata('name');
+		$data["typID"] = 2;
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
 	function customer(){
 		$data['pageHeading'] = $this->router->fetch_class();
 		$data['row_data'] = $this->Users_model->get_user_records_by_its_type(3);
 		$data["name"] = $this->session->userdata('name');
+		$data["typID"] = 3;
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
 	function vendor(){
 		$data['pageHeading'] = $this->router->fetch_class();
 		$data['row_data'] = $this->Users_model->get_user_records_by_its_type(4);
 		$data["name"] = $this->session->userdata('name');
+		$data["typID"] = 4;
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_view",$data);
 	}
 	function Misc(){

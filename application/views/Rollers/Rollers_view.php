@@ -24,6 +24,7 @@ $this->load->view('common/header');
               <div class="box-body">
                 <div class="row">
                 <div class="col-lg-12 text-right form-group">
+                <a class="btn btn-primary pad"  href="<?php echo base_url(); ?>Rollers_book"><i class="fa" aria-hidden="true"></i>Roolers Book</a>
                 <a class="btn btn-primary pad" id="btnAdd" onclick="add_pre();" href="javascript:void(0);"><i class="fa fa-plus" aria-hidden="true"></i>Add New</a>
                 </div>
                 </div>
@@ -64,7 +65,6 @@ $this->load->view('common/header');
                               <a title="Delete" class="btn btn-danger btn-icon" id="btnDelete" onclick="btn_delete(this,<?php echo $row['ID'];?>);" data-id="1" href="javascript:void(0);" ><i class="fa fa-trash" aria-hidden="true"></i></a>
                               </button>
                             <?php } ?>
-                            <a title="Change Password" tooltip="Change password" class="btn btn-warning btn-icon" id="btnChangePass" onclick="btn_change_pass(this,<?php echo $row['ID'];?>);" href="javascript:void(0);" ><i class="fa fa-key" aria-hidden="true"></i></a>
                           </td>       
                         </tr>
                         <?php } ?>

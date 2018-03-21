@@ -90,6 +90,7 @@ $this->load->view('common/header');
         </div>
     </section>
     <!-- /.content -->
+    <input id="hTypID" value="<?php echo $typID;?>" type="hidden">
     <input id="callBackLoc" value="<?php echo base_url('Users');?>" type="hidden">
   </div>
  <!-- /.content-wrapper -->

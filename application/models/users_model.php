@@ -42,28 +42,33 @@ class Users_model extends CI_Model{
     public function add_record_with_data($tbl, $data){
         $this->db->trans_start();
         $this->db->insert($tbl,$data);
-        $usrID = $this->db->insert_id();
+        $ID = $this->db->insert_id();
 
-        $this->db->query("Insert Into tbl_Accounts (code,tblID) values('1','1')");
+        $this->db->query("Insert Into tbl_Accounts (code,name,headID,tblID) values('".$this->getUserCode($data['typID'], $ID)."','".$data['fullName']."','".$this->getHeadID($data['typID'])."','1')");
         $accID = $this->db->insert_id();
 
-        $this->db->query("Insert Into tbl_Accounts_users (accID,usrID) values('".$accID."','".$usrID."')");
+        $this->db->query("Insert Into tbl_Accounts_users (accID,usrID) values('".$accID."','".$ID."')");
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === TRUE)
-			return $this->get_record($usrID);
+			return $this->get_record($ID);
         else
             return false;
 	}
 
     public function update_record_with_data($table,$colum,$id,$data){
-		$this->db->where($colum, $id);
-		$this->db->update($table, $data); 
-		if($this->db->affected_rows() > 0){	
-			return array('status' => '200', 'res' => $this->get_record($id));
-		}else{
-			return false;
-		}
+        $this->db->trans_start();
+        $this->db->where($colum, $id);
+        $this->db->update($table, $data); 
+
+        $this->db->where($colum, $this->get_account_ID($id));
+        $this->db->update("tbl_accounts", array('name' => $data['fullName']));
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === TRUE)
+            return array('status' => '200', 'res' => $this->get_record($id));
+        else
+            return false;
 	}
 
     public function delete_user($usrDeleted, $id){
@@ -80,6 +85,21 @@ class Users_model extends CI_Model{
     public function change_pass($pass, $id){
         $this->db->query("UPDATE tbl_users SET pass = '".$pass."' WHERE ID='".$id."'");
         return $this->db->affected_rows();
+    }
+
+    ////////////////////////////////////////////////////
+    //////////////////// Helping functions     ////////
+    //////////////////////////////////////////////////
+    public function getUserCode($typID, $ID){
+        if($typID == "2" || $typID == "1"){return "20020".$ID;}else if($typID == "3"){return "10040".$ID;}else if($typID == "4"){return "20010".$ID;}else{return "0";}
+    }
+    public function getHeadID($typID){
+        if($typID == "2" || $typID == "1"){return "17";}else if($typID == "3"){return "24";}else if($typID == "4"){return "23";}else{return "0";}
+    }
+
+    public function get_account_ID($id){
+        $query = $this->db->query("select accID from tbl_accounts_users where usrID = '".$id."'");
+        return $query->row('accID');
     }
 }
 ?>

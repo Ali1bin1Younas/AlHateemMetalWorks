@@ -4,7 +4,7 @@ class Login_lib {
 	public function validate_login($user,$password){	
 		$this->ci =& get_instance();
 		$this->ci->load->model('Login_model');
-		$result=$this->ci->Login_model->get_login($user,$password);
+		$result = $this->ci->Login_model->get_login($user,$password);
 
 		if(count($result)>0){	
 			$array=array(

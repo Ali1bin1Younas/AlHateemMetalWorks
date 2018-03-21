@@ -2,22 +2,13 @@
 class Rollers_model extends CI_Model{
 
     function get_records($tbl){
-        $qry = "SELECT * FROM  ".$tbl." where enable = 1 and deleted = 0";
+        $qry = "SELECT * FROM  ".$tbl." where deleted = 0";
         return $this->db->query($qry)->result_array();
     }
 
-    function get_record($id){
-        $qry = "SELECT * FROM  ".$tbl." where enable = 1 and deleted = 0 and ID = '".$id."'";
+    function get_record($tbl, $id){
+        $qry = "SELECT * FROM  ".$tbl." where deleted = 0 and ID = '".$id."'";
         return $this->db->query($qry)->result_array();
-    }
-
-    public function get_attributes(){
-        try{
-            $qry = " SELECT id,name from tbl_userstype";
-            return array('usersTypes' => $this->db->query($qry)->result_array());
-        }catch(Exception $e){
-            return false;
-        }
     }
 
     public function get_last_user($id){   
@@ -25,39 +16,36 @@ class Rollers_model extends CI_Model{
         return $query->row();		
 	}
 
-    function get_user_records_by_its_type($id){
-        $qry = "SELECT tbl_users.*, tbl_userstype.name as typName FROM  `tbl_users` ".
-            " inner join tbl_userstype on tbl_userstype.ID = tbl_users.typID ".
-            " where deleted = 0 and tbl_userstype.ID = $id";
-        $record=$this->db->query($qry);
-        return $record->result_array();
-    }
-    
     public function add_record_with_data($tbl, $data){
         $this->db->trans_start();
         $this->db->insert($tbl,$data);
-        $usrID = $this->db->insert_id();
+        $ID = $this->db->insert_id();
 
-        $this->db->query("Insert Into tbl_Accounts (code,tblID) values('1','1')");
+        $this->db->query("Insert Into tbl_Accounts (code,name,headID,tblID) values('20040".$ID."','".$data['name']."','29','5')");
         $accID = $this->db->insert_id();
 
-        $this->db->query("Insert Into tbl_Accounts_users (accID,usrID) values('".$accID."','".$usrID."')");
+        $this->db->query("Insert Into tbl_Accounts_rollers (accID,rolrID) values('".$accID."','".$ID."')");
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === TRUE)
-			return $this->get_record($usrID);
+			return $this->get_record($tbl, $ID);
         else
             return false;
 	}
 
-    public function update_record_with_data($table,$colum,$id,$data){
-		$this->db->where($colum, $id);
-		$this->db->update($table, $data); 
-		if($this->db->affected_rows() > 0){	
-			return array('status' => '200', 'res' => $this->get_record($id));
-		}else{
-			return false;
-		}
+    public function update_record_with_data($tbl,$colum,$id,$data){
+        $this->db->trans_start();
+        $this->db->where($colum, $id);
+		$this->db->update($tbl, $data); 
+        
+        $this->db->where($colum, $this->get_account_ID($id));
+        $this->db->update("tbl_accounts", array('name' => $data['name']));
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === TRUE)
+            return array('status' => '200', 'res' => $this->get_record($tbl, $id));
+        else
+            return false;
 	}
 
     public function delete_user($usrDeleted, $id){
@@ -71,9 +59,12 @@ class Rollers_model extends CI_Model{
         return $query;
     }
 
-    public function change_pass($pass, $id){
-        $this->db->query("UPDATE tbl_users SET pass = '".$pass."' WHERE ID='".$id."'");
-        return $this->db->affected_rows();
+    /////////////////////////////////////////////////
+    ////////////////     Helping Methods     ///////
+    ///////////////////////////////////////////////
+    public function get_account_ID($id){
+        $query = $this->db->query("select accID from tbl_accounts_rollers where rolrID = '".$id."'");
+        return $query->row('accID');
     }
 }
 ?>

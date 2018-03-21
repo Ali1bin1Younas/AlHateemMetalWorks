@@ -76,7 +76,7 @@
                         <a href="<?php echo base_url(); ?>Products"><i class="fa fa-user"></i> <span class="nav-label">Products</span></a>
                     </li>
                     <li>
-                        <a href="<?php echo base_url(); ?>Rollers"><i class="fa fa-user"></i> <span class="nav-label">Rollers</span></a>
+                        <a href="<?php echo base_url(); ?>Rollers_book"><i class="fa fa-user"></i> <span class="nav-label">Roolers Book</span></a>
                     </li>
                     <li>
                         <a href="<?php echo base_url(); ?>Sale"><i class="fa fa-user"></i> <span class="nav-label">Sale Book</span></a>
@@ -86,6 +86,9 @@
                     </li>
                     <li>
                         <a href="<?php echo base_url(); ?>Expenses"><i class="fa fa-user"></i> <span class="nav-label">Expense Book</span></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo base_url(); ?>Moneytransactions"><i class="fa fa-user"></i> <span class="nav-label">Money Book</span></a>
                     </li>
                 </ul>
             </div>

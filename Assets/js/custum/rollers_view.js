@@ -1,5 +1,66 @@
 var controllerNameUsers = 'Rollers';
+var swalHeader = 'Roller';
 var win_loc = document.getElementById("callBackLoc").value;
+//////////////////////////////////////////////////
+///////////     Add New Record     //////////////
+////////////////////////////////////////////////
+function add_pre(){
+    swal({
+        title: 'Add New Rooler',
+        html: insert_add_view(),
+        showCancelButton: true,
+        focusConfirm: true,
+        confirmButtonText: "Save it!",
+        showLoaderOnConfirm: true,
+        onOpen: function() {
+        },
+        preConfirm: function () {
+            return new Promise(function (resolve,reject) {
+                if($('#txtName').val() == "" || $('#txtRatePerKg').val() == "")
+                {reject("Please fill all mendatory(*) fields first!");}
+            resolve([
+                $('#txtName').val(),
+                $('#txtAddress').val(),
+                $('#txtPhone').val(),
+                $('#txtRatePerKg').val(),
+            ])
+            })
+        }
+    })
+    .then(function (result) {
+        swal.showLoading();
+        add_record(JSON.parse(JSON.stringify(result)));
+    })
+    .catch(swal.noop);
+}
+function add_record(detail){
+    $.ajax({
+        url: win_loc+'/add_record',
+        method: 'GET',
+        contentType: "application/json; charset:utf-8",
+        dataType: 'json',
+        data: {'name':detail[0],'address':detail[1],'phone':detail[2],'ratePerKg':detail[3]},
+        success: onSuccess_add_record,
+        error: function (res) {
+            swal("Upexpected Error", "Please contact system administrator.", "error");
+        },
+        failure: function (res) {
+            swal("Upexpected Error", "Please try again later.", "error");
+        }
+    });
+}
+function onSuccess_add_record(res){
+    try{
+        if(res.status == 200){
+            add_new_row_dataTable(null, res);
+            swal(swalHeader, "Record created Successfully!", "success");
+        }else{
+            swal(swalHeader, res.msg, "error");
+        }
+    }catch(e){
+        swal(swalHeader, e.message, "error");
+    }
+}
 //////////////////////////////////////////////////
 ///////////     Update record     ///////////////
 ////////////////////////////////////////////////
@@ -12,23 +73,12 @@ function btn_update_detail(e, ID){
         confirmButtonText: "Save it!",
         showLoaderOnConfirm: true,
         onOpen: function() {
-            get_attributes(e);
-            $("#data").datepicker({
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true,
-                format: "dd/mm/yyyy"
-            });
-            document.getElementById("lblPass").style.display = "none";
-            document.getElementById("divPass").style.display = "none";
             var tableObj = $('.dataTables-grd').DataTable();
             var rowObj = $(e).closest('tr');
-            $('#txtName').val(tableObj.row(rowObj).data()[1]);
-            $('#txtAddress').val(tableObj.row(rowObj).data()[4]);
-            $('#txtPhone').val(tableObj.row(rowObj).data()[5]);
-            $('#txtRatePerKg').val(tableObj.row(rowObj).data()[6]);
+            $('#txtName').val(tableObj.row(rowObj).data()[0]);
+            $('#txtAddress').val(tableObj.row(rowObj).data()[1]);
+            $('#txtPhone').val(tableObj.row(rowObj).data()[2]);
+            $('#txtRatePerKg').val(tableObj.row(rowObj).data()[3]);
             $('#txtID').val(ID);
         },
         preConfirm: function () {
@@ -48,8 +98,8 @@ function btn_update_detail(e, ID){
     .then(function (result) {
         swal.showLoading();
             swal({
-            title: "Update employee Detail",
-            text: "Are you sure you want to Update this employee's detail?",
+            title: "Update Rooler Detail",
+            text: "Are you sure you want to Update this roller's detail?",
             icon: "warning",
             showCancelButton: true,
             showLoaderOnConfirm: true,
@@ -68,14 +118,12 @@ function btn_update_detail(e, ID){
     .catch(swal.noop);
 }
 function update_detail(e, detail){
-    var strDOB = detail[8];
-    var DOB = strDOB.toString().split('/');
     $.ajax({
         url: win_loc+'/update_detail',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
-        data: {'ID':detail[9],'name':detail[0],'address':detail[2],'phone':detail[3],'ratePerKg':detail[4]},
+        data: {'ID':detail[4],'name':detail[0],'address':detail[1],'phone':detail[2],'ratePerKg':detail[3]},
         success: onSuccess_update_detail(e),
         error: function (res) {
             swal("Upexpected Error", "Please contact system administrator.", "error");
@@ -92,116 +140,13 @@ function onSuccess_update_detail(e){
                 $('.dataTables-grd').DataTable().row($(e).closest('tr')).remove().draw();
                 add_new_row_dataTable(e, res);
                 
-                swal("Rooler detail", "Updated successfully.", "success");
+                swal(swalHeader, "Updated successfully.", "success");
             }else{
-                swal("Roller detail", res.msg, "error");
+                swal(swalHeader, res.msg, "error");
             }
         }catch(e){
-            swal("Roller detail", e.message(), "error");
+            swal(swalHeader, e.message(), "error");
         }
-    }
-}
-//////////////////////////////////////////////////
-///////////     Add New Record     //////////////
-////////////////////////////////////////////////
-function add_pre(){
-    swal({
-        title: 'Add New Employee',
-        html: insert_add_view(),
-        showCancelButton: true,
-        focusConfirm: true,
-        confirmButtonText: "Save it!",
-        showLoaderOnConfirm: true,
-        onOpen: function() {
-        },
-        preConfirm: function () {
-            return new Promise(function (resolve,reject) {
-                if($('#txtName').val() == "" || $('#txtAddress').val() == "" || $('#txtPhone').val() == "" || $('#txtRatePerKg').val() == "")
-                {reject("Please fill all mendatory(*) fields first!");}
-            resolve([
-                $('#txtName').val(),
-                $('#txtAddress').val(),
-                $('#txtPhone').val(),
-                $('#txtRatePerKg').val(),
-            ])
-            })
-        }
-    })
-    .then(function (result) {
-        swal.showLoading();
-        add_record(JSON.parse(JSON.stringify(result)));
-    })
-    .catch(swal.noop);
-}
-function add_record(detail){
-    var DOB = detail[8].toString().split('/');
-    $.ajax({
-        url: win_loc+'/add_record',
-        method: 'GET',
-        contentType: "application/json; charset:utf-8",
-        dataType: 'json',
-        data: {'name':detail[0],'pass':detail[1],'fullName':detail[2],'email':detail[3],'mobile':detail[4],'tell':detail[5],'address':detail[6],'typID':detail[7],'DOB':moment(DOB[1]+'/'+DOB[0]+'/'+DOB[2]).format('YYYY/MM/DD')},
-        success: onSuccess_add_record,
-        error: function (res) {
-            swal("Upexpected Error", "Please contact system administrator.", "error");
-        },
-        failure: function (res) {
-            swal("Upexpected Error", "Please try again later.", "error");
-        }
-    });
-}
-function onSuccess_add_record(res){
-    try{
-        if(res.status == 200){
-            add_new_row_dataTable(null, res);
-            swal("User Profile", "User Added Successfully!", "success");
-        }else{
-            swal("User Profile", res.msg, "error");
-        }
-    }catch(e){
-        swal("User Profile", e.message, "error");
-    }
-}
-//////////////////////////////////////////////////
-///////////     get & fill Attributes    ////////
-////////////////////////////////////////////////
-function get_attributes(e){
-    swal.showLoading();
-    $.ajax({
-        url: win_loc+'/get_attributes',
-        method: 'GET',
-        contentType: "application/json; charset:utf-8",
-        dataType: 'json',
-        success: onSuccess_get_attributes(e),
-        error: function (res) {
-            swal("Upexpected Error", "Please contact system administrator.", "error");
-        },
-        failure: function (res) {
-            swal("Upexpected Error", "Please try again later.", "error");
-        }
-    });
-}
-function onSuccess_get_attributes(e){
-    return function(res){
-        attribute_filling(e, res);
-    }
-}
-function attribute_filling(e, res){
-    try{
-        swal.hideLoading();
-        if(res.status == 200){
-            var obj = $("#selUsrTyp");
-            $.each(res.result.usersTypes, function() {
-                obj.append($("<option />").val(this.id).text(this.name));
-            });
-            if(e == null){return;}
-            var rowObj = $(e).closest('tr');
-            obj.val(rowObj.find(".spnUsrTypID").data('id'));
-        }else{
-            swal("Unexpected error", "Please contact system administrator", "error");
-        }
-    }catch(e){
-        swal("Unexpected error", e.message, "error");
     }
 }
 //////////////////////////////////////////////////
@@ -256,12 +201,12 @@ function onSuccess_disable_record(e, enable){
                 $(e).data('id','1');
                 $(e).removeClass('btn-primary').addClass('btn-danger').find('i').removeClass('fa-check').addClass('fa-times');
             }
-            swal("User Profile", "Updated successfully.", "success");
+            swal(swalHeader, "Updated successfully.", "success");
         }else{
-            swal("User Profile", res.msg, "error");
+            swal(swalHeader, res.msg, "error");
         }
         }catch(e){
-            swal("User Profile", e.message, "error");
+            swal(swalHeader, e.message, "error");
         }
     }
 }
@@ -299,10 +244,10 @@ function delete_record(e, deleted, ID){
         data: {'ID':ID,'enable':parseInt(deleted==1?0:1),'deleted':deleted},
         success: onSuccess_delete_record(e, deleted),
         error: function (res) {
-            swal("Upexpected Error", "Please contact system administrator.", "error");
+            swal(swalHeader, "Please contact system administrator.", "error");
         },
         failure: function (res) {
-            swal("Upexpected Error", "Please try again later.", "error");
+            swal(swalHeader, "Please try again later.", "error");
         }
     });
 }
@@ -316,99 +261,13 @@ function onSuccess_delete_record(e, deleted){
             }else{
                 $(e).data('id','1');
             }
-            swal("User Profile", "Deleted successfully!", "success");
+            swal(swalHeader, "Deleted successfully!", "success");
         }else{
-            swal("User Profile", res.msg, "error");
+            swal(swalHeader, res.msg, "error");
         }
         }catch(e){
-            swal("User Profile", e.message, "error");
+            swal(swalHeader, e.message, "error");
         }
-    }
-}
-//////////////////////////////////////////////////
-///////////     change Password     /////////////
-////////////////////////////////////////////////
-function btn_change_pass(e, ID){
-     swal({
-        title: 'Change password',
-        html:
-        '<div class="row">'+
-            '<div class="col-sm-12 text-center">'+
-                '<div class="alert alert-danger alert-dismissable" id="divErrorAddUser" style="display:none;">'+
-                '<button class="close" aria-hidden="true" id="close" type="button" onclick="this.style.display = \'none\';">×</button>'+
-                '<span id="spnErrorAddUser">Please fill all mendatory(*) fields!</span>'+
-                '</div>'+
-            '</div>'+
-            '<div class="col-sm-12 form-horizontal">'+
-                '<div class="form-group">'+
-                    '<label class="col-sm-5 control-label">Old Password<font color="red">*</font></label>'+
-                    '<div class="col-sm-7">'+
-                        '<input type="password" placeholder="Old Password" id="txtPassOld" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<label class="col-sm-5 control-label">New Password<font color="red">*</font></label>'+
-                    '<div class="col-sm-7">'+
-                        '<input type="password" placeholder="New Password" id="txtPass" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<label class="col-sm-5 control-label">Confirm Password<font color="red">*</font></label>'+
-                    '<div class="col-sm-7">'+
-                        '<input type="password" placeholder="Confirm Password" id="txtPassConfirm" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<input type="hidden" id="txtID" value="'+ ID +'">'+
-                '</div>'+
-            '</div>'+
-        '</div>',
-        showCancelButton: true,
-        focusConfirm: false,
-        confirmButtonText: "Save it!",
-        showLoaderOnConfirm: true,
-        preConfirm: function () {
-            return new Promise(function (resolve,reject) {
-                if($('#txtID').val() == "" || $('#txtID').val() == 0){reject("Unexpected error, please contact system administrator!");}
-                if($('#txtPassOld').val() == "" || $('#txtPass').val() == "" || $('#txtPassConfirm').val() == "")
-                {reject("Please fill all mendatory(*) fields first!");}
-                 if($('#txtPass').val() != $('#txtPassConfirm').val())
-                {reject("Password and Confirm Password fields do not match!");}
-            resolve([
-                $('#txtPassOld').val(),
-                $('#txtPass').val(),
-                $('#txtPassConfirm').val(),
-                $('#txtID').val()
-            ])
-            })
-        }
-    })
-    .then(function (result) {
-        change_pass(JSON.parse(JSON.stringify(result)));
-    })
-    .catch(swal.noop)
-}
-function change_pass(detail){
-    $.ajax({
-        url: win_loc+'/change_pass',
-        method: 'GET',
-        contentType: "application/json; charset:utf-8",
-        dataType: 'json',
-        data: {'ID':detail[3], 'passOld':detail[0],'pass':detail[1]},
-        success: onSuccess_change_pass,
-        error: function (res) {
-            swal("Upexpected Error", "Please contact system administrator.", "error");
-        },
-        failure: function (res) {
-            swal("Upexpected Error", "Please try again later.", "error");
-        }
-    });
-}
-function onSuccess_change_pass(res){
-    try{
-        if(res.status == 200){
-            swal("User Profile", res.msg, "success");
-        }else if(res.status == 202){
-            swal("User Profile", res.msg, "error");
-        }else{
-            swal("User Profile", res.msg, "error");
-        }
-    }catch(e){
-        swal("User Profile", e.message, "error");
     }
 }
 /////////////////////////////////////////////////
@@ -418,45 +277,21 @@ function insert_add_view(){
     var strView = '<div class="row">'+
             '<div class="col-sm-12 form-horizontal">'+
                 '<div class="form-group">'+
-                    '<label class="col-sm-4 control-label" runat="server">Username<font color="red">*</font></label>'+
+                    '<label class="col-sm-4 control-label" runat="server">Name<font color="red">*</font></label>'+
                     '<div class="col-sm-8">'+
-                        '<input type="text" placeholder="Username" id="txtName" value="" class="form-control m-b " required>'+
-                    '</div>'+
-                    '<label id="lblPass" class="col-sm-4 control-label" runat="server">Password<font color="red">*</font></label>'+
-                    '<div class="col-sm-8" id="divPass">'+
-                        '<input type="password" placeholder="Password" id="txtPass" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<label class="col-sm-4 control-label" runat="server">Full Name<font color="red">*</font></label>'+
-                    '<div class="col-sm-8">'+
-                        '<input type="text" placeholder="Full Name" id="txtFullName" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<label class="col-sm-4 control-label" >Email</label>'+
-                    '<div class="col-sm-8">'+
-                        '<input type="email" placeholder="Email" id="txtEmail" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<label class="col-sm-4 control-label" >Mobile</label>'+
-                    '<div class="col-sm-8">'+
-                        '<input type="text" placeholder="Mobile" id="txtMobile" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<label class="col-sm-4 control-label">Tel.</label>'+
-                    '<div class="col-sm-8">'+
-                        '<input type="text" placeholder="Tel." id="txtTell" value="" class="form-control m-b ">'+
+                        '<input type="text" placeholder="Name" id="txtName" value="" class="form-control m-b " required>'+
                     '</div>'+
                     '<label class="col-sm-4 control-label" >Address</label>'+
                     '<div class="col-sm-8">'+
                         '<Textarea type="text" placeholder="Address" id="txtAddress" value="" class="form-control m-b "></Textarea>'+
                     '</div>'+
-                    '<label class="col-sm-4 control-label">User Type<font color="red">*</font></label>'+
+                    '<label class="col-sm-4 control-label" runat="server">Phone</label>'+
                     '<div class="col-sm-8">'+
-                        '<select id="selUsrTyp" class="form-control m-b">'+
-                            '<option value="">-Select Type-</option>'+
-                        '</select>'+
+                        '<input type="text" placeholder="Phone" id="txtPhone" value="" class="form-control m-b ">'+
                     '</div>'+
-                    '<label class="col-sm-4 control-label">DOB<font color="red">*</font></label>'+
+                    '<label class="col-sm-4 control-label" >Rate<font color="red">*</font></label>'+
                     '<div class="col-sm-8">'+
-                        '<div id="data" class="input-group date">'+
-                            '<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input value="" id="txtDOB" readonly="readonly" type="text" class="form-control">'+
-                        '</div>'+
+                        '<input type="text" placeholder="Rate" id="txtRatePerKg" value="" class="form-control m-b ">'+
                     '</div>'+
                     '<input type="hidden" id="txtID" />'+
                 '</div>'+
@@ -471,25 +306,17 @@ function add_new_row_dataTable(e, res){
     var button_dan_pri = '';
     
     if(row.enable){status = 'fa-check"'; button_dan_pri = 'btn-primary';}else{status = 'fa-times';button_dan_pri = 'btn-danger';}
-    var DOB = row.DOB.split("-");
-    DOB = DOB[2] +'/'+ DOB[1] +'/'+ DOB[0];
     $('.dataTables-grd').DataTable().row.add([
-        row.fullName,
         row.name,
         row.address,
-        row.DOB,
-        row.email,
-        row.mobile,
-        row.tell,
-        '<span class="tdTypID" data-id="'+ row.typID +'">'+ row.typName +'</span>',
+        row.phone,
+        row.ratePerKg,
         '<button class="btn '+ button_dan_pri +' btn-circle" type="button" onclick="btn_disable(this,'+ row.ID +');" data-id="'+ (row.enable = 1 ? 0 : 1) +'" href="javascript:void(0);"><i class="fa '+ status +'"></i>'+
             '</button>',
         '<a title="Edit" class="btn btn-primary btn-icon" id="btnEdit" onclick="btn_update_detail(this,'+ row.ID +');" href="javascript:void(0);">'+
             '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>'+
             '</a>'+
             ' <a title="Delete" class="btn btn-danger btn-icon" onclick="btn_delete(this,'+ row.ID +');" data-id="1" href="javascript:void(0);" >'+
-            '<i class="fa fa-trash" aria-hidden="true"></i></a>'+
-            ' <a title="Change Password" class="btn btn-warning btn-icon" id="btnChangePass'+ row.ID +'" onclick="btn_change_pass(this,'+ row.ID +');" href="javascript:void(0);" >'+
-            '<i class="fa fa-key" aria-hidden="true"></i></a>'
+            '<i class="fa fa-trash" aria-hidden="true"></i></a>'
     ]).draw();
 }

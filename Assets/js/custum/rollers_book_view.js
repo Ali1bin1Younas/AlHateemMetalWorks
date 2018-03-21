@@ -1,60 +1,49 @@
-var controllerNameUsers = 'Users';
+var pageNameV = 'Roolers Book';
+var controllerNameV = 'Roolers Book';
 var win_loc = document.getElementById("callBackLoc").value;
-var hTypID = document.getElementById("hTypID").value;
 //////////////////////////////////////////////////
-///////////     Add New Record     //////////////
+///////////     View Record     //////////////
 ////////////////////////////////////////////////
-function add_pre(){
-    swal({
-        title: 'Add New Employee',
-        html: insert_add_view(),
-        showCancelButton: true,
-        focusConfirm: true,
-        confirmButtonText: "Save it!",
-        showLoaderOnConfirm: true,
-        onOpen: function() {
-            $("#data").datepicker({
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true,
-                format: "dd/mm/yyyy"
-            }).datepicker('setDate', new Date()).datepicker('update').val('');
-        },
-        preConfirm: function () {
-            return new Promise(function (resolve,reject) {
-                if($('#txtName').val() == "" || $('#txtFullName').val() == "" || $('#txtPass').val() == "" || $('#txtDOB').val() == "")
-                {reject("Please fill all mendatory(*) fields first!");}
-            resolve([
-                $('#txtName').val(),
-                $('#txtPass').val(),
-                $('#txtFullName').val(),
-                $('#txtEmail').val(),
-                $('#txtMobile').val(),
-                $('#txtTell').val(),
-                $('#txtAddress').val(),
-                hTypID,
-                $('#txtDOB').val()
-            ])
-            })
-        }
-    })
-    .then(function (result) {
-        swal.showLoading();
-        add_record(JSON.parse(JSON.stringify(result)));
-    })
-    .catch(swal.noop);
+function onSuccess_get_view(res){
+    $('.page-contents').html(res);
+    var viewModel = new ReservationsViewModel();
+
+    $(".date").datepicker({
+        todayBtn: "linked",
+        keyboardNavigation: false,
+        forceParse: false,
+        calendarWeeks: true,
+        autoclose: true,
+        format: "dd/mm/yyyy"
+    }).datepicker('setDate', new Date()).datepicker('update').val('');
+    $('.selectpicker').selectpicker('refresh');
+    try{
+        // Overall viewmodel for the popup screen, along with initial state
+        viewModelInit = true;
+        viewModel.issueDate(new Date());
+        viewModel.referenceNo("");
+        viewModel.VoucherDescription();
+        viewModel.discount(false);
+        viewModel.discountType("Percentage");
+
+        viewModel.AddLines();
+        viewModel.Lines()[0].description();
+        viewModel.Lines()[0].amount("0");
+        
+        ko.applyBindings(viewModel, document.getElementById("createVoucherView"));
+    }catch(e){alert(e.message);ko.cleanNode(document.getElementById("createVoucherView"));}
 }
-function add_record(detail){
-    var DOB = detail[8].toString().split('/');
+function edit_sale(id){
     $.ajax({
-        url: win_loc+'/add_record',
+        url: win_loc+'/set_edit_session',
         method: 'GET',
         contentType: "application/json; charset:utf-8",
         dataType: 'json',
-        data: {'name':detail[0],'pass':detail[1],'fullName':detail[2],'email':detail[3],'mobile':detail[4],'tell':detail[5],'address':detail[6],'typID':detail[7],'DOB':moment(DOB[1]+'/'+DOB[0]+'/'+DOB[2]).format('YYYY/MM/DD')},
-        success: onSuccess_add_record,
+        data: {'id':id,'pass':''},
+        success: function(res){
+            if(res.id != null && res.id != '' && res.id != 0)
+                window.location.href = win_loc+'/sale_edit';
+        },
         error: function (res) {
             swal("Upexpected Error", "Please contact system administrator.", "error");
         },
@@ -62,18 +51,6 @@ function add_record(detail){
             swal("Upexpected Error", "Please try again later.", "error");
         }
     });
-}
-function onSuccess_add_record(res){
-    try{
-        if(res.status == 200){
-            add_new_row_dataTable(null, res);
-            swal("User Profile", "User Added Successfully!", "success");
-        }else{
-            swal("User Profile", res.msg, "error");
-        }
-    }catch(e){
-        swal("User Profile", e.message, "error");
-    }
 }
 //////////////////////////////////////////////////
 ///////////     Update record     ///////////////
@@ -87,6 +64,7 @@ function btn_update_detail(e, ID){
         confirmButtonText: "Save it!",
         showLoaderOnConfirm: true,
         onOpen: function() {
+            get_attributes(e);
             $("#data").datepicker({
                 todayBtn: "linked",
                 keyboardNavigation: false,
@@ -126,7 +104,7 @@ function btn_update_detail(e, ID){
                 $('#txtMobile').val(),
                 $('#txtTell').val(),
                 $('#txtAddress').val(),
-                hTypID,
+                $('#selUsrTyp').val(),
                 $('#txtDOB').val(),
                 $('#txtID').val()
             ])
@@ -352,92 +330,6 @@ function onSuccess_delete_record(e, deleted){
         }
     }
 }
-//////////////////////////////////////////////////
-///////////     change Password     /////////////
-////////////////////////////////////////////////
-function btn_change_pass(e, ID){
-     swal({
-        title: 'Change password',
-        html:
-        '<div class="row">'+
-            '<div class="col-sm-12 text-center">'+
-                '<div class="alert alert-danger alert-dismissable" id="divErrorAddUser" style="display:none;">'+
-                '<button class="close" aria-hidden="true" id="close" type="button" onclick="this.style.display = \'none\';">×</button>'+
-                '<span id="spnErrorAddUser">Please fill all mendatory(*) fields!</span>'+
-                '</div>'+
-            '</div>'+
-            '<div class="col-sm-12 form-horizontal">'+
-                '<div class="form-group">'+
-                    '<label class="col-sm-5 control-label">Old Password<font color="red">*</font></label>'+
-                    '<div class="col-sm-7">'+
-                        '<input type="password" placeholder="Old Password" id="txtPassOld" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<label class="col-sm-5 control-label">New Password<font color="red">*</font></label>'+
-                    '<div class="col-sm-7">'+
-                        '<input type="password" placeholder="New Password" id="txtPass" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<label class="col-sm-5 control-label">Confirm Password<font color="red">*</font></label>'+
-                    '<div class="col-sm-7">'+
-                        '<input type="password" placeholder="Confirm Password" id="txtPassConfirm" value="" class="form-control m-b ">'+
-                    '</div>'+
-                    '<input type="hidden" id="txtID" value="'+ ID +'">'+
-                '</div>'+
-            '</div>'+
-        '</div>',
-        showCancelButton: true,
-        focusConfirm: false,
-        confirmButtonText: "Save it!",
-        showLoaderOnConfirm: true,
-        preConfirm: function () {
-            return new Promise(function (resolve,reject) {
-                if($('#txtID').val() == "" || $('#txtID').val() == 0){reject("Unexpected error, please contact system administrator!");}
-                if($('#txtPassOld').val() == "" || $('#txtPass').val() == "" || $('#txtPassConfirm').val() == "")
-                {reject("Please fill all mendatory(*) fields first!");}
-                 if($('#txtPass').val() != $('#txtPassConfirm').val())
-                {reject("Password and Confirm Password fields do not match!");}
-            resolve([
-                $('#txtPassOld').val(),
-                $('#txtPass').val(),
-                $('#txtPassConfirm').val(),
-                $('#txtID').val()
-            ])
-            })
-        }
-    })
-    .then(function (result) {
-        change_pass(JSON.parse(JSON.stringify(result)));
-    })
-    .catch(swal.noop)
-}
-function change_pass(detail){
-    $.ajax({
-        url: win_loc+'/change_pass',
-        method: 'GET',
-        contentType: "application/json; charset:utf-8",
-        dataType: 'json',
-        data: {'ID':detail[3], 'passOld':detail[0],'pass':detail[1]},
-        success: onSuccess_change_pass,
-        error: function (res) {
-            swal("Upexpected Error", "Please contact system administrator.", "error");
-        },
-        failure: function (res) {
-            swal("Upexpected Error", "Please try again later.", "error");
-        }
-    });
-}
-function onSuccess_change_pass(res){
-    try{
-        if(res.status == 200){
-            swal("User Profile", res.msg, "success");
-        }else if(res.status == 202){
-            swal("User Profile", res.msg, "error");
-        }else{
-            swal("User Profile", res.msg, "error");
-        }
-    }catch(e){
-        swal("User Profile", e.message, "error");
-    }
-}
 /////////////////////////////////////////////////
 ///////////     Helping Methods     ////////////
 ///////////////////////////////////////////////
@@ -473,12 +365,12 @@ function insert_add_view(){
                     '<div class="col-sm-8">'+
                         '<Textarea type="text" placeholder="Address" id="txtAddress" value="" class="form-control m-b "></Textarea>'+
                     '</div>'+
-                    // '<label class="col-sm-4 control-label">User Type<font color="red">*</font></label>'+
-                    // '<div class="col-sm-8">'+
-                    //     '<select id="selUsrTyp" class="form-control m-b">'+
-                    //         '<option value="">-Select Type-</option>'+
-                    //     '</select>'+
-                    // '</div>'+
+                    '<label class="col-sm-4 control-label">User Type<font color="red">*</font></label>'+
+                    '<div class="col-sm-8">'+
+                        '<select id="selUsrTyp" class="form-control m-b">'+
+                            '<option value="">-Select Type-</option>'+
+                        '</select>'+
+                    '</div>'+
                     '<label class="col-sm-4 control-label">DOB<font color="red">*</font></label>'+
                     '<div class="col-sm-8">'+
                         '<div id="data" class="input-group date">'+
