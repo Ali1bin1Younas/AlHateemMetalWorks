@@ -370,6 +370,8 @@
       var viewModel = new ReservationsViewModel();
       viewModel.ID = 0;
       viewModel.isEdit = "0";
+      viewModel.typID = $('#txtTypID').val();
+      
       var d = new Date();
       $(".date").datepicker({
           todayBtn: "linked",

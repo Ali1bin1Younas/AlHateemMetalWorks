@@ -27,7 +27,7 @@ class Moneytransactions extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
 		$data['IDNo'] = $this->Moneytransactions_model->get_No();
-		$data['TypID'] = 1;
+		$data['typID'] = 1;
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_create",$data);
 	}
 	function create_cash_receive(){
@@ -35,7 +35,7 @@ class Moneytransactions extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
 		$data['IDNo'] = $this->Moneytransactions_model->get_No();
-		$this->session->unset_userdata('ID');
+		$data['typID'] = 2;
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_create",$data);
 	}
 	function create_bank_spend(){
@@ -43,7 +43,7 @@ class Moneytransactions extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
 		$data['IDNo'] = $this->Moneytransactions_model->get_No();
-		$this->session->unset_userdata('ID');
+		$data['typID'] = 3;
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_create",$data);
 	}
 	function create_bank_receive(){
@@ -51,7 +51,7 @@ class Moneytransactions extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
 		$data['IDNo'] = $this->Moneytransactions_model->get_No();
-		$this->session->unset_userdata('ID');
+		$data['typID'] = 4;
 		$this->load->view($this->router->fetch_class()."/".$this->router->fetch_class()."_create",$data);
 	}
 

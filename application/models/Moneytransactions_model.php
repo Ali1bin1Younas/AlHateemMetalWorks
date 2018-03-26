@@ -21,10 +21,10 @@ class Moneytransactions_model extends CI_Model{
         return $this->db->query($qry)->result_array();
     }
     public function get_invoice_detail($id){
-        $qry = "SELECT tv.dateIssue,tv.ID, tv.descrip, ".
-            " tu.id as rolrID, tu.name as rolrName".
-            " FROM  `tbl_rollers_book` tv".
-            " inner join tbl_rollers tu on tu.ID = tv.rolrID ".
+        $qry = "SELECT tv.ID, tv.dateReceived, tv.descript, ".
+            " tu.id as usrID, tu.name as usrName".
+            " FROM  `tbl_moneytransactions` tv".
+            " inner join tbl_users tu on tu.ID = tv.usrID ".
             " where tv.ID = '".$id."'";
         $rec = $this->db->query($qry)->result_array();
         $qry = "SELECT tvd.id,tvd.weight,tvd.price as amount ".

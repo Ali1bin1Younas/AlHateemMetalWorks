@@ -58,7 +58,7 @@
                           <tr>
                             <td><?php echo $row['ID'];?></td>
                             <td><?php echo $row['dateTimeCreated'];?></td>
-                            <td><?php echo $row['descrip'];?></td>
+                            <td><?php echo $row['descript'];?></td>
                             <td>
                                 <span class="spnVTypID" data-id="<?php echo $row['typID']; ?>">
                                   <?php echo $row['typName']; ?>
