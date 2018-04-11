@@ -21,10 +21,20 @@ class Rollers_book extends CI_Controller{
 		$data["name"] = $this->session->userdata('name');
 		$this->load->view("Rollers/".$this->router->fetch_class()."_view",$data);
 	}
-	function rollers_book_create(){
+	function rollers_book_create_send(){
 		$data['pageHeading'] = "Create Rooler Invoice";
 		$data["name"] = $this->session->userdata('name');
 		$data['isEdit'] = 0;
+		$data['typID'] = 1;
+		$data['IDNo'] = $this->Rollers_book_model->get_No();
+		$this->session->unset_userdata('ID');
+		$this->load->view("Rollers/".$this->router->fetch_class(),$data);
+	}
+	function rollers_book_create_receive(){
+		$data['pageHeading'] = "Create Rooler Invoice";
+		$data["name"] = $this->session->userdata('name');
+		$data['isEdit'] = 0;
+		$data['typID'] = 2;
 		$data['IDNo'] = $this->Rollers_book_model->get_No();
 		$this->session->unset_userdata('ID');
 		$this->load->view("Rollers/".$this->router->fetch_class(),$data);
@@ -64,7 +74,6 @@ class Rollers_book extends CI_Controller{
 		$data['dateIssue'] = $issueDateStr;
 		$data["dateTimeCreated"] = date('Y-m-d H:i:s');
 		$data['rolrID'] = $Vdata->roller->id;
-		$data['typID'] = 1;
 		$data['usrID_usr'] = $this->session->userdata('usrID');
 		$data['grandTotal'] = $Vdata->GrandTotal;
 

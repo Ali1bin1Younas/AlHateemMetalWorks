@@ -166,6 +166,7 @@
       </div>
       <input id="txtIDNo" type="hidden" value="<?php echo $IDNo;?>">
       <input id="txtIsEdit" type="hidden" value="<?php echo $isEdit;?>">
+      <input id="txtTypID" type="hidden" value="<?php echo $typID;?>">
       <input id="callBackLoc" value="<?php echo base_url('Rollers_book');?>" type="hidden">
     </div>
   </div>
@@ -299,6 +300,7 @@
   function ReservationsViewModel() {
       var self = this;
       self.ID = ko.observable();
+      self.typID = ko.observable();
       self.isEdit = ko.observable();
 
       self.Lines = ko.observableArray();
@@ -375,8 +377,10 @@
 
   $(document).ready(function(){
       var viewModel = new ReservationsViewModel();
-      viewModel.ID = 0;
+      viewModel.ID = $('#txtIDNo').val();
+      viewModel.typID = $('#txtTypID').val();
       viewModel.isEdit = "0";
+
       var d = new Date();
       $(".date").datepicker({
           todayBtn: "linked",
@@ -403,6 +407,7 @@
               var res_di = res_row.dateIssue.split("-");
               viewModel.issueDate(moment((res_di[1])+'/'+res_di[2]+'/'+res_di[0]).format('DD/MM/YYYY'));
               viewModel.ID = res_row.ID;
+              viewModel.typID = res_row.typID;
               viewModel.roller({id:res_row.rolrID, text:res_row.rolrName});
               viewModel.VoucherDescription(res_row.descrip);
               viewModel.Lines([]);

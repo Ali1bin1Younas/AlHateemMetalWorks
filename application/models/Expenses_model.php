@@ -78,7 +78,9 @@ class Expenses_model extends CI_Model{
         $query = $this->db->query("UPDATE ".$tbl." SET enable = ". $enable ." WHERE ID='".$id."'");
         return $query;
     }
-    /////////////////////////
+    //////////////////////////////////////////////
+    /////////////     Helping Methods     ///////
+    ////////////////////////////////////////////
     public function getPersons($term){
         try{
             $nameClause = "";

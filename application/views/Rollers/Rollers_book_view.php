@@ -28,7 +28,13 @@
                   <div class="row">
                   <div class="col-lg-12 text-right form-group">
                   <a class="btn btn-primary pad"  href="<?php echo base_url(); ?>Rollers"><i class="fa" aria-hidden="true"></i>Roolers</a>
-                  <a class="btn btn-primary pad"  href="<?php echo base_url(); ?>Rollers_book/rollers_book_create"><i class="fa fa-plus" aria-hidden="true"></i>Create Rooler Invoice</a>
+                    <div class="btn-group">
+                      <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" aria-expanded="false">Make Money Transaction <span class="caret"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a href="<?php echo base_url(); ?>Moneytransactions/create_cash_spend">Send</a></li>
+                        <li><a href="<?php echo base_url(); ?>Rollers_book/rollers_book_create_receive" class="font-bold">Receive</a></li>
+                      </ul>
+                    </div>
                   </div>
                   </div>
                     <div class="table-responsive">
