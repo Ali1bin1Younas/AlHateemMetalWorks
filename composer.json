@@ -1,14 +1,14 @@
 {
-	"description": "The CodeIgniter framework",
-	"name": "codeigniter/framework",
-	"type": "project",
-	"homepage": "https://codeigniter.com",
-	"license": "MIT",
+	"description": "Silver Factory Management system",
+	"name": "Silver & Metal Works",
+	"type": "AlHateemMetalWorks",
+	"homepage": "https://AlHateemMetalWorks.com",
+	"license": "ALS",
 	"support": {
-		"forum": "http://forum.codeigniter.com/",
-		"wiki": "https://github.com/bcit-ci/CodeIgniter/wiki",
-		"slack": "https://codeigniterchat.slack.com",
-		"source": "https://github.com/bcit-ci/CodeIgniter"
+		"forum": "",
+		"wiki": "",
+		"slack": "",
+		"source": ""
 	},
 	"require": {
 		"php": ">=5.3.7"

@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //$config['base_url'] = 'http://harrcheez/inventory';
-$config['base_url'] = 'http://localhost:82/AlHateemMetalWorks';
+$config['base_url'] = 'http://localhost/AlHateemMetalWorks';
 
 /*
 |--------------------------------------------------------------------------

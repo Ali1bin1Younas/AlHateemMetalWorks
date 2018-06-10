@@ -31,7 +31,7 @@ class Employee_model extends CI_Model
 	
 	public function get_employee($id){
 		$this->db->where("employee_id",$id);
-		$query=$this->db->get('employee');
+		$query = $this->db->get('employee');
 		return $query->row();
 	}
 	public function delete_employee($id){
